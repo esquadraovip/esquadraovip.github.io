@@ -3200,8 +3200,10 @@ $("#admin-form").addEventListener("submit", async e => {
       botao.textContent = novas > 1 ? `Enviando foto ${enviada} de ${novas}…` : "Enviando foto…";
       urls.push(await DB.enviarFoto(f.objeto));
     }
-    obj.fotos = urls;
-    obj.foto_url = urls[0] || null;
+    if (FOTOS[admin.aba]) {          // abas sem foto (Campo) não enviam esses campos
+      obj.fotos = urls;
+      obj.foto_url = urls[0] || null;
+    }
     if (admin.editando) obj.id = admin.editando.id;
     botao.textContent = "Salvando…";
     await DB.salvar(admin.aba, obj);
