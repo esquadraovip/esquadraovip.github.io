@@ -496,7 +496,9 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
 .zap:hover{text-decoration:underline}
 .lista-contagem{margin-top:-.6rem;font-size:.9rem}
 .linha-acoes{display:flex;gap:.4rem;flex-wrap:wrap;justify-content:flex-end}
-.linha-usuario{grid-template-columns:minmax(0,1fr) 14rem}
+.linha-usuario,.linha-campo,.linha-apresentacao{grid-template-columns:minmax(0,1fr) auto}
+.linha-apresentacao{border-bottom:2px solid var(--linha);margin-bottom:.5rem}
+.linha-campo strong{color:var(--folha)}
 .linha-usuario select{padding:.5rem .6rem}
 .form-vazio{color:var(--areia-2);padding:1rem 0}
 .grupo-titulo{font:800 1.3rem/1 var(--display);color:var(--folha);margin:1.5rem 0 .3rem;padding-bottom:.4rem;border-bottom:1px solid var(--linha)}
@@ -688,10 +690,14 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
       <h2>Campo e loja</h2>
       <p>Três cenários, safe zone coberta e uma loja com o que você precisa para o dia de jogo.</p>
     </div>
+    <div class="barra">
+      <span></span>
+      <button class="btn btn-sec btn-mini gerenciar" data-gerenciar="campo" hidden>Gerenciar campo</button>
+    </div>
     <div class="campo-info">
       <div>
         <h3 class="sub">O campo</h3>
-        <p>Jogos abertos todo fim de semana. Quem nunca jogou pode alugar o kit completo e jogar acompanhado por alguém da equipe.</p>
+        <div id="campo-texto"></div>
         <p class="acoes"><a class="btn btn-sec" id="btn-mapa" href="#" target="_blank" rel="noopener">Como chegar no campo</a></p>
       </div>
       <dl class="dados" id="dados-campo"></dl>
@@ -1067,7 +1073,7 @@ const CARGOS = {
   membro: "Membro"
 };
 const O_QUE_FAZ = {
-  admin: "Tudo: eventos, loja, jornal, equipes, membros cadastrados, registro de acessos e cargos. Só ele muda o cargo das pessoas.",
+  admin: "Tudo: eventos, loja, avisos, galeria, campo, equipes, membros cadastrados, registro de acessos e cargos. Só ele muda o cargo das pessoas.",
   organizador: "Cria e edita eventos, fotos dos jogos e vê a lista de inscritos.",
   lojista: "Adiciona, altera, oculta e remove produtos da loja.",
   redator: "Escreve e agenda os avisos e novidades do site.",
@@ -1078,6 +1084,7 @@ const PERMISSOES = {
   produtos: ["admin", "lojista"],
   jornal: ["admin", "redator"],
   galeria: ["admin", "organizador"],
+  campo: ["admin"],
   equipes: ["admin"],
   operadores: ["admin"],
   usuarios: ["admin"],
@@ -1088,6 +1095,7 @@ const ABAS_ADMIN = [
   { id: "produtos", nome: "Loja" },
   { id: "jornal", nome: "Avisos" },
   { id: "galeria", nome: "Galeria" },
+  { id: "campo", nome: "Campo" },
   { id: "equipes", nome: "Equipes" },
   { id: "operadores", nome: "Operadores" },
   { id: "usuarios", nome: "Membros e cargos" },
@@ -1204,7 +1212,7 @@ const PASSOS = [
   ["Receba seu patch", "Com a aprovação do grupo, você ganha callsign e o patch da equipe."]
 ];
 
-const CAMPO = [
+const CAMPO_PADRAO = [
   ["Funcionamento", "Sábados e domingos, das 7h30 às 17h"],
   ["Day-use", "R$ 50 por jogador"],
   ["Aluguel de kit", "R$ 120, com réplica AEG, óculos, máscara e 2.000 BBs"],
@@ -1212,7 +1220,12 @@ const CAMPO = [
   ["Estrutura", "Safe zone coberta, cronógrafo, banheiros e estacionamento"],
   ["Menores de 18", "Só jogam com autorização e presença do responsável legal"],
   ["Na entrada", "Documento com foto e assinatura do termo de responsabilidade"]
-];
+].map(([rotulo, valor], i) => ({ id: i + 1, rotulo, valor, ordem: i + 1 }));
+const CONFIG_PADRAO = {
+  campo_texto: "Jogos abertos todo fim de semana. Quem nunca jogou pode alugar o kit completo e jogar acompanhado por alguém da equipe.",
+  endereco: CONFIG.endereco,
+  mapa: CONFIG.mapa
+};
 
 /* ---------- Dados de exemplo (modo demonstração) ---------- */
 function eventosExemplo() {
@@ -1325,6 +1338,7 @@ function ordenar(tabela, lista) {
   if (tabela === "produtos") return lista.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
   if (tabela === "equipes") return lista.sort((a, b) => (a.ordem || 0) - (b.ordem || 0) || a.id - b.id);
   if (tabela === "jornal") return lista.sort((a, b) => b.publicar_em.localeCompare(a.publicar_em) || b.id - a.id);
+  if (tabela === "campo") return lista.sort((a, b) => (a.ordem || 0) - (b.ordem || 0) || a.id - b.id);
   if (tabela === "galeria") return lista.sort((a, b) => (a.ordem || 0) - (b.ordem || 0) || b.id - a.id);
   if (tabela === "operadores") return lista.sort((a, b) => (a.ordem || 0) - (b.ordem || 0) || a.id - b.id);
   return lista;
@@ -1355,7 +1369,9 @@ function criarDemo() {
     if (acao === "entrou") u.ultimo_acesso = agora;
   };
   const dados = { eventos: eventosExemplo(), produtos: produtosExemplo(), jornal: jornalExemplo(),
-                  equipes: equipesExemplo(), operadores: operadoresExemplo(), galeria: galeriaExemplo() };
+                  equipes: equipesExemplo(), operadores: operadoresExemplo(), galeria: galeriaExemplo(),
+                  campo: CAMPO_PADRAO.map(c => ({ ...c })) };
+  let configDemo = { ...CONFIG_PADRAO };
   const reservas = [];
   const ouvintes = [];
   let atual = null;
@@ -1435,6 +1451,8 @@ function criarDemo() {
         return { nome: u?.nome || "", email: u?.email || "", telefone: u?.telefone || "", criado_em: r.criado_em };
       });
     },
+    async lerConfig() { return { ...configDemo }; },
+    async salvarConfig(novo) { exigir("campo"); configDemo = { ...configDemo, ...novo }; },
     async listarUsuarios() { exigir("usuarios"); return usuarios.map(perfil).sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR")); },
     async listarAcessos() {
       exigir("acessos");
@@ -1462,7 +1480,7 @@ async function criarSupabase() {
     falha(error);
     return (perfilAtual = data || { id: user.id, nome: user.email, email: user.email, cargo: "membro" });
   }
-  const ORDEM = { eventos: ["data", true], produtos: ["nome", true], jornal: ["publicar_em", false], equipes: ["ordem", true], operadores: ["ordem", true], galeria: ["ordem", true] };
+  const ORDEM = { eventos: ["data", true], produtos: ["nome", true], jornal: ["publicar_em", false], equipes: ["ordem", true], operadores: ["ordem", true], galeria: ["ordem", true], campo: ["ordem", true] };
   return {
     modo: "supabase",
     async sessao() { const { data } = await sb.auth.getSession(); return carregarPerfil(data.session?.user); },
@@ -1531,6 +1549,16 @@ async function criarSupabase() {
       falha(error);
       return (data || []).map(r => ({ nome: r.perfis?.nome || "", email: r.perfis?.email || "", telefone: r.perfis?.telefone || "", criado_em: r.criado_em }));
     },
+    async lerConfig() {
+      const { data, error } = await sb.from("config").select("chave, valor");
+      falha(error);
+      return Object.fromEntries((data || []).map(c => [c.chave, c.valor]));
+    },
+    async salvarConfig(novo) {
+      const linhas = Object.entries(novo).map(([chave, valor]) => ({ chave, valor: valor ?? "" }));
+      const { error } = await sb.from("config").upsert(linhas, { onConflict: "chave" });
+      falha(error);
+    },
     async listarUsuarios() {
       const { data, error } = await sb.from("perfis").select("id, nome, email, cargo, equipe, cidade, telefone, criado_em, ultimo_acesso").order("nome");
       falha(error);
@@ -1551,8 +1579,9 @@ async function criarSupabase() {
 let DB = null;
 const estado = {
   usuario: null,
-  eventos: [], produtos: [], jornal: [], equipes: [], operadores: [], galeria: [],
-  erro: { eventos: false, produtos: false, jornal: false, equipes: false, operadores: false, galeria: false },
+  eventos: [], produtos: [], jornal: [], equipes: [], operadores: [], galeria: [], campo: [],
+  config: { ...CONFIG_PADRAO },
+  erro: { eventos: false, produtos: false, jornal: false, equipes: false, operadores: false, galeria: false, campo: false },
   contagem: {}, minhas: new Set(),
   jornalSel: null, equipeSel: null
 };
@@ -2112,8 +2141,19 @@ $("#rodape-equipes").addEventListener("click", e => {
 
 /* ---------- Campo ---------- */
 $("#passos").innerHTML = PASSOS.map(([t, d]) => `<li><h4>${t}</h4><p>${d}</p></li>`).join("");
-$("#btn-mapa").href = CONFIG.mapa;
-$("#dados-campo").innerHTML = [...CAMPO, ["Endereço", CONFIG.endereco]].map(([t, d]) => `<div><dt>${esc(t)}</dt><dd>${esc(d)}</dd></div>`).join("");
+function renderCampo() {
+  const linhas = estado.campo.length ? estado.campo : CAMPO_PADRAO;
+  const cfg = estado.config;
+  $("#campo-texto").innerHTML = paragrafos(cfg.campo_texto) || "";
+  $("#dados-campo").innerHTML = [...linhas.map(c => [c.rotulo, c.valor]), ["Endereço", cfg.endereco]]
+    .filter(([t, d]) => t && d).map(([t, d]) => `<div><dt>${esc(t)}</dt><dd>${esc(d)}</dd></div>`).join("");
+  const mapa = cfg.mapa && /^https:\/\//.test(cfg.mapa) ? cfg.mapa : "";
+  $("#btn-mapa").href = mapa || "#campo";
+  $("#btn-mapa").hidden = !mapa;
+  $("#lnk-mapa").href = mapa || "#campo";
+  $("#lnk-mapa").hidden = !mapa;
+  $$('[data-config="endereco"]').forEach(el => el.textContent = cfg.endereco || "");
+}
 
 /* =========================================================
    LOJA E PEDIDO
@@ -2215,13 +2255,14 @@ async function carregarTabela(tabela) {
   catch (e) { console.error(e); estado.erro[tabela] = true; }
 }
 async function carregarTudo() {
-  await Promise.all(["eventos", "produtos", "jornal", "equipes", "operadores", "galeria"].map(carregarTabela));
+  await Promise.all([...["eventos", "produtos", "jornal", "equipes", "operadores", "galeria", "campo"].map(carregarTabela),
+    (async () => { try { const c = await DB.lerConfig(); estado.config = { ...CONFIG_PADRAO, ...c }; } catch { estado.config = { ...CONFIG_PADRAO }; } })()]);
   await carregarReservas();
   renderTudo();
 }
 function renderTudo() {
   renderEventos(); atualizarProximo(); tique();
-  renderProdutos(); renderJornal(); renderEquipes(); renderGaleria(); renderGerenciar();
+  renderProdutos(); renderJornal(); renderEquipes(); renderGaleria(); renderCampo(); renderGerenciar();
 }
 function renderGerenciar() { $$("[data-gerenciar]").forEach(b => b.hidden = !pode(b.dataset.gerenciar)); }
 $$("[data-gerenciar]").forEach(b => b.addEventListener("click", () => abrirAdmin(b.dataset.gerenciar)));
@@ -2433,8 +2474,8 @@ modalPriv.addEventListener("click", e => { if (e.target === modalPriv) fecharPri
 const adminEl = $("#admin");
 const admin = { aba: null, editando: null, fotos: [], focoAntes: null,
   usuarios: [], buscaUsuario: "", acessos: [], buscaAcesso: "", filtroAcesso: "todos" };
-const NOMES_TABELA = { eventos: "evento", produtos: "produto", jornal: "aviso", equipes: "equipe", galeria: "foto", operadores: "operador" };
-const FEMININO = ["equipes", "galeria"];
+const NOMES_TABELA = { eventos: "evento", produtos: "produto", jornal: "aviso", equipes: "equipe", galeria: "foto", operadores: "operador", campo: "informação" };
+const FEMININO = ["equipes", "galeria", "campo"];
 const ACOES = { entrou: "Entrou no site", cadastro: "Criou a conta" };
 const CARGOS_PLURAL = { admin: "administradores", organizador: "organizadores de jogos", lojista: "lojistas", redator: "redatores do jornal", membro: "membros" };
 const fem = (aba, m, f) => FEMININO.includes(aba) ? f : m;
@@ -2536,6 +2577,23 @@ async function renderListaAdmin() {
             <button class="btn btn-sec btn-mini" data-acao="editar" data-id="${j.id}">Editar</button>
             ${botaoExcluir(j.id)}
           </div></div>`).join("") : `<p class="form-vazio">Nenhum aviso ainda. Clique em Novo aviso para escrever o primeiro.</p>`}`;
+  }
+  if (aba === "campo") {
+    const linhas = estado.campo;
+    alvo.innerHTML = `
+      <div class="lista-topo"><h3>Campo</h3><button class="btn btn-mini" data-acao="novo">Nova informação</button></div>
+      <p class="lista-ajuda">Estas linhas aparecem na tabela da seção Campo e loja. Use para horários, valores, cenários e o que mais o jogador precisa saber antes de ir.</p>
+      <div class="linha-admin linha-apresentacao">
+        <div><strong>Apresentação, endereço e mapa</strong><span class="linha-meta">${esc((estado.config.campo_texto || "").slice(0, 90))}${(estado.config.campo_texto || "").length > 90 ? "…" : ""}</span><span class="linha-meta linha-onde">${esc(estado.config.endereco || "sem endereço")}</span></div>
+        <div class="linha-acoes"><button class="btn btn-sec btn-mini" data-acao="apresentacao">Editar</button></div>
+      </div>
+      ${linhas.length ? linhas.map(c => `
+        <div class="linha-admin linha-campo ${admin.editando?.id === c.id ? "ativa" : ""}">
+          <div><strong>${esc(c.rotulo)}</strong><span class="linha-meta">${esc(c.valor)}</span></div>
+          <div class="linha-acoes">
+            <button class="btn btn-sec btn-mini" data-acao="editar" data-id="${c.id}">Editar</button>
+            ${botaoExcluir(c.id)}
+          </div></div>`).join("") : `<p class="form-vazio">Nenhuma informação ainda. Clique em Nova informação para criar a primeira.</p>`}`;
   }
   if (aba === "galeria") {
     alvo.innerHTML = `
@@ -2640,6 +2698,7 @@ function contagemPor(lista, campo, titulo) {
   if (!itens.length) return "";
   return `<p class="lista-ajuda lista-contagem"><strong>${titulo}:</strong> ${itens.map(([v, n]) => `${esc(v)} (${n})`).join(", ")}</p>`;
 }
+const nomeDoItem = o => admin.aba === "campo" ? `Informação "${o?.rotulo || ""}"` : (o?.nome || o?.titulo || o?.rotulo || "Item");
 const bate = (busca, ...campos) => !busca || campos.some(c => String(c || "").toLowerCase().includes(busca.toLowerCase()));
 function renderUsuarios() {
   const alvo = $("#usuarios-lista"); if (!alvo) return;
@@ -2687,6 +2746,7 @@ $("#admin-lista").addEventListener("click", async e => {
   const id = b.dataset.id !== undefined ? (Number(b.dataset.id) || b.dataset.id) : null;
   const item = listaDaAba().find(x => x.id === id);
   if (b.dataset.acao === "atualizar-acessos") { renderListaAdmin(); return; }
+  if (b.dataset.acao === "apresentacao") { abrirApresentacao(); return; }
   if (b.dataset.acao === "novo") abrirForm(null);
   if (b.dataset.acao === "editar" && item) abrirForm(item);
   if (b.dataset.acao === "inscritos" && item) mostrarInscritos(item);
@@ -2699,7 +2759,7 @@ $("#admin-lista").addEventListener("click", async e => {
     b.disabled = true;
     try {
       await DB.remover(admin.aba, id);
-      toast(`${item.nome || item.titulo} ${fem(admin.aba, "excluído", "excluída")}.`);
+      toast(`${nomeDoItem(item)} ${fem(admin.aba, "excluído", "excluída")}.`);
       if (admin.editando?.id === id) limparForm();
       await recarregarDepoisDeEditar();
     } catch (err) { toast(err.message); b.disabled = false; }
@@ -2719,6 +2779,7 @@ $("#admin-lista").addEventListener("change", async e => {
 async function recarregarDepoisDeEditar() {
   await carregarTabela(admin.aba);
   if (admin.aba === "equipes") await carregarTabela("operadores");
+  if (admin.aba === "campo") renderCampo();
   if (admin.aba === "eventos") await carregarReservas();
   renderTudo();
   renderListaAdmin();
@@ -2738,6 +2799,7 @@ const fotoCfg = () => FOTOS[admin.aba] || { aspecto: 4 / 3, max: 6, rotulo: "Fot
 
 function campoFotos() {
   const cfg = fotoCfg();
+  if (!FOTOS[admin.aba]) return "";
   return `
     <div class="f">
       <span class="f-rot">${cfg.rotulo}</span>
@@ -2808,6 +2870,13 @@ function abrirForm(item) {
       <div class="f"><label for="f-conteudo">Texto</label><textarea id="f-conteudo" style="min-height:14rem">${esc(item?.conteudo)}</textarea><small>Deixe uma linha em branco entre os parágrafos.</small></div>
       ${campoFotos()}`;
   }
+  if (aba === "campo") {
+    const proximaOrdem = Math.max(0, ...estado.campo.map(c => c.ordem || 0)) + 1;
+    campos = `
+      <div class="f"><label for="f-rotulo">Título da linha</label><input id="f-rotulo" maxlength="40" value="${esc(item?.rotulo)}" required placeholder="Day-use"></div>
+      <div class="f"><label for="f-valor">Informação</label><textarea id="f-valor" maxlength="200" style="min-height:5rem" placeholder="R$ 50 por jogador">${esc(item?.valor)}</textarea></div>
+      <div class="f" style="max-width:10rem"><label for="f-ordem">Posição na tabela</label><input id="f-ordem" type="number" min="1" value="${item?.ordem ?? proximaOrdem}"></div>`;
+  }
   if (aba === "galeria") {
     const proximaOrdem = Math.max(0, ...estado.galeria.map(g => g.ordem || 0)) + 1;
     campos = `
@@ -2855,6 +2924,44 @@ function abrirForm(item) {
   $("#admin-corpo").scrollTop = 0;
   $("#admin-form input, #admin-form select, #admin-form textarea")?.focus();
 }
+
+function abrirApresentacao() {
+  limparForm();
+  $("#admin-corpo").classList.add("editando");
+  const c = estado.config;
+  $("#admin-form").innerHTML = `
+    <h3>Apresentação do campo</h3>
+    <form id="form-apresentacao" novalidate>
+      <div class="f"><label for="c-texto">Texto de apresentação</label><textarea id="c-texto" maxlength="800" style="min-height:8rem">${esc(c.campo_texto)}</textarea><small>Aparece acima da tabela. Deixe uma linha em branco entre os parágrafos.</small></div>
+      <div class="f"><label for="c-endereco">Endereço do campo</label><input id="c-endereco" maxlength="160" value="${esc(c.endereco)}"><small>Aparece na tabela e no rodapé do site.</small></div>
+      <div class="f"><label for="c-mapa">Link do Google Maps</label><input id="c-mapa" maxlength="300" value="${esc(c.mapa)}" placeholder="https://maps.app.goo.gl/..."><small>Deixe vazio para esconder o botão "Como chegar".</small></div>
+      <p class="erro-form" id="f-erro" role="alert"></p>
+      <div class="form-acoes">
+        <button class="btn" type="submit" id="f-salvar">Salvar alterações</button>
+        <button class="btn btn-sec" type="button" id="f-cancelar">Cancelar</button>
+      </div>
+    </form>`;
+  $("#c-texto").focus();
+}
+$("#admin-form").addEventListener("submit", async e => {
+  if (e.target.id !== "form-apresentacao") return;
+  e.preventDefault();
+  const erro = $("#f-erro"), botao = $("#f-salvar");
+  erro.textContent = "";
+  const mapa = $("#c-mapa").value.trim();
+  if (mapa && !/^https:\/\//i.test(mapa)) { erro.textContent = "O link do mapa precisa começar com https://"; $("#c-mapa").focus(); return; }
+  botao.disabled = true; botao.textContent = "Salvando…";
+  try {
+    const novo = { campo_texto: $("#c-texto").value.trim(), endereco: $("#c-endereco").value.trim(), mapa };
+    await DB.salvarConfig(novo);
+    estado.config = { ...estado.config, ...novo };
+    toast("Informações do campo atualizadas.");
+    limparForm(); renderCampo(); renderListaAdmin();
+  } catch (err) {
+    erro.textContent = err.message;
+    botao.disabled = false; botao.textContent = "Salvar alterações";
+  }
+});
 
 async function mostrarInscritos(evento) {
   limparForm();
@@ -3047,6 +3154,11 @@ function coletarForm() {
     if (!(preco >= 0)) throw new Error("Informe o preço. Use ponto para os centavos, por exemplo 69.90.");
     return { nome, categoria: v("#f-cat"), preco: Math.round(preco * 100) / 100, descricao: v("#f-desc").trim(), ativo: $("#f-ativo").checked };
   }
+  if (aba === "campo") {
+    const rotulo = v("#f-rotulo").trim();
+    if (!rotulo) throw new Error("Dê um título para a linha, por exemplo Day-use.");
+    return { rotulo, valor: v("#f-valor").trim(), ordem: parseInt(v("#f-ordem"), 10) || 0 };
+  }
   if (aba === "galeria") {
     const titulo = v("#f-titulo").trim();
     if (!titulo) throw new Error("Escreva uma legenda para a foto.");
@@ -3071,6 +3183,7 @@ function coletarForm() {
   }
 }
 $("#admin-form").addEventListener("submit", async e => {
+  if (e.target.id === "form-apresentacao") return;
   e.preventDefault();
   const erro = $("#f-erro"), botao = $("#f-salvar"), texto = botao.textContent;
   erro.textContent = "";
@@ -3092,7 +3205,7 @@ $("#admin-form").addEventListener("submit", async e => {
     if (admin.editando) obj.id = admin.editando.id;
     botao.textContent = "Salvando…";
     await DB.salvar(admin.aba, obj);
-    const nomeItem = obj.nome || obj.titulo;
+    const nomeItem = nomeDoItem(obj);
     toast(`${nomeItem} ${admin.editando ? fem(admin.aba, "atualizado", "atualizada") : fem(admin.aba, "criado", "criada")}.`);
     limparForm();
     await recarregarDepoisDeEditar();
