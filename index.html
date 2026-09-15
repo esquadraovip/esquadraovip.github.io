@@ -400,10 +400,41 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
 .erro-form:empty{display:none}
 .ok-form{color:var(--folha);font-weight:600;font-size:.95rem;margin:0 0 1rem}
 .ok-form:empty{display:none}
-.foto-campo{display:grid;gap:.6rem}
-.foto-campo img{width:100%;max-height:220px;object-fit:cover;border-radius:3px;border:1px solid var(--linha)}
-.foto-campo img[hidden]{display:none}
+.foto-campo{display:grid;gap:.7rem}
 .foto-botoes{display:flex;gap:.5rem;flex-wrap:wrap}
+.miniaturas{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:.5rem}
+.miniaturas:empty{display:none}
+.mini{position:relative;border:1px solid var(--linha);border-radius:3px;overflow:hidden;background:var(--visor)}
+.mini img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.mini.principal{border-color:var(--laranja)}
+.mini-tag{position:absolute;left:0;top:0;background:var(--laranja);color:#1A1208;font:700 .68rem var(--texto);padding:.1rem .35rem;border-radius:0 0 3px 0}
+.mini-acoes{display:flex;border-top:1px solid var(--linha)}
+.mini-acoes button{flex:1;background:none;border:none;border-right:1px solid var(--linha);color:var(--areia-2);font:600 .82rem var(--texto);padding:.3rem 0;cursor:pointer;line-height:1.2}
+.mini-acoes button:last-child{border-right:none}
+.mini-acoes button:hover:not(:disabled){background:var(--painel-2);color:var(--areia)}
+.mini-acoes button:disabled{opacity:.3;cursor:not-allowed}
+.mini-acoes .apagar:hover{color:#F08A7E}
+
+/* Recorte da foto */
+.recorte-palco{position:relative;width:100%;max-width:420px;margin:0 auto;background:#0B0E08;border:1px solid var(--linha);border-radius:3px;overflow:hidden;touch-action:none;cursor:grab}
+.recorte-palco.arrastando{cursor:grabbing}
+.recorte-palco canvas{display:block;width:100%}
+.recorte-ctrl{display:grid;grid-template-columns:auto 1fr;gap:.8rem;align-items:center;margin:1.1rem 0}
+.recorte-ctrl label{font-weight:600;font-size:.95rem}
+.recorte-dica{color:var(--areia-2);font-size:.9rem;margin:.2rem 0 0;text-align:center}
+.recorte-acoes{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:flex-end;margin-top:1.2rem}
+
+/* Faixa de fotos no site */
+.tiras{display:flex;gap:.4rem;margin-top:.6rem;flex-wrap:wrap}
+.tira{width:62px;height:47px;padding:0;border:1px solid var(--linha);border-radius:2px;overflow:hidden;background:none;cursor:zoom-in}
+.tira img{width:100%;height:100%;object-fit:cover}
+.tira:hover{border-color:var(--laranja)}
+.mais-fotos{position:absolute;right:.4rem;bottom:.4rem;background:rgba(10,13,8,.85);color:var(--areia);font:600 .8rem var(--texto);padding:.15rem .45rem;border-radius:2px}
+.ev-foto-wrap,.produto-capa{position:relative}
+.ev-foto-wrap{cursor:zoom-in}
+.edicao-fotos{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.5rem;margin-bottom:1.75rem}
+.edicao-fotos button{padding:0;border:1px solid var(--linha);border-radius:3px;overflow:hidden;background:none;cursor:zoom-in}
+.edicao-fotos img{width:100%;aspect-ratio:4/3;object-fit:cover}
 .form-acoes{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.5rem}
 
 /* ---------- Modal de login ---------- */
@@ -454,9 +485,13 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
 .linha-admin.ativa{background:linear-gradient(90deg,rgba(255,107,26,.1),transparent)}
 .linha-admin.passado{opacity:.6}
 .mini-foto{width:72px;height:54px;border-radius:3px;overflow:hidden;background:var(--painel-2);display:grid;place-items:center;font-size:.72rem;color:var(--areia-2);text-align:center;line-height:1.1}
+.mini-foto{position:relative}
 .mini-foto img{width:100%;height:100%;object-fit:cover}
+.conta-fotos{position:absolute;right:2px;bottom:2px;background:rgba(10,13,8,.85);color:var(--areia);font:700 .7rem var(--texto);padding:0 .25rem;border-radius:2px}
 .linha-admin strong{font-weight:600}
 .linha-meta{display:block;color:var(--areia-2);font-size:.9rem}
+.linha-onde{color:var(--folha);font-weight:600}
+.lista-contagem{margin-top:-.6rem;font-size:.9rem}
 .linha-acoes{display:flex;gap:.4rem;flex-wrap:wrap;justify-content:flex-end}
 .linha-usuario{grid-template-columns:minmax(0,1fr) 14rem}
 .linha-usuario select{padding:.5rem .6rem}
@@ -871,6 +906,25 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
   <p class="rodape-base">© <span id="ano"></span> <span data-config="equipe">Esquadrão Vip Airsoft</span>. Réplicas de airsoft são vendidas somente para maiores de 18 anos. <button class="link-texto" id="abrir-privacidade">Aviso de privacidade</button></p>
 </footer>
 
+<!-- ================= RECORTE DE FOTO ================= -->
+<div class="modal" id="modal-recorte" role="dialog" aria-modal="true" aria-labelledby="rec-titulo" hidden>
+  <div class="modal-caixa">
+    <button class="modal-fechar" id="rec-fechar" aria-label="Cancelar">×</button>
+    <h2 id="rec-titulo">Ajustar a foto</h2>
+    <div class="recorte-palco" id="rec-palco"><canvas id="rec-canvas"></canvas></div>
+    <p class="recorte-dica">Arraste a foto para escolher o que aparece.</p>
+    <div class="recorte-ctrl">
+      <label for="rec-zoom">Zoom</label>
+      <input type="range" id="rec-zoom" min="100" max="300" value="100" aria-label="Zoom da foto">
+    </div>
+    <div class="recorte-acoes">
+      <button class="btn btn-sec btn-mini" id="rec-centralizar" type="button">Centralizar</button>
+      <button class="btn btn-sec btn-mini" id="rec-cancelar" type="button">Cancelar</button>
+      <button class="btn btn-mini" id="rec-usar" type="button">Usar esta foto</button>
+    </div>
+  </div>
+</div>
+
 <!-- ================= AVISO DE PRIVACIDADE ================= -->
 <div class="modal" id="modal-privacidade" role="dialog" aria-modal="true" aria-labelledby="priv-titulo" hidden>
   <div class="modal-caixa modal-largo">
@@ -916,6 +970,16 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
       <div class="f" id="l-nome-box" hidden>
         <label for="l-nome">Nome ou callsign</label>
         <input id="l-nome" autocomplete="nickname" maxlength="60">
+      </div>
+      <div class="f-duplo" id="l-extra-box" hidden>
+        <div class="f">
+          <label for="l-equipe">Equipe</label>
+          <select id="l-equipe"></select>
+        </div>
+        <div class="f">
+          <label for="l-cidade">Cidade</label>
+          <input id="l-cidade" maxlength="60" autocomplete="address-level2" placeholder="Amambai">
+        </div>
       </div>
       <div class="f">
         <label for="l-email">E-mail</label>
@@ -1264,11 +1328,11 @@ function criarDemo() {
   let seq = 1000;
   const novoId = () => ++seq;
   const usuarios = [
-    { id: "u1", nome: "Carlos Mendes", email: "admin@vip.com", senha: "vip123", cargo: "admin" },
-    { id: "u2", nome: "Juliana Rocha", email: "organizador@vip.com", senha: "vip123", cargo: "organizador" },
-    { id: "u3", nome: "Pedro Alves", email: "lojista@vip.com", senha: "vip123", cargo: "lojista" },
-    { id: "u4", nome: "Marina Costa", email: "redator@vip.com", senha: "vip123", cargo: "redator" },
-    { id: "u5", nome: "Lucas Ferreira", email: "membro@vip.com", senha: "vip123", cargo: "membro" }
+    { id: "u1", nome: "Carlos Mendes", email: "admin@vip.com", senha: "vip123", cargo: "admin", equipe: "Esquadrão VIP Airsoft", cidade: "Amambai" },
+    { id: "u2", nome: "Juliana Rocha", email: "organizador@vip.com", senha: "vip123", cargo: "organizador", equipe: "Esquadrão VIP Airsoft", cidade: "Amambai" },
+    { id: "u3", nome: "Pedro Alves", email: "lojista@vip.com", senha: "vip123", cargo: "lojista", equipe: "Esquadrão VIP Airsoft", cidade: "Ponta Porã" },
+    { id: "u4", nome: "Marina Costa", email: "redator@vip.com", senha: "vip123", cargo: "redator", equipe: "AACC", cidade: "Amambai" },
+    { id: "u5", nome: "Lucas Ferreira", email: "membro@vip.com", senha: "vip123", cargo: "membro", equipe: "", cidade: "Dourados" }
   ];
   if (!CONFIG.contasDemo) usuarios.length = 0;
   const acessos = CONFIG.contasDemo ? acessosExemplo() : [];
@@ -1286,7 +1350,7 @@ function criarDemo() {
   const reservas = [];
   const ouvintes = [];
   let atual = null;
-  const perfil = u => u ? { id: u.id, nome: u.nome, email: u.email, cargo: u.cargo, criado_em: u.criado_em, ultimo_acesso: u.ultimo_acesso } : null;
+  const perfil = u => u ? { id: u.id, nome: u.nome, email: u.email, cargo: u.cargo, equipe: u.equipe || "", cidade: u.cidade || "", criado_em: u.criado_em, ultimo_acesso: u.ultimo_acesso } : null;
   const avisar = () => ouvintes.forEach(cb => cb(perfil(atual)));
   const pode = area => atual && PERMISSOES[area].includes(atual.cargo);
   const exigir = area => { if (!pode(area)) throw new Error("Você não tem permissão para esta ação."); };
@@ -1303,11 +1367,11 @@ function criarDemo() {
       registrar(u, "entrou");
       atual = u; avisar(); return perfil(u);
     },
-    async cadastrar(nome, email, senha) {
+    async cadastrar(nome, email, senha, extra = {}) {
       email = email.trim().toLowerCase();
       if (senha.length < 6) throw new Error("A senha precisa ter pelo menos 6 caracteres.");
       if (usuarios.some(x => x.email === email)) throw new Error("Este e-mail já tem cadastro. Tente entrar.");
-      const u = { id: "u" + novoId(), nome: nome.trim(), email, senha, cargo: "membro", criado_em: new Date().toISOString(), ultimo_acesso: null };
+      const u = { id: "u" + novoId(), nome: nome.trim(), email, senha, cargo: "membro", equipe: extra.equipe || "", cidade: extra.cidade || "", criado_em: new Date().toISOString(), ultimo_acesso: null };
       usuarios.push(u);
       registrar(u, "cadastro"); registrar(u, "entrou");
       atual = u; avisar();
@@ -1385,7 +1449,7 @@ async function criarSupabase() {
   const falha = error => { if (error) throw traduzirErro(error); };
   async function carregarPerfil(user) {
     if (!user) return (perfilAtual = null);
-    const { data, error } = await sb.from("perfis").select("id, nome, email, cargo").eq("id", user.id).maybeSingle();
+    const { data, error } = await sb.from("perfis").select("id, nome, email, cargo, equipe, cidade").eq("id", user.id).maybeSingle();
     falha(error);
     return (perfilAtual = data || { id: user.id, nome: user.email, email: user.email, cargo: "membro" });
   }
@@ -1404,8 +1468,8 @@ async function criarSupabase() {
       falha(error);
       return carregarPerfil(data.user);
     },
-    async cadastrar(nome, email, senha) {
-      const { data, error } = await sb.auth.signUp({ email: email.trim(), password: senha, options: { data: { nome: nome.trim() } } });
+    async cadastrar(nome, email, senha, extra = {}) {
+      const { data, error } = await sb.auth.signUp({ email: email.trim(), password: senha, options: { data: { nome: nome.trim(), equipe: extra.equipe || "", cidade: extra.cidade || "" } } });
       falha(error);
       if (!data.session) return { precisaConfirmar: true, perfil: null };
       return { precisaConfirmar: false, perfil: await carregarPerfil(data.user) };
@@ -1459,7 +1523,7 @@ async function criarSupabase() {
       return (data || []).map(r => ({ nome: r.perfis?.nome || "", email: r.perfis?.email || "", criado_em: r.criado_em }));
     },
     async listarUsuarios() {
-      const { data, error } = await sb.from("perfis").select("id, nome, email, cargo, criado_em, ultimo_acesso").order("nome");
+      const { data, error } = await sb.from("perfis").select("id, nome, email, cargo, equipe, cidade, criado_em, ultimo_acesso").order("nome");
       falha(error);
       return data || [];
     },
@@ -1698,11 +1762,13 @@ function renderEventos() {
     const quando = new Date(e.data);
     const reservado = estado.minhas.has(e.id);
     const cheio = ocupadas(e) >= e.vagas && !reservado;
-    const foto = urlSegura(e.foto_url);
+    const fotos = listaFotos(e), foto = fotos[0];
     return `
     <article class="evento ${foto ? "com-foto" : ""} ${reservado ? "reservado" : ""}" id="ev-${e.id}">
       <div class="ev-data"><span class="ev-dia">${pad(quando.getDate())}</span><span class="ev-mes">${fmtMes.format(quando)}</span></div>
-      ${foto ? `<div class="ev-foto-wrap"><img class="ev-foto" src="${esc(foto)}" alt="Foto do evento ${esc(e.nome)}" loading="lazy"></div>` : ""}
+      ${foto ? `<div class="ev-foto-wrap" data-fotos="ev-${e.id}" role="button" tabindex="0" aria-label="Ver fotos de ${esc(e.nome)}">
+        <img class="ev-foto" src="${esc(foto)}" alt="Foto do evento ${esc(e.nome)}" loading="lazy">
+        ${fotos.length > 1 ? `<span class="mais-fotos">${fotos.length} fotos</span>` : ""}</div>` : ""}
       <div>
         <span class="ev-tipo t-${esc(e.tipo)}">${esc(e.tipo)}</span>
         <h3 class="ev-nome">${esc(e.nome)}</h3>
@@ -1717,7 +1783,16 @@ function renderEventos() {
     </article>`;
   }).join("");
 }
+$("#ev-lista").addEventListener("keydown", e => {
+  if ((e.key === "Enter" || e.key === " ") && e.target.closest("[data-fotos]")) { e.preventDefault(); e.target.closest("[data-fotos]").click(); }
+});
 $("#ev-lista").addEventListener("click", e => {
+  const cap = e.target.closest("[data-fotos]");
+  if (cap) {
+    const ev = estado.eventos.find(x => "ev-" + x.id === cap.dataset.fotos);
+    if (ev) abrirLbLista(listaFotos(ev).map(url => ({ url })), 0, ev.nome);
+    return;
+  }
   if (e.target.closest("[data-tipo-reset]")) { filtroEv = "Todos"; renderEventos(); return; }
   const b = e.target.closest("[data-reservar]");
   if (b) alternarReserva(Number(b.dataset.reservar) || b.dataset.reservar, b);
@@ -1789,7 +1864,7 @@ function renderJornal() {
   if (!pub.length) { box.innerHTML = `<p class="vazio">Nenhum aviso publicado ainda.</p>`; return; }
   const atual = pub[0];
   const sel = pub.find(j => j.id === estado.jornalSel) || atual;
-  const foto = urlSegura(sel.foto_url);
+  const fotos = listaFotos(sel);
   const ehAtual = sel.id === atual.id;
   box.innerHTML = `
     <article class="edicao" aria-live="polite">
@@ -1798,7 +1873,8 @@ function renderJornal() {
         <span>publicado em ${fmtDiaMes.format(dataDeISO(sel.publicar_em))}</span>
       </div>
       <h3>${esc(sel.titulo)}</h3>
-      ${foto ? `<img class="edicao-foto" src="${esc(foto)}" alt="" loading="lazy">` : ""}
+      ${fotos.length === 1 ? `<img class="edicao-foto" src="${esc(fotos[0])}" alt="" loading="lazy" data-aviso-foto="0" style="cursor:zoom-in">`
+        : fotos.length > 1 ? `<div class="edicao-fotos">${fotos.map((f, n) => `<button type="button" data-aviso-foto="${n}" aria-label="Ampliar foto ${n + 1}"><img src="${esc(f)}" alt="" loading="lazy"></button>`).join("")}</div>` : ""}
       <div class="edicao-texto">${paragrafos(sel.conteudo)}</div>
       ${sel.autor ? `<p class="edicao-autor">Por ${esc(sel.autor)}</p>` : ""}
       ${ehAtual ? "" : `<p style="margin-top:1.25rem"><button class="btn btn-sec btn-mini" data-edicao="${atual.id}">Voltar para o aviso mais recente</button></p>`}
@@ -1814,6 +1890,12 @@ function renderJornal() {
     </aside>`;
 }
 $("#jornal-box").addEventListener("click", e => {
+  const f = e.target.closest("[data-aviso-foto]");
+  if (f) {
+    const pub = edicoesPublicadas(), sel = pub.find(j => j.id === estado.jornalSel) || pub[0];
+    if (sel) abrirLbLista(listaFotos(sel).map(url => ({ url })), Number(f.dataset.avisoFoto), sel.titulo);
+    return;
+  }
   const b = e.target.closest("[data-edicao]"); if (!b) return;
   estado.jornalSel = Number(b.dataset.edicao) || b.dataset.edicao;
   renderJornal();
@@ -1847,30 +1929,60 @@ function camuflado(seed) {
   }
   return `url("data:image/svg+xml,${encodeURIComponent(svg + "</svg>")}")`;
 }
-const imagemDe = (g, i) => urlSegura(g.foto_url) ? `url("${g.foto_url}")` : camuflado(i + 3);
+function listaFotos(item) {
+  const l = (item?.fotos || []).map(urlSegura).filter(Boolean);
+  const principal = urlSegura(item?.foto_url);
+  if (principal && !l.includes(principal)) l.unshift(principal);
+  return l;
+}
+const imagemDe = (g, i) => listaFotos(g)[0] ? `url("${listaFotos(g)[0]}")` : camuflado(i + 3);
 function renderGaleria() {
   const grid = $("#galeria-grid");
   if (estado.erro.galeria) { grid.innerHTML = `<p class="vazio" style="grid-column:1/-1">Não foi possível carregar a galeria agora.</p>`; return; }
-  if (!estado.galeria.length) { grid.innerHTML = `<p class="vazio" style="grid-column:1/-1">Nenhuma foto na galeria ainda.</p>`; return; }
-  grid.innerHTML = estado.galeria.map((g, i) =>
+  const itens = galeriaAberta();
+  if (!itens.length) { grid.innerHTML = `<p class="vazio" style="grid-column:1/-1">Nenhuma foto na galeria ainda.</p>`; return; }
+  grid.innerHTML = itens.map((g, i) =>
     `<button class="foto" data-i="${i}" aria-label="Ampliar: ${esc(g.titulo)}"><span>${esc(g.titulo)}</span></button>`).join("");
-  $$(".foto", grid).forEach(b => b.style.backgroundImage = imagemDe(estado.galeria[b.dataset.i], Number(b.dataset.i)));
+  $$(".foto", grid).forEach(b => {
+    const it = itens[b.dataset.i];
+    b.style.backgroundImage = it.url ? `url("${it.url}")` : camuflado(Number(b.dataset.i) + 3);
+  });
 }
 
 const lb = $("#lightbox");
-let lbIndice = 0, lbOrigem = null;
+let lbIndice = 0, lbOrigem = null, lbLista = [], lbLegenda = "";
+/* lista: [{url, titulo}] */
+function abrirLbLista(lista, i = 0, legenda = "") {
+  if (!lista.length) return;
+  lbLista = lista; lbLegenda = legenda;
+  abrirLb(i);
+}
 function abrirLb(i) {
-  if (!estado.galeria.length) return;
-  lbIndice = (i + estado.galeria.length) % estado.galeria.length;
-  const g = estado.galeria[lbIndice];
-  $("#lb-img").style.backgroundImage = imagemDe(g, lbIndice);
-  $("#lb-img").setAttribute("aria-label", g.titulo);
-  $("#lb-leg").textContent = g.titulo;
-  $("#lb-cont").textContent = `${lbIndice + 1} de ${estado.galeria.length}`;
+  if (!lbLista.length) return;
+  lbIndice = (i + lbLista.length) % lbLista.length;
+  const f = lbLista[lbIndice];
+  $("#lb-img").style.backgroundImage = f.url ? `url("${f.url}")` : camuflado(lbIndice + 3);
+  const titulo = f.titulo || lbLegenda;
+  $("#lb-img").setAttribute("aria-label", titulo);
+  $("#lb-leg").textContent = titulo;
+  $("#lb-cont").textContent = lbLista.length > 1 ? `${lbIndice + 1} de ${lbLista.length}` : "";
   if (lb.hidden) { lbOrigem = document.activeElement; lb.hidden = false; travar(); $("#lb-fechar").focus(); }
 }
 function fecharLb() { lb.hidden = true; destravar(); lbOrigem?.focus(); }
-$("#galeria-grid").addEventListener("click", e => { const b = e.target.closest(".foto"); if (b) abrirLb(Number(b.dataset.i)); });
+$("#galeria-grid").addEventListener("click", e => {
+  const b = e.target.closest(".foto"); if (!b) return;
+  abrirLbLista(galeriaAberta(), Number(b.dataset.i));
+});
+/* Cada foto da galeria vira um item; um registro com várias fotos entra várias vezes */
+function galeriaAberta() {
+  const l = [];
+  estado.galeria.forEach(g => {
+    const fotos = listaFotos(g);
+    if (!fotos.length) l.push({ url: "", titulo: g.titulo });
+    else fotos.forEach((url, n) => l.push({ url, titulo: fotos.length > 1 ? `${g.titulo} (${n + 1} de ${fotos.length})` : g.titulo }));
+  });
+  return l;
+}
 $("#lb-fechar").addEventListener("click", fecharLb);
 $("#lb-ant").addEventListener("click", () => abrirLb(lbIndice - 1));
 $("#lb-prox").addEventListener("click", () => abrirLb(lbIndice + 1));
@@ -1943,7 +2055,7 @@ function renderEquipes(animar) {
   abasEl.innerHTML = estado.equipes.map(t => `<button class="aba" role="tab" id="eq-aba-${t.id}" aria-controls="equipes-box" aria-selected="${t.id === sel.id}" tabindex="${t.id === sel.id ? 0 : -1}" data-equipe="${t.id}">${esc(t.nome)}</button>`).join("");
   box.setAttribute("aria-labelledby", "eq-aba-" + sel.id);
   const membros = operadoresDa(sel.id);
-  const foto = urlSegura(sel.foto_url);
+  const foto = listaFotos(sel)[0];
   const meta = [sel.desde ? `Na ativa desde ${esc(sel.desde)}` : "", membros.length ? `${membros.length} ${membros.length === 1 ? "operador" : "operadores"}` : ""].filter(Boolean).join(", ");
   box.innerHTML = `
     <div>
@@ -1956,7 +2068,7 @@ function renderEquipes(animar) {
     <div>
       <h4 class="equipe-sub">Operadores</h4>
       ${membros.length ? `<div class="membros">${membros.map(m => {
-        const f = urlSegura(m.foto_url);
+        const f = listaFotos(m)[0];
         return `<div class="membro">
           ${f ? `<img class="membro-foto" src="${esc(f)}" alt="Foto de ${esc(m.nome)}" loading="lazy">`
               : `<div class="patch" aria-hidden="true"><span>${esc(iniciais(m.nome))}</span></div>`}
@@ -2017,10 +2129,10 @@ function renderProdutos() {
   const lista = produtosVisiveis().filter(p => filtroLoja === "Todos" || p.categoria === filtroLoja);
   if (!lista.length) { alvo.innerHTML = `<p class="vazio">Nenhum produto disponível no momento.</p>`; renderPedido(); return; }
   alvo.innerHTML = lista.map(p => {
-    const foto = urlSegura(p.foto_url);
+    const fotos = listaFotos(p), foto = fotos[0];
     return `
     <div class="produto">
-      ${foto ? `<img class="produto-foto" src="${esc(foto)}" alt="${esc(p.nome)}" loading="lazy">` : ""}
+      ${foto ? `<div class="produto-capa"><img class="produto-foto" src="${esc(foto)}" alt="${esc(p.nome)}" loading="lazy" data-prod-foto="${p.id}" style="cursor:zoom-in">${fotos.length > 1 ? `<span class="mais-fotos">${fotos.length} fotos</span>` : ""}</div>` : ""}
       <span class="cat">${esc(p.categoria)}</span>
       <h4>${esc(p.nome)}</h4>
       <p>${esc(p.descricao)}</p>
@@ -2030,6 +2142,12 @@ function renderProdutos() {
   renderPedido();
 }
 $("#produtos").addEventListener("click", e => {
+  const img = e.target.closest("[data-prod-foto]");
+  if (img) {
+    const p = estado.produtos.find(x => String(x.id) === img.dataset.prodFoto);
+    if (p) abrirLbLista(listaFotos(p).map(url => ({ url })), 0, p.nome);
+    return;
+  }
   const b = e.target.closest("[data-add]"); if (!b) return;
   const p = estado.produtos.find(x => String(x.id) === b.dataset.add);
   if (!p) return;
@@ -2170,7 +2288,7 @@ function abrirLogin(modo = "entrar", motivo = "") {
   dica.hidden = DB?.modo !== "demo";
   if (DB?.modo === "demo") {
     dica.innerHTML = DB.contasDemo.length
-      ? `<strong class="alerta-demo">Contas de teste ligadas.</strong> Antes de divulgar o site, coloque <code>contasDemo: false</code> no início do código.
+      ? `<strong class="alerta-demo">Contas de teste ligadas.</strong> Antes de divulgar o site, coloque <code>contasDemo: true</code> no início do código.
          Clique em uma conta para preencher (senha <strong>vip123</strong>):
          <ul>${DB.contasDemo.map(c => `<li><button type="button" data-demo="${c.email}">${c.email} <span>${CARGOS[c.cargo]}</span></button></li>`).join("")}</ul>`
       : `Modo demonstração: a conta que você criar funciona enquanto a página estiver aberta e some ao recarregar. Configure o Supabase para as contas valerem de verdade.`;
@@ -2188,7 +2306,15 @@ function trocarModoLogin(modo) {
   $$(".alternar button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.modo === modo)));
   $("#login-titulo").textContent = cad ? "Criar conta" : "Entrar";
   $("#l-nome-box").hidden = !cad;
+  $("#l-extra-box").hidden = !cad;
   $("#login-privacidade").hidden = !cad;
+  if (cad) {
+    const sel = $("#l-equipe"), atual = sel.value;
+    sel.innerHTML = `<option value="">Ainda não tenho equipe</option>` +
+      estado.equipes.map(t => `<option value="${esc(t.nome)}">${esc(t.nome)}</option>`).join("") +
+      `<option value="Outra">Outra equipe</option>`;
+    sel.value = atual;
+  }
   $("#l-senha-dica").hidden = !cad;
   $("#l-senha").autocomplete = cad ? "new-password" : "current-password";
   $("#login-enviar").textContent = cad ? "Criar conta" : "Entrar";
@@ -2215,7 +2341,7 @@ $("#form-login").addEventListener("submit", async e => {
   try {
     let perfil = null;
     if (modoLogin === "cadastro") {
-      const r = await DB.cadastrar(nome, email, senha);
+      const r = await DB.cadastrar(nome, email, senha, { equipe: $("#l-equipe").value, cidade: $("#l-cidade").value.trim() });
       if (r.precisaConfirmar) {
         ok.textContent = "Conta criada. Enviamos um link de confirmação para o seu e-mail. Confirme e depois entre aqui.";
         trocarModoLogin("entrar"); $("#l-email").value = email;
@@ -2264,7 +2390,7 @@ modalPriv.addEventListener("click", e => { if (e.target === modalPriv) fecharPri
    PAINEL DE CONTROLE
    ========================================================= */
 const adminEl = $("#admin");
-const admin = { aba: null, editando: null, fotoNova: null, fotoUrl: "", previewUrl: "", focoAntes: null,
+const admin = { aba: null, editando: null, fotos: [], focoAntes: null,
   usuarios: [], buscaUsuario: "", acessos: [], buscaAcesso: "", filtroAcesso: "todos" };
 const NOMES_TABELA = { eventos: "evento", produtos: "produto", jornal: "aviso", equipes: "equipe", galeria: "foto", operadores: "operador" };
 const FEMININO = ["equipes", "galeria"];
@@ -2299,9 +2425,9 @@ function trocarAba(aba) {
   renderListaAdmin();
 }
 function limparForm() {
-  admin.editando = null; admin.fotoNova = null; admin.fotoUrl = "";
-  if (admin.previewUrl) URL.revokeObjectURL(admin.previewUrl);
-  admin.previewUrl = "";
+  admin.editando = null;
+  admin.fotos.forEach(f => { if (f.objeto) URL.revokeObjectURL(f.preview); });
+  admin.fotos = [];
   $("#admin-corpo").classList.remove("editando");
   $("#admin-corpo").classList.toggle("sem-form", admin.aba === "acessos");
   $("#admin-form").innerHTML = admin.aba === "usuarios"
@@ -2312,9 +2438,9 @@ function limparForm() {
 function legendaCargos() {
   return `<dl class="legenda-cargos">${Object.keys(CARGOS).map(c => `<div><dt>${CARGOS[c]}</dt><dd>${O_QUE_FAZ[c]}</dd></div>`).join("")}</dl>`;
 }
-function miniFoto(url) {
-  const u = urlSegura(url);
-  return `<div class="mini-foto">${u ? `<img src="${esc(u)}" alt="">` : "Sem foto"}</div>`;
+function miniFoto(item) {
+  const fotos = typeof item === "string" ? [urlSegura(item)].filter(Boolean) : listaFotos(item);
+  return `<div class="mini-foto">${fotos[0] ? `<img src="${esc(fotos[0])}" alt="">${fotos.length > 1 ? `<span class="conta-fotos">${fotos.length}</span>` : ""}` : "Sem foto"}</div>`;
 }
 function statusJornal(j) {
   const hoje = hojeISO(), pub = edicoesPublicadas();
@@ -2335,7 +2461,7 @@ async function renderListaAdmin() {
       ${lista.length ? lista.map(e => {
         const passado = new Date(e.data) < new Date();
         return `<div class="linha-admin ${passado ? "passado" : ""} ${admin.editando?.id === e.id ? "ativa" : ""}">
-          ${miniFoto(e.foto_url)}
+          ${miniFoto(e)}
           <div><strong>${esc(e.nome)}</strong><span class="linha-meta">${fmtCurto.format(new Date(e.data))}, ${esc(e.tipo)}, ${ocupadas(e)} de ${e.vagas} vagas${passado ? ", encerrado" : ""}</span></div>
           <div class="linha-acoes">
             <button class="btn btn-sec btn-mini" data-acao="editar" data-id="${e.id}">Editar</button>
@@ -2350,7 +2476,7 @@ async function renderListaAdmin() {
       <p class="lista-ajuda">Produtos ocultos continuam salvos, mas não aparecem na loja. Use isso quando um item estiver em falta.</p>
       ${estado.produtos.length ? estado.produtos.map(p => `
         <div class="linha-admin ${admin.editando?.id === p.id ? "ativa" : ""}">
-          ${miniFoto(p.foto_url)}
+          ${miniFoto(p)}
           <div><strong>${esc(p.nome)}</strong> ${p.ativo === false ? `<span class="tag tag-oculto">Oculto</span>` : ""}<span class="linha-meta">${esc(p.categoria)}, ${brl.format(Number(p.preco) || 0)}</span></div>
           <div class="linha-acoes">
             <button class="btn btn-sec btn-mini" data-acao="editar" data-id="${p.id}">Editar</button>
@@ -2363,7 +2489,7 @@ async function renderListaAdmin() {
       <p class="lista-ajuda">O site mostra sempre o aviso mais recente cuja data já chegou. Dá para deixar um aviso pronto com data futura: ele entra no ar sozinho no dia marcado.</p>
       ${estado.jornal.length ? estado.jornal.map(j => `
         <div class="linha-admin ${admin.editando?.id === j.id ? "ativa" : ""}">
-          ${miniFoto(j.foto_url)}
+          ${miniFoto(j)}
           <div><strong>${esc(j.titulo)}</strong> ${statusJornal(j)}<span class="linha-meta">Publicação em ${fmtDiaMes.format(dataDeISO(j.publicar_em))}</span></div>
           <div class="linha-acoes">
             <button class="btn btn-sec btn-mini" data-acao="editar" data-id="${j.id}">Editar</button>
@@ -2376,8 +2502,8 @@ async function renderListaAdmin() {
       <p class="lista-ajuda">As fotos aparecem na galeria do site na ordem definida aqui. Enquanto uma foto não for enviada, o site mostra um padrão camuflado no lugar.</p>
       ${estado.galeria.length ? estado.galeria.map(g => `
         <div class="linha-admin ${admin.editando?.id === g.id ? "ativa" : ""}">
-          ${miniFoto(g.foto_url)}
-          <div><strong>${esc(g.titulo)}</strong><span class="linha-meta">Posição ${g.ordem || "—"}${urlSegura(g.foto_url) ? "" : ", sem foto enviada"}</span></div>
+          ${miniFoto(g)}
+          <div><strong>${esc(g.titulo)}</strong><span class="linha-meta">Posição ${g.ordem || "—"}${listaFotos(g).length ? (listaFotos(g).length > 1 ? `, ${listaFotos(g).length} fotos` : "") : ", sem foto enviada"}</span></div>
           <div class="linha-acoes">
             <button class="btn btn-sec btn-mini" data-acao="editar" data-id="${g.id}">Editar</button>
             ${botaoExcluir(g.id)}
@@ -2393,7 +2519,7 @@ async function renderListaAdmin() {
         return `<h4 class="grupo-titulo">${esc(t.nome)}</h4>
           ${lista.length ? lista.map(o => `
             <div class="linha-admin ${admin.editando?.id === o.id ? "ativa" : ""}">
-              ${urlSegura(o.foto_url) ? miniFoto(o.foto_url) : `<div class="mini-foto"><strong style="font:800 1.1rem/1 var(--display);color:var(--areia)">${esc(iniciais(o.nome))}</strong></div>`}
+              ${listaFotos(o).length ? miniFoto(o) : `<div class="mini-foto"><strong style="font:800 1.1rem/1 var(--display);color:var(--areia)">${esc(iniciais(o.nome))}</strong></div>`}
               <div><strong>${esc(o.nome)}</strong><span class="linha-meta">${[o.funcao, o.replica].filter(Boolean).map(esc).join(", ") || "sem função definida"}</span></div>
               <div class="linha-acoes">
                 <button class="btn btn-sec btn-mini" data-acao="editar" data-id="${o.id}">Editar</button>
@@ -2408,7 +2534,7 @@ async function renderListaAdmin() {
       ${estado.equipes.length ? estado.equipes.map(t => {
         const n = operadoresDa(t.id).length;
         return `<div class="linha-admin ${admin.editando?.id === t.id ? "ativa" : ""}">
-          ${urlSegura(t.foto_url) ? miniFoto(t.foto_url) : `<div class="mini-foto"><strong style="font:800 1.2rem/1 var(--display);color:var(--areia)">${esc(siglaDe(t))}</strong></div>`}
+          ${listaFotos(t).length ? miniFoto(t) : `<div class="mini-foto"><strong style="font:800 1.2rem/1 var(--display);color:var(--areia)">${esc(siglaDe(t))}</strong></div>`}
           <div><strong>${esc(t.nome)}</strong><span class="linha-meta">${t.desde ? `Desde ${esc(t.desde)}, ` : ""}${n} ${n === 1 ? "operador" : "operadores"}</span></div>
           <div class="linha-acoes">
             <button class="btn btn-sec btn-mini" data-acao="editar" data-id="${t.id}">Editar</button>
@@ -2426,7 +2552,9 @@ async function renderListaAdmin() {
       alvo.innerHTML = `
         <div class="lista-topo"><h3>Membros e cargos</h3></div>
         <p class="lista-ajuda">${total} ${total === 1 ? "pessoa cadastrada" : "pessoas cadastradas"}: ${porCargo.map(([c, n]) => `${n} ${n === 1 ? CARGOS[c].toLowerCase() : CARGOS_PLURAL[c]}`).join(", ")}. Todo cadastro novo entra como Membro.</p>
-        <div class="busca"><input class="campo-busca" id="busca-usuario" type="search" placeholder="Buscar por nome ou e-mail" aria-label="Buscar membro" value="${esc(admin.buscaUsuario)}"></div>
+        ${contagemPor(admin.usuarios, "equipe", "Por equipe")}
+        ${contagemPor(admin.usuarios, "cidade", "Por cidade")}
+        <div class="busca"><input class="campo-busca" id="busca-usuario" type="search" placeholder="Buscar por nome, e-mail, equipe ou cidade" aria-label="Buscar membro" value="${esc(admin.buscaUsuario)}"></div>
         <div id="usuarios-lista"></div>`;
       renderUsuarios();
     } catch (err) {
@@ -2464,15 +2592,23 @@ async function renderListaAdmin() {
   }
 }
 
+function contagemPor(lista, campo, titulo) {
+  const c = {};
+  lista.forEach(u => { const v = (u[campo] || "").trim(); if (v) c[v] = (c[v] || 0) + 1; });
+  const itens = Object.entries(c).sort((a, b) => b[1] - a[1]);
+  if (!itens.length) return "";
+  return `<p class="lista-ajuda lista-contagem"><strong>${titulo}:</strong> ${itens.map(([v, n]) => `${esc(v)} (${n})`).join(", ")}</p>`;
+}
 const bate = (busca, ...campos) => !busca || campos.some(c => String(c || "").toLowerCase().includes(busca.toLowerCase()));
 function renderUsuarios() {
   const alvo = $("#usuarios-lista"); if (!alvo) return;
-  const lista = admin.usuarios.filter(u => bate(admin.buscaUsuario, u.nome, u.email));
+  const lista = admin.usuarios.filter(u => bate(admin.buscaUsuario, u.nome, u.email, u.equipe, u.cidade));
   alvo.innerHTML = lista.length ? lista.map(u => {
     const eu = u.id === estado.usuario.id;
     const datas = [u.criado_em ? `cadastro em ${fmtData.format(new Date(u.criado_em))}` : "", u.ultimo_acesso ? `último acesso ${fmtCurto.format(new Date(u.ultimo_acesso))}` : "ainda não entrou"].filter(Boolean).join(", ");
+    const onde = [u.equipe, u.cidade].filter(Boolean).map(esc).join(" • ");
     return `<div class="linha-admin linha-usuario">
-      <div><strong>${esc(u.nome || "Sem nome")}${eu ? " (você)" : ""}</strong><span class="linha-meta">${esc(u.email || "")}</span><span class="linha-meta">${datas}</span></div>
+      <div><strong>${esc(u.nome || "Sem nome")}${eu ? " (você)" : ""}</strong><span class="linha-meta">${esc(u.email || "")}</span>${onde ? `<span class="linha-meta linha-onde">${onde}</span>` : ""}<span class="linha-meta">${datas}</span></div>
       <select data-cargo="${esc(u.id)}" aria-label="Cargo de ${esc(u.nome)}" ${eu ? "disabled title=\"Você não pode alterar o próprio cargo\"" : ""}>
         ${Object.keys(CARGOS).map(c => `<option value="${c}" ${u.cargo === c ? "selected" : ""}>${CARGOS[c]}</option>`).join("")}
       </select></div>`;
@@ -2547,25 +2683,48 @@ async function recarregarDepoisDeEditar() {
 }
 
 /* ---------- Formulários do painel ---------- */
-function campoFoto(url) {
-  const u = urlSegura(url);
+/* Proporção do quadro de cada tipo de foto e quantas cabem */
+const FOTOS = {
+  eventos:    { aspecto: 4 / 3,  max: 8, rotulo: "Fotos do evento" },
+  produtos:   { aspecto: 4 / 3,  max: 6, rotulo: "Fotos do produto" },
+  jornal:     { aspecto: 16 / 9, max: 8, rotulo: "Fotos do aviso" },
+  galeria:    { aspecto: 4 / 3,  max: 12, rotulo: "Fotos" },
+  equipes:    { aspecto: 1,      max: 4, rotulo: "Brasão e fotos da equipe" },
+  operadores: { aspecto: 1,      max: 4, rotulo: "Fotos do operador" }
+};
+const fotoCfg = () => FOTOS[admin.aba] || { aspecto: 4 / 3, max: 6, rotulo: "Fotos" };
+
+function campoFotos() {
+  const cfg = fotoCfg();
   return `
     <div class="f">
-      <span class="f-rot">Foto</span>
+      <span class="f-rot">${cfg.rotulo}</span>
       <div class="foto-campo">
-        <img id="f-preview" src="${esc(u)}" alt="Prévia da foto" ${u ? "" : "hidden"}>
+        <div class="miniaturas" id="f-miniaturas"></div>
         <div class="foto-botoes">
-          <label class="btn btn-sec btn-mini"><input type="file" id="f-arquivo" accept="image/jpeg,image/png,image/webp" class="oculto">${u ? "Trocar foto" : "Escolher foto"}</label>
-          <button type="button" class="btn btn-sec btn-mini" id="f-remover-foto" ${u ? "" : "hidden"}>Remover foto</button>
+          <label class="btn btn-sec btn-mini"><input type="file" id="f-arquivo" accept="image/jpeg,image/png,image/webp" multiple class="oculto">Adicionar foto</label>
         </div>
-        <small>JPG, PNG ou WebP. A imagem é reduzida automaticamente antes de enviar.</small>
+        <small>JPG, PNG ou WebP, até ${cfg.max} fotos. A primeira é a principal, a que aparece no site. Dá para enquadrar cada uma ao escolher.</small>
       </div>
     </div>`;
+}
+function renderMiniaturas() {
+  const box = $("#f-miniaturas"); if (!box) return;
+  box.innerHTML = admin.fotos.map((f, i) => `
+    <div class="mini ${i === 0 ? "principal" : ""}">
+      ${i === 0 ? `<span class="mini-tag">Principal</span>` : ""}
+      <img src="${esc(f.preview)}" alt="Foto ${i + 1}">
+      <div class="mini-acoes">
+        <button type="button" data-foto="subir" data-i="${i}" ${i === 0 ? "disabled" : ""} title="Mover para a frente" aria-label="Mover foto ${i + 1} para a frente">◀</button>
+        <button type="button" data-foto="descer" data-i="${i}" ${i === admin.fotos.length - 1 ? "disabled" : ""} title="Mover para trás" aria-label="Mover foto ${i + 1} para trás">▶</button>
+        <button type="button" class="apagar" data-foto="apagar" data-i="${i}" title="Remover" aria-label="Remover foto ${i + 1}">✕</button>
+      </div>
+    </div>`).join("");
 }
 function abrirForm(item) {
   limparForm();
   admin.editando = item;
-  admin.fotoUrl = item?.foto_url || "";
+  admin.fotos = listaFotos(item).map(url => ({ url, preview: url }));
   const aba = admin.aba;
   const titulo = item ? `Editar ${NOMES_TABELA[aba]}` : `${FEMININO.includes(aba) ? "Nova" : "Novo"} ${NOMES_TABELA[aba]}`;
   let campos = "";
@@ -2583,7 +2742,7 @@ function abrirForm(item) {
         <div class="f"><label for="f-externas">Reservas fora do site</label><input id="f-externas" type="number" min="0" value="${item?.reservas_externas ?? 0}"><small>Quem confirmou pelo WhatsApp ou pessoalmente.</small></div>
       </div>
       <div class="f"><label for="f-desc">Descrição</label><textarea id="f-desc" maxlength="600" style="min-height:6rem">${esc(item?.descricao)}</textarea></div>
-      ${campoFoto(item?.foto_url)}`;
+      ${campoFotos()}`;
   }
   if (aba === "produtos") {
     const cats = [...new Set([...CATEGORIAS, ...(item?.categoria ? [item.categoria] : [])])];
@@ -2594,7 +2753,7 @@ function abrirForm(item) {
         <div class="f"><label for="f-preco">Preço (R$)</label><input id="f-preco" type="number" min="0" step="0.01" value="${item ? Number(item.preco).toFixed(2) : ""}" placeholder="69.90" required></div>
       </div>
       <div class="f"><label for="f-desc">Descrição</label><textarea id="f-desc" maxlength="300" style="min-height:5rem">${esc(item?.descricao)}</textarea></div>
-      ${campoFoto(item?.foto_url)}
+      ${campoFotos()}
       <label class="f-check"><input type="checkbox" id="f-ativo" ${item?.ativo === false ? "" : "checked"}>Mostrar na loja</label>`;
   }
   if (aba === "jornal") {
@@ -2605,14 +2764,14 @@ function abrirForm(item) {
         <div class="f"><label for="f-autor">Quem escreveu</label><input id="f-autor" maxlength="60" value="${esc(item?.autor ?? estado.usuario.nome)}"></div>
       </div>
       <div class="f"><label for="f-conteudo">Texto</label><textarea id="f-conteudo" style="min-height:14rem">${esc(item?.conteudo)}</textarea><small>Deixe uma linha em branco entre os parágrafos.</small></div>
-      ${campoFoto(item?.foto_url)}`;
+      ${campoFotos()}`;
   }
   if (aba === "galeria") {
     const proximaOrdem = Math.max(0, ...estado.galeria.map(g => g.ordem || 0)) + 1;
     campos = `
       <div class="f"><label for="f-titulo">Legenda da foto</label><input id="f-titulo" maxlength="80" value="${esc(item?.titulo)}" required placeholder="Operação Nevoeiro"></div>
       <div class="f" style="max-width:10rem"><label for="f-ordem">Posição na galeria</label><input id="f-ordem" type="number" min="1" value="${item?.ordem ?? proximaOrdem}"></div>
-      ${campoFoto(item?.foto_url)}`;
+      ${campoFotos()}`;
   }
   if (aba === "operadores") {
     const proximaOrdem = Math.max(0, ...estado.operadores.map(o => o.ordem || 0)) + 1;
@@ -2624,7 +2783,7 @@ function abrirForm(item) {
         <div class="f"><label for="f-replica">Réplica</label><input id="f-replica" maxlength="40" value="${esc(item?.replica)}" placeholder="AEG M4"></div>
       </div>
       <div class="f" style="max-width:10rem"><label for="f-ordem">Posição na lista</label><input id="f-ordem" type="number" min="1" value="${item?.ordem ?? proximaOrdem}"></div>
-      ${campoFoto(item?.foto_url)}`;
+      ${campoFotos()}`;
   }
   if (aba === "equipes") {
     const proximaOrdem = Math.max(0, ...estado.equipes.map(t => t.ordem || 0)) + 1;
@@ -2636,7 +2795,7 @@ function abrirForm(item) {
       </div>
       <div class="f"><label for="f-resumo">Resumo da equipe</label><textarea id="f-resumo" maxlength="1500" style="min-height:8rem">${esc(item?.resumo)}</textarea><small>Como a equipe começou, estilo de jogo e o que busca. Deixe uma linha em branco entre os parágrafos.</small></div>
       <div class="f" style="max-width:10rem"><label for="f-ordem">Posição na página</label><input id="f-ordem" type="number" min="1" value="${item?.ordem ?? proximaOrdem}"></div>
-      ${campoFoto(item?.foto_url)}`;
+      ${campoFotos()}`;
   }
   $("#admin-form").innerHTML = `
     <h3>${titulo}</h3>
@@ -2681,27 +2840,136 @@ async function mostrarInscritos(evento) {
 
 $("#admin-form").addEventListener("click", e => {
   if (e.target.closest("#f-cancelar")) { limparForm(); renderListaAdmin(); }
-  if (e.target.closest("#f-remover-foto")) {
-    admin.fotoNova = null; admin.fotoUrl = "";
-    const prev = $("#f-preview"); prev.hidden = true; prev.removeAttribute("src");
-    e.target.hidden = true;
-  }
 });
 $("#admin-form").addEventListener("change", async e => {
   if (e.target.id !== "f-arquivo") return;
-  const arquivo = e.target.files[0]; if (!arquivo) return;
-  const erro = $("#f-erro"); erro.textContent = "";
-  try {
-    if (arquivo.size > 15 * 1024 * 1024) throw new Error("Essa imagem passa de 15 MB. Escolha uma foto menor.");
-    const blob = await comprimirImagem(arquivo);
-    admin.fotoNova = blob;
-    if (admin.previewUrl) URL.revokeObjectURL(admin.previewUrl);
-    admin.previewUrl = URL.createObjectURL(blob);
-    const prev = $("#f-preview"); prev.src = admin.previewUrl; prev.hidden = false;
-    $("#f-remover-foto").hidden = false;
-  } catch (err) { erro.textContent = err.message; }
-  e.target.value = "";
+  const arquivos = [...e.target.files]; e.target.value = "";
+  if (!arquivos.length) return;
+  const erro = $("#f-erro"), cfg = fotoCfg();
+  erro.textContent = "";
+  for (const arquivo of arquivos) {
+    if (admin.fotos.length >= cfg.max) { erro.textContent = `Máximo de ${cfg.max} fotos aqui. Remova alguma para adicionar outra.`; break; }
+    try {
+      if (arquivo.size > 15 * 1024 * 1024) throw new Error(`"${arquivo.name}" passa de 15 MB. Escolha uma foto menor.`);
+      const blob = await recortarFoto(arquivo, cfg.aspecto);
+      if (!blob) continue;           // cancelou
+      admin.fotos.push({ objeto: blob, preview: URL.createObjectURL(blob) });
+      renderMiniaturas();
+    } catch (err) { erro.textContent = err.message; }
+  }
 });
+$("#admin-form").addEventListener("click", e => {
+  const b = e.target.closest("[data-foto]"); if (!b) return;
+  const i = Number(b.dataset.i);
+  if (b.dataset.foto === "apagar") {
+    const [f] = admin.fotos.splice(i, 1);
+    if (f.objeto) URL.revokeObjectURL(f.preview);
+  }
+  if (b.dataset.foto === "subir" && i > 0) admin.fotos.splice(i - 1, 0, admin.fotos.splice(i, 1)[0]);
+  if (b.dataset.foto === "descer" && i < admin.fotos.length - 1) admin.fotos.splice(i + 1, 0, admin.fotos.splice(i, 1)[0]);
+  renderMiniaturas();
+});
+/* Abre o editor de enquadramento e devolve o blob recortado (ou null se cancelar) */
+function recortarFoto(arquivo, aspecto) {
+  return new Promise((resolve, reject) => {
+    if (!/^image\/(jpeg|png|webp)$/.test(arquivo.type)) return reject(new Error(`"${arquivo.name}": escolha uma imagem JPG, PNG ou WebP.`));
+    const img = new Image(), urlObj = URL.createObjectURL(arquivo);
+    img.onerror = () => { URL.revokeObjectURL(urlObj); reject(new Error(`Não foi possível ler "${arquivo.name}".`)); };
+    img.onload = () => {
+      const modal = $("#modal-recorte"), palco = $("#rec-palco"), cv = $("#rec-canvas"), ctx = cv.getContext("2d");
+      const zoom = $("#rec-zoom");
+      const L = 420, A = Math.round(L / aspecto);
+      cv.width = L; cv.height = A;
+      palco.style.aspectRatio = `${L} / ${A}`;
+      const base = Math.max(L / img.width, A / img.height);   // cobre o quadro
+      let escala = base, x = 0, y = 0;
+      const limitar = () => {
+        const li = img.width * escala, ai = img.height * escala;
+        x = Math.min(0, Math.max(L - li, x));
+        y = Math.min(0, Math.max(A - ai, y));
+      };
+      const desenhar = () => {
+        limitar();
+        ctx.fillStyle = "#0B0E08"; ctx.fillRect(0, 0, L, A);
+        ctx.drawImage(img, x, y, img.width * escala, img.height * escala);
+      };
+      const centralizar = () => { x = (L - img.width * escala) / 2; y = (A - img.height * escala) / 2; desenhar(); };
+      zoom.value = 100;
+      centralizar();
+
+      let arrastando = false, ax = 0, ay = 0;
+      const prop = () => cv.width / palco.getBoundingClientRect().width;
+      const inicio = ev => { arrastando = true; palco.classList.add("arrastando"); const p = ev.touches ? ev.touches[0] : ev; ax = p.clientX; ay = p.clientY; };
+      const mover = ev => {
+        if (!arrastando) return;
+        ev.preventDefault();
+        const p = ev.touches ? ev.touches[0] : ev, k = prop();
+        x += (p.clientX - ax) * k; y += (p.clientY - ay) * k;
+        ax = p.clientX; ay = p.clientY;
+        desenhar();
+      };
+      const fim = () => { arrastando = false; palco.classList.remove("arrastando"); };
+      const aoZoom = () => {
+        const cx = (L / 2 - x) / escala, cy = (A / 2 - y) / escala;
+        escala = base * (Number(zoom.value) / 100);
+        x = L / 2 - cx * escala; y = A / 2 - cy * escala;
+        desenhar();
+      };
+      const teclado = ev => {
+        if (ev.key === "Escape") { ev.stopPropagation(); terminar(null); }
+        if (ev.key === "Tab") prenderFoco(modal, ev);
+      };
+
+      palco.addEventListener("mousedown", inicio);
+      palco.addEventListener("touchstart", inicio, { passive: true });
+      window.addEventListener("mousemove", mover);
+      window.addEventListener("touchmove", mover, { passive: false });
+      window.addEventListener("mouseup", fim);
+      window.addEventListener("touchend", fim);
+      zoom.addEventListener("input", aoZoom);
+      $("#rec-centralizar").addEventListener("click", centralizar);
+      $("#rec-usar").addEventListener("click", usar);
+      $("#rec-cancelar").addEventListener("click", cancelar);
+      $("#rec-fechar").addEventListener("click", cancelar);
+      modal.addEventListener("keydown", teclado);
+
+      function limpar() {
+        palco.removeEventListener("mousedown", inicio);
+        palco.removeEventListener("touchstart", inicio);
+        window.removeEventListener("mousemove", mover);
+        window.removeEventListener("touchmove", mover);
+        window.removeEventListener("mouseup", fim);
+        window.removeEventListener("touchend", fim);
+        zoom.removeEventListener("input", aoZoom);
+        $("#rec-centralizar").removeEventListener("click", centralizar);
+        $("#rec-usar").removeEventListener("click", usar);
+        $("#rec-cancelar").removeEventListener("click", cancelar);
+        $("#rec-fechar").removeEventListener("click", cancelar);
+        modal.removeEventListener("keydown", teclado);
+        URL.revokeObjectURL(urlObj);
+        modal.hidden = true; destravar();
+      }
+      function terminar(blob) { limpar(); resolve(blob); }
+      function cancelar() { terminar(null); }
+      function usar() {
+        // Redesenha no tamanho final, mantendo o mesmo enquadramento
+        const larguraFinal = Math.min(1600, Math.round(img.width * escala));
+        const fator = larguraFinal / L;
+        const saida = document.createElement("canvas");
+        saida.width = Math.round(L * fator); saida.height = Math.round(A * fator);
+        const c2 = saida.getContext("2d");
+        c2.fillStyle = "#161B13"; c2.fillRect(0, 0, saida.width, saida.height);
+        c2.drawImage(img, x * fator, y * fator, img.width * escala * fator, img.height * escala * fator);
+        saida.toBlob(b => b ? terminar(b) : terminar(null), "image/jpeg", .85);
+      }
+
+      modal.hidden = false; travar();
+      setTimeout(() => $("#rec-usar").focus(), 30);
+    };
+    img.src = urlObj;
+  });
+}
+
 function comprimirImagem(arquivo, max = 1600, qualidade = .82) {
   return new Promise((resolve, reject) => {
     if (!/^image\/(jpeg|png|webp)$/.test(arquivo.type)) return reject(new Error("Escolha uma imagem JPG, PNG ou WebP."));
@@ -2766,11 +3034,19 @@ $("#admin-form").addEventListener("submit", async e => {
   erro.textContent = "";
   let obj;
   try { obj = coletarForm(); } catch (err) { erro.textContent = err.message; return; }
-  botao.disabled = true; botao.textContent = admin.fotoNova ? "Enviando foto…" : "Salvando…";
+  const novas = admin.fotos.filter(f => f.objeto).length;
+  botao.disabled = true; botao.textContent = novas ? "Enviando fotos…" : "Salvando…";
   try {
-    let foto = admin.fotoUrl || null;
-    if (admin.fotoNova) foto = await DB.enviarFoto(admin.fotoNova);
-    obj.foto_url = foto;
+    const urls = [];
+    let enviada = 0;
+    for (const f of admin.fotos) {
+      if (f.url) { urls.push(f.url); continue; }
+      enviada++;
+      botao.textContent = novas > 1 ? `Enviando foto ${enviada} de ${novas}…` : "Enviando foto…";
+      urls.push(await DB.enviarFoto(f.objeto));
+    }
+    obj.fotos = urls;
+    obj.foto_url = urls[0] || null;
     if (admin.editando) obj.id = admin.editando.id;
     botao.textContent = "Salvando…";
     await DB.salvar(admin.aba, obj);
