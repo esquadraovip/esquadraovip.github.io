@@ -390,6 +390,7 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
 .f{display:grid;gap:.4rem;margin-bottom:1rem;align-content:start}
 .f label,.f-rot{font-weight:600;font-size:.95rem}
 .f small{color:var(--areia-2);font-size:.85rem}
+.f input[hidden]{display:none}
 .f input:not([type="checkbox"]):not([type="file"]),.f select,.f textarea{width:100%;background:var(--visor);border:1px solid var(--linha);color:var(--areia);font:500 1rem var(--texto);padding:.7rem .8rem;border-radius:3px}
 .f textarea{min-height:10rem;resize:vertical;line-height:1.55}
 .f input:focus-visible,.f select:focus-visible,.f textarea:focus-visible{outline:3px solid var(--laranja);outline-offset:1px}
@@ -491,6 +492,8 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
 .linha-admin strong{font-weight:600}
 .linha-meta{display:block;color:var(--areia-2);font-size:.9rem}
 .linha-onde{color:var(--folha);font-weight:600}
+.zap{color:var(--folha);text-decoration:none;font-weight:600}
+.zap:hover{text-decoration:underline}
 .lista-contagem{margin-top:-.6rem;font-size:.9rem}
 .linha-acoes{display:flex;gap:.4rem;flex-wrap:wrap;justify-content:flex-end}
 .linha-usuario{grid-template-columns:minmax(0,1fr) 14rem}
@@ -934,13 +937,13 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
       <p>Este aviso explica quais dados o site do <span data-config="equipe"></span> coleta e para que eles servem.</p>
 
       <h3>Que dados guardamos</h3>
-      <p>Só o que você digita ao criar sua conta: <strong>nome ou callsign, e-mail e senha</strong>. A senha é guardada de forma criptografada, e nem a organização consegue vê-la. Também ficam registradas a data do seu cadastro, a data e hora em que você entra no site e as vagas que você reserva.</p>
+      <p>Só o que você digita ao criar sua conta: <strong>nome ou callsign, WhatsApp, equipe, cidade, e-mail e senha</strong>. A senha é guardada de forma criptografada, e nem a organização consegue vê-la. Também ficam registradas a data do seu cadastro, a data e hora em que você entra no site e as vagas que você reserva.</p>
 
       <h3>Para que usamos</h3>
-      <p>Para identificar você no site, controlar a lista de inscritos nos jogos e avisar sobre o evento em que você reservou vaga. Não usamos seus dados para nenhuma outra finalidade.</p>
+      <p>Para identificar você no site, controlar a lista de inscritos nos jogos e falar com você sobre o evento em que reservou vaga. A equipe e a cidade servem para a organização saber quem costuma jogar no campo. Não usamos seus dados para nenhuma outra finalidade, e não mandamos propaganda.</p>
 
       <h3>Quem tem acesso</h3>
-      <p>Seu nome e e-mail ficam visíveis para a organização do campo: administradores e organizadores de jogos, para conferir a lista de inscritos. O registro de acessos é visto apenas pelo administrador. <strong>Não vendemos, alugamos nem compartilhamos seus dados com terceiros.</strong></p>
+      <p>Seu nome, WhatsApp e e-mail ficam visíveis para a organização do campo: administradores e organizadores de jogos, para conferir a lista de inscritos. O registro de acessos é visto apenas pelo administrador. <strong>Não vendemos, alugamos nem compartilhamos seus dados com terceiros.</strong></p>
 
       <h3>Onde ficam guardados</h3>
       <p>Os dados ficam no serviço de banco de dados que hospeda o site, protegidos por senha e por regras de acesso. O site não usa cookies de publicidade nem ferramentas de rastreamento.</p>
@@ -975,11 +978,17 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
         <div class="f">
           <label for="l-equipe">Equipe</label>
           <select id="l-equipe"></select>
+          <input id="l-equipe-outra" maxlength="60" placeholder="Digite o nome da equipe" hidden>
         </div>
         <div class="f">
           <label for="l-cidade">Cidade</label>
           <input id="l-cidade" maxlength="60" autocomplete="address-level2" placeholder="Amambai">
         </div>
+      </div>
+      <div class="f" id="l-tel-box" hidden>
+        <label for="l-telefone">WhatsApp</label>
+        <input id="l-telefone" type="tel" inputmode="tel" autocomplete="tel" maxlength="16" placeholder="(67) 99999-9999">
+        <small>Com DDD. A organização usa para falar com você sobre os jogos.</small>
       </div>
       <div class="f">
         <label for="l-email">E-mail</label>
@@ -990,7 +999,7 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
         <input id="l-senha" type="password" autocomplete="current-password" minlength="6" required>
         <small id="l-senha-dica" hidden>Pelo menos 6 caracteres.</small>
       </div>
-      <p class="aviso-privacidade" id="login-privacidade" hidden>Ao criar sua conta, você concorda que a organização guarde seu nome e e-mail para controlar a lista de inscritos nos jogos. <button type="button" class="link-texto" id="priv-link">Leia o aviso de privacidade</button>.</p>
+      <p class="aviso-privacidade" id="login-privacidade" hidden>Ao criar sua conta, você concorda que a organização guarde seus dados para controlar a lista de inscritos nos jogos e falar com você sobre eles. <button type="button" class="link-texto" id="priv-link">Leia o aviso de privacidade</button>.</p>
       <p class="erro-form" id="login-erro" role="alert"></p>
       <p class="ok-form" id="login-ok" role="status"></p>
       <button class="btn btn-bloco" id="login-enviar" type="submit">Entrar</button>
@@ -1328,11 +1337,11 @@ function criarDemo() {
   let seq = 1000;
   const novoId = () => ++seq;
   const usuarios = [
-    { id: "u1", nome: "Carlos Mendes", email: "admin@vip.com", senha: "vip123", cargo: "admin", equipe: "Esquadrão VIP Airsoft", cidade: "Amambai" },
-    { id: "u2", nome: "Juliana Rocha", email: "organizador@vip.com", senha: "vip123", cargo: "organizador", equipe: "Esquadrão VIP Airsoft", cidade: "Amambai" },
-    { id: "u3", nome: "Pedro Alves", email: "lojista@vip.com", senha: "vip123", cargo: "lojista", equipe: "Esquadrão VIP Airsoft", cidade: "Ponta Porã" },
-    { id: "u4", nome: "Marina Costa", email: "redator@vip.com", senha: "vip123", cargo: "redator", equipe: "AACC", cidade: "Amambai" },
-    { id: "u5", nome: "Lucas Ferreira", email: "membro@vip.com", senha: "vip123", cargo: "membro", equipe: "", cidade: "Dourados" }
+    { telefone: "67999771010", id: "u1", nome: "Carlos Mendes", email: "admin@vip.com", senha: "vip123", cargo: "admin", equipe: "Esquadrão VIP Airsoft", cidade: "Amambai" },
+    { telefone: "67999882020", id: "u2", nome: "Juliana Rocha", email: "organizador@vip.com", senha: "vip123", cargo: "organizador", equipe: "Esquadrão VIP Airsoft", cidade: "Amambai" },
+    { telefone: "67999663030", id: "u3", nome: "Pedro Alves", email: "lojista@vip.com", senha: "vip123", cargo: "lojista", equipe: "Esquadrão VIP Airsoft", cidade: "Ponta Porã" },
+    { telefone: "67999554040", id: "u4", nome: "Marina Costa", email: "redator@vip.com", senha: "vip123", cargo: "redator", equipe: "AACC", cidade: "Amambai" },
+    { telefone: "67999445050", id: "u5", nome: "Lucas Ferreira", email: "membro@vip.com", senha: "vip123", cargo: "membro", equipe: "", cidade: "Dourados" }
   ];
   if (!CONFIG.contasDemo) usuarios.length = 0;
   const acessos = CONFIG.contasDemo ? acessosExemplo() : [];
@@ -1350,7 +1359,7 @@ function criarDemo() {
   const reservas = [];
   const ouvintes = [];
   let atual = null;
-  const perfil = u => u ? { id: u.id, nome: u.nome, email: u.email, cargo: u.cargo, equipe: u.equipe || "", cidade: u.cidade || "", criado_em: u.criado_em, ultimo_acesso: u.ultimo_acesso } : null;
+  const perfil = u => u ? { id: u.id, nome: u.nome, email: u.email, cargo: u.cargo, equipe: u.equipe || "", cidade: u.cidade || "", telefone: u.telefone || "", criado_em: u.criado_em, ultimo_acesso: u.ultimo_acesso } : null;
   const avisar = () => ouvintes.forEach(cb => cb(perfil(atual)));
   const pode = area => atual && PERMISSOES[area].includes(atual.cargo);
   const exigir = area => { if (!pode(area)) throw new Error("Você não tem permissão para esta ação."); };
@@ -1371,7 +1380,7 @@ function criarDemo() {
       email = email.trim().toLowerCase();
       if (senha.length < 6) throw new Error("A senha precisa ter pelo menos 6 caracteres.");
       if (usuarios.some(x => x.email === email)) throw new Error("Este e-mail já tem cadastro. Tente entrar.");
-      const u = { id: "u" + novoId(), nome: nome.trim(), email, senha, cargo: "membro", equipe: extra.equipe || "", cidade: extra.cidade || "", criado_em: new Date().toISOString(), ultimo_acesso: null };
+      const u = { id: "u" + novoId(), nome: nome.trim(), email, senha, cargo: "membro", equipe: extra.equipe || "", cidade: extra.cidade || "", telefone: extra.telefone || "", criado_em: new Date().toISOString(), ultimo_acesso: null };
       usuarios.push(u);
       registrar(u, "cadastro"); registrar(u, "entrou");
       atual = u; avisar();
@@ -1423,7 +1432,7 @@ function criarDemo() {
       exigir("eventos");
       return reservas.filter(r => r.evento_id === evento_id).map(r => {
         const u = usuarios.find(x => x.id === r.usuario_id);
-        return { nome: u?.nome || "", email: u?.email || "", criado_em: r.criado_em };
+        return { nome: u?.nome || "", email: u?.email || "", telefone: u?.telefone || "", criado_em: r.criado_em };
       });
     },
     async listarUsuarios() { exigir("usuarios"); return usuarios.map(perfil).sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR")); },
@@ -1449,7 +1458,7 @@ async function criarSupabase() {
   const falha = error => { if (error) throw traduzirErro(error); };
   async function carregarPerfil(user) {
     if (!user) return (perfilAtual = null);
-    const { data, error } = await sb.from("perfis").select("id, nome, email, cargo, equipe, cidade").eq("id", user.id).maybeSingle();
+    const { data, error } = await sb.from("perfis").select("id, nome, email, cargo, equipe, cidade, telefone").eq("id", user.id).maybeSingle();
     falha(error);
     return (perfilAtual = data || { id: user.id, nome: user.email, email: user.email, cargo: "membro" });
   }
@@ -1469,7 +1478,7 @@ async function criarSupabase() {
       return carregarPerfil(data.user);
     },
     async cadastrar(nome, email, senha, extra = {}) {
-      const { data, error } = await sb.auth.signUp({ email: email.trim(), password: senha, options: { data: { nome: nome.trim(), equipe: extra.equipe || "", cidade: extra.cidade || "" } } });
+      const { data, error } = await sb.auth.signUp({ email: email.trim(), password: senha, options: { data: { nome: nome.trim(), equipe: extra.equipe || "", cidade: extra.cidade || "", telefone: extra.telefone || "" } } });
       falha(error);
       if (!data.session) return { precisaConfirmar: true, perfil: null };
       return { precisaConfirmar: false, perfil: await carregarPerfil(data.user) };
@@ -1518,12 +1527,12 @@ async function criarSupabase() {
       falha(error);
     },
     async inscritos(evento_id) {
-      const { data, error } = await sb.from("reservas").select("criado_em, perfis(nome, email)").eq("evento_id", evento_id).order("criado_em");
+      const { data, error } = await sb.from("reservas").select("criado_em, perfis(nome, email, telefone)").eq("evento_id", evento_id).order("criado_em");
       falha(error);
-      return (data || []).map(r => ({ nome: r.perfis?.nome || "", email: r.perfis?.email || "", criado_em: r.criado_em }));
+      return (data || []).map(r => ({ nome: r.perfis?.nome || "", email: r.perfis?.email || "", telefone: r.perfis?.telefone || "", criado_em: r.criado_em }));
     },
     async listarUsuarios() {
-      const { data, error } = await sb.from("perfis").select("id, nome, email, cargo, equipe, cidade, criado_em, ultimo_acesso").order("nome");
+      const { data, error } = await sb.from("perfis").select("id, nome, email, cargo, equipe, cidade, telefone, criado_em, ultimo_acesso").order("nome");
       falha(error);
       return data || [];
     },
@@ -2307,6 +2316,7 @@ function trocarModoLogin(modo) {
   $("#login-titulo").textContent = cad ? "Criar conta" : "Entrar";
   $("#l-nome-box").hidden = !cad;
   $("#l-extra-box").hidden = !cad;
+  $("#l-tel-box").hidden = !cad;
   $("#login-privacidade").hidden = !cad;
   if (cad) {
     const sel = $("#l-equipe"), atual = sel.value;
@@ -2314,12 +2324,35 @@ function trocarModoLogin(modo) {
       estado.equipes.map(t => `<option value="${esc(t.nome)}">${esc(t.nome)}</option>`).join("") +
       `<option value="Outra">Outra equipe</option>`;
     sel.value = atual;
+    mostrarCampoOutraEquipe();
   }
   $("#l-senha-dica").hidden = !cad;
   $("#l-senha").autocomplete = cad ? "new-password" : "current-password";
   $("#login-enviar").textContent = cad ? "Criar conta" : "Entrar";
   $("#login-erro").textContent = ""; $("#login-ok").textContent = "";
 }
+/* Telefone: guarda só dígitos, mostra formatado */
+const soDigitos = v => String(v || "").replace(/\D/g, "");
+function formatarTelefone(v) {
+  const d = soDigitos(v).slice(0, 11);
+  if (d.length <= 2) return d.length ? `(${d}` : "";
+  if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+  if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+}
+const linkWhats = tel => { const d = soDigitos(tel); return d.length >= 10 ? `https://wa.me/55${d}` : ""; };
+$("#l-telefone").addEventListener("input", e => { e.target.value = formatarTelefone(e.target.value); });
+
+function mostrarCampoOutraEquipe() {
+  const outra = $("#l-equipe").value === "Outra", campo = $("#l-equipe-outra");
+  campo.hidden = !outra;
+  campo.setAttribute("aria-label", "Nome da sua equipe");
+  if (!outra) campo.value = "";
+}
+$("#l-equipe").addEventListener("change", () => {
+  mostrarCampoOutraEquipe();
+  if (!$("#l-equipe-outra").hidden) $("#l-equipe-outra").focus();
+});
 $$(".alternar button").forEach(b => b.addEventListener("click", () => trocarModoLogin(b.dataset.modo)));
 $("#login-fechar").addEventListener("click", fecharLogin);
 modalLogin.addEventListener("click", e => {
@@ -2334,6 +2367,13 @@ $("#form-login").addEventListener("submit", async e => {
   const erro = $("#login-erro"), ok = $("#login-ok"), botao = $("#login-enviar");
   erro.textContent = ""; ok.textContent = "";
   if (modoLogin === "cadastro" && nome.length < 2) { erro.textContent = "Digite seu nome ou callsign."; $("#l-nome").focus(); return; }
+  const tel = soDigitos($("#l-telefone").value);
+  if (modoLogin === "cadastro" && (tel.length < 10 || tel.length > 11)) {
+    erro.textContent = "Digite seu WhatsApp com DDD, por exemplo (67) 99999-9999."; $("#l-telefone").focus(); return;
+  }
+  if (modoLogin === "cadastro" && $("#l-equipe").value === "Outra" && $("#l-equipe-outra").value.trim().length < 2) {
+    erro.textContent = "Digite o nome da sua equipe."; $("#l-equipe-outra").focus(); return;
+  }
   if (!/^\S+@\S+\.\S+$/.test(email)) { erro.textContent = "Digite um e-mail válido."; $("#l-email").focus(); return; }
   if (senha.length < 6) { erro.textContent = "A senha precisa ter pelo menos 6 caracteres."; $("#l-senha").focus(); return; }
   const textoOriginal = botao.textContent;
@@ -2341,7 +2381,8 @@ $("#form-login").addEventListener("submit", async e => {
   try {
     let perfil = null;
     if (modoLogin === "cadastro") {
-      const r = await DB.cadastrar(nome, email, senha, { equipe: $("#l-equipe").value, cidade: $("#l-cidade").value.trim() });
+      const eq = $("#l-equipe").value === "Outra" ? $("#l-equipe-outra").value.trim() : $("#l-equipe").value;
+      const r = await DB.cadastrar(nome, email, senha, { equipe: eq, cidade: $("#l-cidade").value.trim(), telefone: tel });
       if (r.precisaConfirmar) {
         ok.textContent = "Conta criada. Enviamos um link de confirmação para o seu e-mail. Confirme e depois entre aqui.";
         trocarModoLogin("entrar"); $("#l-email").value = email;
@@ -2554,7 +2595,7 @@ async function renderListaAdmin() {
         <p class="lista-ajuda">${total} ${total === 1 ? "pessoa cadastrada" : "pessoas cadastradas"}: ${porCargo.map(([c, n]) => `${n} ${n === 1 ? CARGOS[c].toLowerCase() : CARGOS_PLURAL[c]}`).join(", ")}. Todo cadastro novo entra como Membro.</p>
         ${contagemPor(admin.usuarios, "equipe", "Por equipe")}
         ${contagemPor(admin.usuarios, "cidade", "Por cidade")}
-        <div class="busca"><input class="campo-busca" id="busca-usuario" type="search" placeholder="Buscar por nome, e-mail, equipe ou cidade" aria-label="Buscar membro" value="${esc(admin.buscaUsuario)}"></div>
+        <div class="busca"><input class="campo-busca" id="busca-usuario" type="search" placeholder="Buscar por nome, e-mail, equipe, cidade ou telefone" aria-label="Buscar membro" value="${esc(admin.buscaUsuario)}"></div>
         <div id="usuarios-lista"></div>`;
       renderUsuarios();
     } catch (err) {
@@ -2602,13 +2643,14 @@ function contagemPor(lista, campo, titulo) {
 const bate = (busca, ...campos) => !busca || campos.some(c => String(c || "").toLowerCase().includes(busca.toLowerCase()));
 function renderUsuarios() {
   const alvo = $("#usuarios-lista"); if (!alvo) return;
-  const lista = admin.usuarios.filter(u => bate(admin.buscaUsuario, u.nome, u.email, u.equipe, u.cidade));
+  const lista = admin.usuarios.filter(u => bate(admin.buscaUsuario, u.nome, u.email, u.equipe, u.cidade, u.telefone));
   alvo.innerHTML = lista.length ? lista.map(u => {
     const eu = u.id === estado.usuario.id;
     const datas = [u.criado_em ? `cadastro em ${fmtData.format(new Date(u.criado_em))}` : "", u.ultimo_acesso ? `último acesso ${fmtCurto.format(new Date(u.ultimo_acesso))}` : "ainda não entrou"].filter(Boolean).join(", ");
     const onde = [u.equipe, u.cidade].filter(Boolean).map(esc).join(" • ");
+    const zap = linkWhats(u.telefone);
     return `<div class="linha-admin linha-usuario">
-      <div><strong>${esc(u.nome || "Sem nome")}${eu ? " (você)" : ""}</strong><span class="linha-meta">${esc(u.email || "")}</span>${onde ? `<span class="linha-meta linha-onde">${onde}</span>` : ""}<span class="linha-meta">${datas}</span></div>
+      <div><strong>${esc(u.nome || "Sem nome")}${eu ? " (você)" : ""}</strong><span class="linha-meta">${esc(u.email || "")}${zap ? ` • <a href="${zap}" target="_blank" rel="noopener" class="zap">${esc(formatarTelefone(u.telefone))}</a>` : ""}</span>${onde ? `<span class="linha-meta linha-onde">${onde}</span>` : ""}<span class="linha-meta">${datas}</span></div>
       <select data-cargo="${esc(u.id)}" aria-label="Cargo de ${esc(u.nome)}" ${eu ? "disabled title=\"Você não pode alterar o próprio cargo\"" : ""}>
         ${Object.keys(CARGOS).map(c => `<option value="${c}" ${u.cargo === c ? "selected" : ""}>${CARGOS[c]}</option>`).join("")}
       </select></div>`;
@@ -2825,11 +2867,11 @@ async function mostrarInscritos(evento) {
       <h3>Inscritos</h3>
       <p><strong>${esc(evento.nome)}</strong><br><span class="linha-meta">${fmtCurto.format(new Date(evento.data))}</span></p>
       <p class="lista-ajuda">${lista.length} ${lista.length === 1 ? "reserva feita" : "reservas feitas"} pelo site${externas ? ` e ${externas} fora do site` : ""}. Total de ${ocupadas(evento)} de ${evento.vagas} vagas.</p>
-      ${lista.length ? `<ul class="inscritos">${lista.map(i => `<li>${esc(i.nome)}<span>${esc(i.email)}</span></li>`).join("")}</ul>
+      ${lista.length ? `<ul class="inscritos">${lista.map(i => { const z = linkWhats(i.telefone); return `<li>${esc(i.nome)}<span>${esc(i.email)}${z ? ` • <a href="${z}" target="_blank" rel="noopener" class="zap">${esc(formatarTelefone(i.telefone))}</a>` : ""}</span></li>`; }).join("")}</ul>
         <div class="form-acoes"><button class="btn btn-sec btn-mini" id="f-copiar">Copiar lista</button><button class="btn btn-sec btn-mini" id="f-cancelar">Fechar</button></div>`
       : `<p class="form-vazio">Ninguém reservou pelo site ainda.</p><div class="form-acoes"><button class="btn btn-sec btn-mini" id="f-cancelar">Fechar</button></div>`}`;
     $("#f-copiar")?.addEventListener("click", async () => {
-      const texto = `${evento.nome}\n` + lista.map((i, n) => `${n + 1}. ${i.nome} (${i.email})`).join("\n");
+      const texto = `${evento.nome}\n` + lista.map((i, n) => `${n + 1}. ${i.nome} (${i.email}${i.telefone ? ", " + formatarTelefone(i.telefone) : ""})`).join("\n");
       try { await navigator.clipboard.writeText(texto); toast("Lista copiada."); }
       catch { toast("Não foi possível copiar. Selecione a lista e copie manualmente."); }
     });
