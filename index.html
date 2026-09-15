@@ -1,0 +1,2835 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Esquadrão Vip Airsoft</title>
+<meta name="description" content="Equipe, campo e loja de airsoft. Guia de réplicas, regras de segurança, legislação, eventos, jornal semanal e cronógrafo.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   Paleta: verde-oliva de mata + areia, com o laranja da
+   ponteira obrigatória como cor de ação e segurança.
+   ========================================================= */
+:root{
+  color-scheme:dark;
+  --mato:#161B13;
+  --visor:#10140D;
+  --painel:#1E2518;
+  --painel-2:#262F1F;
+  --linha:#36422D;
+  --areia:#DED5BC;
+  --areia-2:#A9A38C;
+  --folha:#8A9A62;
+  --coiote:#B08D57;
+  --laranja:#FF6B1A;
+  --laranja-escuro:#E0550A;
+  --alerta:#E0493A;
+  --display:"Big Shoulders Stencil Display","Big Shoulders Stencil","Barlow",Impact,sans-serif;
+  --texto:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --max:1180px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--mato);color:var(--areia);font:400 1.0625rem/1.6 var(--texto);-webkit-font-smoothing:antialiased}
+body.travado{overflow:hidden}
+img{max-width:100%;display:block}
+a{color:var(--areia)}
+h1,h2,h3,h4{margin:0;font-weight:700;line-height:1.1}
+p{margin:0 0 1rem}
+[id]{scroll-margin-top:84px}
+:focus-visible{outline:3px solid var(--laranja);outline-offset:3px}
+.pular{position:absolute;left:-999px;top:0;background:var(--laranja);color:var(--mato);padding:.6rem 1rem;z-index:100;font-weight:700}
+.pular:focus{left:1rem;top:1rem}
+[hidden]{display:none!important}
+.oculto{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- Botões ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.85rem 1.3rem;background:var(--laranja);color:#1A1208;font:700 1rem/1.2 var(--texto);border:2px solid var(--laranja);border-radius:3px;text-decoration:none;cursor:pointer;transition:background-color .15s,border-color .15s,color .15s}
+.btn:hover{background:var(--laranja-escuro);border-color:var(--laranja-escuro)}
+.btn-sec{background:transparent;color:var(--areia);border-color:var(--linha)}
+.btn-sec:hover{background:transparent;border-color:var(--areia)}
+.btn-mini{padding:.45rem .8rem;font-size:.9rem;border-width:1px}
+.btn-bloco{width:100%}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn:has(input:focus-visible){outline:3px solid var(--laranja);outline-offset:3px}
+.btn-perigo{color:#F08A7E;border-color:rgba(224,73,58,.5)}
+.btn-perigo:hover{border-color:var(--alerta)}
+.btn-perigo.confirmar{background:var(--alerta);border-color:var(--alerta);color:#fff}
+.chip{display:inline-flex;align-items:center;padding:.5rem .95rem;border:1px solid var(--linha);border-radius:3px;background:transparent;color:var(--areia-2);font:600 .95rem var(--texto);cursor:pointer;transition:background-color .15s,color .15s,border-color .15s}
+.chip:hover{border-color:var(--areia-2);color:var(--areia)}
+.chip[aria-pressed="true"],.chip:has(input:checked){background:var(--areia);border-color:var(--areia);color:var(--mato)}
+.chip input{position:absolute;opacity:0;pointer-events:none}
+.chip:has(input:focus-visible){outline:3px solid var(--laranja);outline-offset:3px}
+
+/* ---------- Topo ---------- */
+.topo{position:sticky;top:0;z-index:50;background:rgba(22,27,19,.93);backdrop-filter:blur(8px);border-bottom:1px solid var(--linha)}
+.topo-in{max-width:var(--max);margin:0 auto;padding:.85rem 1.25rem;display:flex;align-items:center;gap:1.5rem}
+.marca{display:flex;align-items:center;gap:.65rem;text-decoration:none;font:800 1.55rem/1 var(--display);letter-spacing:.01em;white-space:nowrap}
+.marca svg{width:34px;height:26px;flex:none}
+.menu{margin-left:auto}
+.menu ul{list-style:none;margin:0;padding:0;display:flex;gap:1rem}
+.menu a{white-space:nowrap;text-decoration:none;color:var(--areia-2);font-weight:600;font-size:.93rem;padding:.35rem 0;border-bottom:3px solid transparent;transition:color .15s,border-color .15s}
+.menu a:hover{color:var(--areia)}
+.menu a.ativo{color:var(--areia);border-bottom-color:var(--laranja)}
+.topo-acoes{display:flex;align-items:center;gap:.6rem}
+.menu-btn{display:none;background:transparent;border:1px solid var(--linha);color:var(--areia);width:2.5rem;height:2.4rem;border-radius:3px;cursor:pointer;position:relative}
+.menu-btn span,.menu-btn span::before,.menu-btn span::after{position:absolute;left:50%;width:1.1rem;height:2px;background:var(--areia);transform:translateX(-50%);content:""}
+.menu-btn span{top:50%;margin-top:-1px}
+.menu-btn span::before{top:-6px}
+.menu-btn span::after{top:6px}
+.menu-btn[aria-expanded="true"] span{background:transparent}
+.menu-btn[aria-expanded="true"] span::before{top:0;transform:translateX(-50%) rotate(45deg)}
+.menu-btn[aria-expanded="true"] span::after{top:0;transform:translateX(-50%) rotate(-45deg)}
+
+/* ---------- Conta ---------- */
+.conta{position:relative}
+.conta-btn{display:flex;align-items:center;gap:.55rem;background:transparent;border:1px solid var(--linha);color:var(--areia);border-radius:3px;padding:.2rem;font:600 .93rem var(--texto);cursor:pointer;white-space:nowrap}
+.conta-btn:hover{border-color:var(--areia-2)}
+.conta-nome{display:none}
+.conta-inicial{display:grid;place-items:center;width:1.75rem;height:1.75rem;border-radius:2px;background:#3A4529;font:800 1.05rem/1 var(--display)}
+.conta-menu{position:absolute;right:0;top:calc(100% + .5rem);min-width:15.5rem;background:var(--painel-2);border:1px solid var(--linha);border-radius:4px;padding:.5rem;box-shadow:0 12px 30px rgba(0,0,0,.45);z-index:60}
+.conta-menu[hidden]{display:none}
+.conta-quem{padding:.5rem .6rem .75rem;border-bottom:1px solid var(--linha);margin:0 0 .4rem}
+.conta-quem strong{display:block}
+.conta-quem span{font-size:.88rem;color:var(--folha);font-weight:600}
+.conta-menu button{display:block;width:100%;text-align:left;background:none;border:none;color:var(--areia);font:500 .97rem var(--texto);padding:.6rem;border-radius:3px;cursor:pointer}
+.conta-menu button:hover{background:var(--painel)}
+
+/* ---------- Hero ---------- */
+.hero{position:relative;overflow:hidden;min-height:calc(100vh - 62px);display:flex;align-items:center;border-bottom:1px solid var(--linha)}
+.topografia{position:absolute;inset:0;width:100%;height:100%}
+.topografia path{fill:none;stroke:var(--folha);stroke-width:1.1;opacity:.3;stroke-dasharray:1;stroke-dashoffset:1;animation:desenhar 2.6s cubic-bezier(.3,.6,.2,1) forwards}
+.topografia path.indice{stroke-width:2;opacity:.45}
+@keyframes desenhar{to{stroke-dashoffset:0}}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--mato) 28%,rgba(22,27,19,.55) 62%,rgba(22,27,19,.15));pointer-events:none}
+.hero-in{position:relative;z-index:1;width:100%;max-width:var(--max);margin:0 auto;padding:5rem 1.25rem;display:grid;grid-template-columns:1.45fr .9fr;gap:3.5rem;align-items:center}
+.hero h1{font:800 clamp(3.3rem,8.4vw,6.9rem)/.9 var(--display);letter-spacing:.005em;margin-bottom:1.6rem;max-width:11ch}
+.lead{font-size:1.2rem;line-height:1.55;color:var(--areia);opacity:.85;max-width:50ch;margin-bottom:2rem}
+.acoes{display:flex;flex-wrap:wrap;gap:.8rem}
+.proximo{background:var(--painel-2);border:1px solid var(--linha);border-top:5px solid var(--laranja);border-radius:4px;padding:1.75rem}
+.proximo-rot{font:600 1rem var(--texto);color:var(--folha);margin-bottom:.35rem}
+.proximo-nome{font:800 2.1rem/1 var(--display);margin-bottom:.4rem}
+.proximo-data{color:var(--areia-2);margin-bottom:1.3rem;font-size:.98rem}
+.contagem{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:1.3rem}
+.contagem[hidden]{display:none}
+.contagem div{background:var(--visor);border:1px solid var(--linha);border-radius:3px;text-align:center;padding:.7rem .2rem .55rem}
+.contagem span{display:block;font:800 2.3rem/1 var(--display);font-variant-numeric:tabular-nums}
+.contagem small{display:block;font-size:.8rem;color:var(--areia-2);margin-top:.3rem}
+.vagas{margin-bottom:1.3rem}
+.vagas[hidden]{display:none}
+.vagas-barra{height:6px;background:var(--linha);border-radius:2px;overflow:hidden;margin-bottom:.45rem}
+.vagas-barra span{display:block;height:100%;background:var(--folha);transition:width .4s}
+.vagas p{margin:0;font-size:.92rem;color:var(--areia-2)}
+
+/* ---------- Seções ---------- */
+.secao{padding:clamp(4rem,9vw,7rem) 1.25rem}
+.secao-alt{background:var(--painel);border-block:1px solid var(--linha)}
+.largura{max-width:var(--max);margin:0 auto}
+.cab{display:grid;grid-template-columns:1fr 1fr;gap:1rem 3rem;align-items:end;margin-bottom:2.75rem}
+.cab h2{font:800 clamp(2.5rem,5.2vw,3.8rem)/.95 var(--display)}
+.cab h2::before{content:"";display:block;width:2.4rem;height:.55rem;background:var(--laranja);border-radius:1px;margin-bottom:1.1rem}
+.cab p{margin:0;color:var(--areia-2);max-width:52ch}
+.sub{font:800 1.9rem/1 var(--display);margin-bottom:.6rem}
+.nota{font-size:.92rem;color:var(--areia-2);margin-top:1.25rem}
+.barra{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.barra .filtros{margin-bottom:0}
+.gerenciar[hidden]{display:none}
+.carregando{color:var(--areia-2);padding:2rem 0}
+
+/* ---------- Réplicas ---------- */
+.abas{display:flex;flex-wrap:wrap;gap:.5rem}
+.aba{background:transparent;border:1px solid var(--linha);color:var(--areia-2);padding:.7rem 1.15rem;border-radius:3px 3px 0 0;font:600 1rem var(--texto);cursor:pointer;border-bottom:none}
+.aba:hover{color:var(--areia)}
+.aba[aria-selected="true"]{background:var(--painel);color:var(--areia);box-shadow:inset 0 3px 0 var(--laranja)}
+.aba-painel{display:grid;grid-template-columns:1.35fr 1fr;gap:2.5rem;background:var(--painel);border:1px solid var(--linha);border-radius:0 4px 4px 4px;padding:2.25rem;margin-top:-1px}
+.aba-painel.trocou{animation:surgir .3s ease-out}
+@keyframes surgir{from{opacity:.2;transform:translateY(6px)}to{opacity:1;transform:none}}
+.aba-painel h3{font:800 2.3rem/1 var(--display);margin-bottom:.9rem}
+.aba-painel .como{max-width:58ch}
+.pc{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1.5rem}
+.pc h4{font-size:1rem;margin-bottom:.6rem}
+.pc ul{list-style:none;margin:0;padding:0}
+.pc li{position:relative;padding-left:1.4rem;margin-bottom:.45rem;color:var(--areia-2)}
+.pc li::before{position:absolute;left:0;font-weight:700}
+.mais li::before{content:"+";color:var(--folha)}
+.menos li::before{content:"–";color:var(--alerta)}
+.ficha{background:var(--visor);border:1px solid var(--linha);border-radius:4px;padding:1.5rem;align-self:start}
+.ficha h4{font-size:1rem;margin-bottom:1rem}
+.nivel{display:grid;grid-template-columns:1fr auto;gap:.4rem;align-items:center;margin-bottom:1rem}
+.nivel-nome{font-size:.95rem}
+.nivel-valor{font-size:.88rem;color:var(--areia-2)}
+.segmentos{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.segmentos i{height:7px;background:var(--linha);border-radius:1px}
+.segmentos i.on{background:var(--coiote)}
+.ideal{margin:1.25rem 0 0;padding-top:1rem;border-top:1px solid var(--linha);font-size:.97rem}
+
+/* ---------- Kit ---------- */
+.kit{margin-top:4.5rem}
+.kit-topo{display:grid;grid-template-columns:1fr 1fr;gap:1rem 3rem;align-items:end;margin-bottom:1.75rem}
+.kit-topo p{color:var(--areia-2);margin:0}
+.kit-barra{height:10px;background:var(--linha);border-radius:2px;overflow:hidden;margin-bottom:.6rem}
+.kit-barra span{display:block;height:100%;width:0;background:var(--folha);transition:width .35s}
+.kit-msg{margin:0;font-weight:600}
+.kit-msg.pronto{color:var(--folha)}
+.kit-grupos{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.kit-grupo h4{font-size:1.05rem;margin-bottom:.8rem;display:flex;justify-content:space-between;align-items:baseline}
+.kit-grupo h4 small{font-weight:500;color:var(--areia-2);font-size:.88rem}
+.kit-grupo.obrig h4{color:var(--laranja)}
+.item{display:flex;gap:.7rem;align-items:flex-start;padding:.65rem .8rem;border:1px solid var(--linha);border-radius:3px;margin-bottom:.45rem;cursor:pointer;transition:background-color .15s,border-color .15s}
+.item input{accent-color:var(--folha);width:1.1rem;height:1.1rem;margin:.2rem 0 0;flex:none}
+.item:has(input:checked){background:rgba(138,154,98,.12);border-color:var(--folha)}
+.item:has(input:checked) span{color:var(--areia-2);text-decoration:line-through;text-decoration-color:rgba(169,163,140,.5)}
+
+/* ---------- Segurança ---------- */
+.dupla{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem}
+.acordeao{border-top:1px solid var(--linha)}
+.ac-botao{width:100%;display:flex;justify-content:space-between;align-items:center;gap:1rem;background:none;border:none;border-bottom:1px solid var(--linha);color:var(--areia);font:600 1.08rem var(--texto);text-align:left;padding:1.05rem 0;cursor:pointer}
+.ac-botao:hover{color:#fff}
+.ac-icone{flex:none;width:1.4rem;height:1.4rem;position:relative}
+.ac-icone::before,.ac-icone::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:2px;background:var(--laranja);transform:translate(-50%,-50%);transition:transform .2s}
+.ac-icone::after{transform:translate(-50%,-50%) rotate(90deg)}
+.ac-botao[aria-expanded="true"] .ac-icone::after{transform:translate(-50%,-50%) rotate(0deg)}
+.ac-painel{padding:.9rem 0 1.2rem;border-bottom:1px solid var(--linha);color:var(--areia-2);margin-top:-1px}
+.ac-painel p{margin:0;max-width:60ch}
+.leis{display:grid;gap:1rem}
+.lei{border-left:3px solid var(--folha);padding:.2rem 0 .2rem 1.1rem}
+.lei h4{font-size:1.06rem;margin-bottom:.35rem}
+.lei p{margin:0;color:var(--areia-2);font-size:.98rem}
+.aviso{margin-top:1.5rem;padding:1rem 1.1rem;border:1px dashed var(--linha);border-radius:3px;font-size:.92rem;color:var(--areia-2)}
+
+/* ---------- Cronógrafo ---------- */
+.crono{display:grid;grid-template-columns:.85fr 1.15fr;gap:1.5rem}
+.crono-controles{background:var(--painel);border:1px solid var(--linha);border-radius:4px;padding:1.75rem;display:grid;gap:1.5rem;align-content:start}
+.campo label,.campo legend{display:block;font-weight:600;margin-bottom:.55rem;padding:0}
+.campo fieldset{border:none;margin:0;padding:0}
+select,input[type="number"]{width:100%;background:var(--visor);border:1px solid var(--linha);color:var(--areia);font:500 1rem var(--texto);padding:.7rem .8rem;border-radius:3px}
+.fps-linha{display:grid;grid-template-columns:1fr 6.5rem;gap:.9rem;align-items:center}
+input[type="range"]{width:100%;accent-color:var(--laranja)}
+.pesos{display:flex;flex-wrap:wrap;gap:.4rem}
+.pesos .chip{position:relative;padding:.45rem .7rem;font-size:.9rem}
+.crono-visor{background:var(--visor);border:2px solid var(--linha);border-radius:6px;padding:2rem;display:flex;flex-direction:column;gap:1.6rem}
+.visor-topo{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.visor-classe{color:var(--areia-2);margin:0}
+.status{font:800 1.7rem/1 var(--display);padding:.45rem .9rem .4rem;border-radius:3px;margin:0}
+.status.ok{background:var(--folha);color:var(--visor)}
+.status.acima{background:var(--alerta);color:#fff}
+.leituras{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:1rem}
+.leitura span{display:block;font:800 clamp(2.4rem,5vw,3.6rem)/1 var(--display);font-variant-numeric:tabular-nums}
+.leitura:first-child span{color:var(--laranja);font-size:clamp(3rem,6.5vw,4.6rem)}
+.leitura small{display:block;color:var(--areia-2);font-size:.88rem;margin-top:.35rem}
+.medidor-trilho{position:relative;height:14px;background:var(--linha);border-radius:2px}
+.medidor-trilho span{display:block;height:100%;background:var(--folha);border-radius:2px;transition:width .25s,background-color .25s}
+.medidor-trilho span.acima{background:var(--alerta)}
+.medidor-limite{position:absolute;top:-7px;bottom:-7px;width:3px;background:var(--areia);transform:translateX(-50%)}
+.medidor-leg{display:flex;justify-content:space-between;font-size:.86rem;color:var(--areia-2);margin-top:.6rem}
+.visor-obs{margin:0;padding-top:1.2rem;border-top:1px solid var(--linha);color:var(--areia-2)}
+.visor-obs strong{color:var(--areia)}
+
+/* ---------- Eventos ---------- */
+.filtros{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem}
+.eventos{border-top:1px solid var(--linha)}
+.evento{display:grid;grid-template-columns:7.5rem 1fr 15rem;gap:2rem;align-items:center;padding:1.6rem 0;border-bottom:1px solid var(--linha)}
+.evento.com-foto{grid-template-columns:7.5rem 11rem 1fr 15rem}
+.ev-foto{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:3px}
+.ev-data{border-right:1px solid var(--linha);padding-right:1rem}
+.ev-dia{display:block;font:800 3.2rem/.9 var(--display)}
+.ev-mes{display:block;color:var(--areia-2);font-size:.95rem}
+.ev-tipo{display:inline-block;font-size:.85rem;font-weight:600;padding:.12rem .55rem;border:1px solid currentColor;border-radius:2px;margin-bottom:.5rem}
+.t-Milsim{color:var(--coiote)}
+.t-Aberto{color:var(--folha)}
+.t-Treino{color:var(--areia-2)}
+.t-Iniciantes{color:#C9D98F}
+.t-Noturno{color:#9FB4D9}
+.ev-nome{font:800 1.8rem/1 var(--display);margin-bottom:.35rem}
+.ev-quando{color:var(--areia-2);font-size:.95rem;margin-bottom:.5rem}
+.ev-desc{margin:0;max-width:60ch}
+.ev-acao .vagas{margin-bottom:.8rem}
+.ev-ok{color:var(--folha);font-weight:600}
+.evento.reservado{background:linear-gradient(90deg,rgba(138,154,98,.1),transparent 70%)}
+.evento .btn-sec:hover:not(:disabled){border-color:var(--laranja);color:var(--laranja)}
+.vazio{padding:2rem 0;color:var(--areia-2)}
+.vazio button{margin-top:.8rem}
+
+/* ---------- Jornal ---------- */
+.jornal{display:grid;grid-template-columns:minmax(0,1fr) 19rem;gap:3.5rem;align-items:start}
+.edicao-meta{display:flex;flex-wrap:wrap;gap:.4rem .9rem;align-items:center;color:var(--areia-2);font-size:.95rem;margin-bottom:.9rem}
+.edicao h3{font:800 clamp(2.2rem,4.6vw,3.3rem)/.95 var(--display);margin-bottom:1.5rem;max-width:20ch}
+.edicao-foto{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:4px;margin-bottom:1.75rem}
+.edicao-texto p{max-width:65ch;font-size:1.08rem;line-height:1.7}
+.edicao-autor{color:var(--areia-2);font-size:.92rem;margin:1.5rem 0 0;padding-top:1rem;border-top:1px solid var(--linha);max-width:65ch}
+.arquivo h4{font-size:1.05rem;margin-bottom:.8rem}
+.arquivo ul{list-style:none;margin:0;padding:0;border-top:1px solid var(--linha)}
+.arquivo button{width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--linha);color:var(--areia);padding:.8rem 0;cursor:pointer;font:inherit}
+.arquivo button strong{font-weight:600;display:block;line-height:1.3}
+.arquivo button span{display:block;font-size:.86rem;color:var(--areia-2);margin-top:.15rem}
+.arquivo button[aria-current="true"] strong{color:var(--laranja)}
+.arquivo button:hover strong{text-decoration:underline}
+.arquivo p{font-size:.9rem;color:var(--areia-2);margin-top:1rem}
+.tag{display:inline-block;font-size:.8rem;font-weight:600;padding:.08rem .45rem;border:1px solid currentColor;border-radius:2px;line-height:1.4}
+.tag-ar{color:var(--folha)}
+.tag-agendada{color:var(--coiote)}
+.tag-antiga{color:var(--areia-2)}
+.tag-oculto{color:#F08A7E}
+
+/* ---------- Galeria ---------- */
+.galeria{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:190px;grid-auto-flow:dense;gap:.6rem}
+.foto{position:relative;border:none;padding:0;border-radius:3px;overflow:hidden;cursor:zoom-in;background-size:cover;background-position:center;background-color:var(--painel-2)}
+.foto:nth-child(1){grid-column:span 2;grid-row:span 2}
+.foto span{position:absolute;left:0;right:0;bottom:0;padding:2.5rem .9rem .8rem;background:linear-gradient(transparent,rgba(10,13,8,.88));color:var(--areia);font:600 .95rem var(--texto);text-align:left;transition:padding-bottom .2s}
+.foto:hover span{padding-bottom:1.1rem}
+.lightbox{position:fixed;inset:0;z-index:90;background:rgba(9,11,8,.95);display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1rem;padding:4.5rem 1rem 2rem}
+.lightbox[hidden]{display:none}
+.lb-fig{margin:0;justify-self:center;width:min(100%,1000px)}
+.lb-img{aspect-ratio:4/3;max-height:74vh;width:100%;background-size:cover;background-position:center;border-radius:4px}
+.lb-fig figcaption{margin-top:.9rem;display:flex;justify-content:space-between;gap:1rem;color:var(--areia-2)}
+.lb-fig figcaption strong{color:var(--areia);font-weight:600}
+.lb-nav{background:var(--painel);border:1px solid var(--linha);color:var(--areia);width:3rem;height:3rem;border-radius:3px;font-size:1.4rem;cursor:pointer}
+.lb-fechar{position:absolute;top:1rem;right:1rem}
+
+/* ---------- Quiz ---------- */
+.quiz{max-width:780px;background:var(--painel);border:1px solid var(--linha);border-radius:4px;padding:2.25rem}
+.quiz-prog{display:flex;justify-content:space-between;color:var(--areia-2);font-size:.92rem;margin-bottom:.6rem}
+.quiz-barra{height:5px;background:var(--linha);border-radius:2px;overflow:hidden;margin-bottom:1.75rem}
+.quiz-barra span{display:block;height:100%;background:var(--laranja);transition:width .3s}
+.quiz h3{font-size:1.45rem;line-height:1.3;margin-bottom:1.25rem}
+.opcoes{display:grid;gap:.55rem}
+.opcao{text-align:left;background:var(--visor);border:1px solid var(--linha);color:var(--areia);font:500 1.02rem var(--texto);padding:.9rem 1rem;border-radius:3px;cursor:pointer;transition:border-color .15s}
+.opcao:hover:not(:disabled){border-color:var(--areia-2)}
+.opcao:disabled{cursor:default}
+.opcao.certa{border-color:var(--folha);background:rgba(138,154,98,.16)}
+.opcao.errada{border-color:var(--alerta);background:rgba(224,73,58,.12)}
+.explica{margin-top:1.25rem;padding:1rem 1.1rem;border-left:3px solid var(--folha);background:var(--visor)}
+.explica.errou{border-left-color:var(--alerta)}
+.explica p{margin:0}
+.explica strong{display:block;margin-bottom:.25rem}
+.quiz-rodape{margin-top:1.5rem;display:flex;justify-content:flex-end}
+.placar{font:800 clamp(4rem,10vw,6rem)/.9 var(--display);color:var(--laranja);margin-bottom:.6rem}
+.placar small{font-size:.45em;color:var(--areia-2)}
+
+/* ---------- Equipe ---------- */
+.membros{display:grid;grid-template-columns:repeat(3,1fr);gap:0 2.5rem;border-top:1px solid var(--linha)}
+.membro{display:flex;gap:1.1rem;align-items:center;padding:1.25rem 0;border-bottom:1px solid var(--linha)}
+.patch{flex:none;width:68px;height:68px;border-radius:12px;background:#3A4529;padding:4px}
+.patch span{display:grid;place-items:center;width:100%;height:100%;border:1.5px dashed var(--coiote);border-radius:9px;font:800 1.55rem/1 var(--display);color:var(--areia)}
+.membro-foto{flex:none;width:68px;height:68px;border-radius:12px;object-fit:cover}
+.membro h3{font:800 1.6rem/1 var(--display);margin-bottom:.25rem}
+.membro p{margin:0;font-size:.95rem;color:var(--areia-2)}
+.membro .funcao{color:var(--folha);font-weight:600}
+.entrar{margin-top:4rem}
+.passos{list-style:none;margin:1.5rem 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;counter-reset:passo}
+.passos li{counter-increment:passo;border-top:2px solid var(--linha);padding-top:1rem}
+.passos li::before{content:counter(passo);display:block;font:800 2.6rem/1 var(--display);color:var(--laranja);margin-bottom:.5rem}
+.passos h4{font-size:1.08rem;margin-bottom:.35rem}
+.passos p{margin:0;color:var(--areia-2);font-size:.96rem}
+
+/* ---------- Equipes ---------- */
+.barra-equipes{align-items:flex-end;margin-bottom:0}
+.barra-equipes .gerenciar{margin-bottom:.6rem}
+.abas-escuras .aba[aria-selected="true"]{background:var(--mato)}
+.equipe-painel{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:3rem;background:var(--mato);border:1px solid var(--linha);border-radius:0 4px 4px 4px;padding:2.25rem;margin-top:-1px}
+.equipe-painel.trocou{animation:surgir .3s ease-out}
+.equipe-painel > .carregando,.equipe-painel > .vazio{grid-column:1/-1;padding:0}
+.equipe-topo{display:flex;gap:1.25rem;align-items:center;margin-bottom:1.5rem}
+.patch-grande{width:104px;height:104px;border-radius:16px;padding:5px}
+.patch-grande span{border-radius:12px;font-size:2.1rem;border-width:2px}
+.brasao-foto{width:104px;height:104px;border-radius:16px;object-fit:cover;flex:none}
+.equipe-nome{font:800 clamp(2rem,4vw,2.8rem)/.95 var(--display);margin-bottom:.45rem}
+.equipe-meta{margin:0;color:var(--folha);font-weight:600}
+.equipe-resumo p{max-width:60ch}
+.equipe-resumo p:last-child{margin-bottom:0}
+.equipe-sub{font-size:1.05rem;margin-bottom:.4rem}
+.equipe-painel .membros{grid-template-columns:1fr 1fr;gap:0 1.75rem}
+
+/* ---------- Campo e loja ---------- */
+.campo-info{display:grid;grid-template-columns:1fr 1.2fr;gap:3rem;margin-bottom:4.5rem}
+.campo-info > div > p{color:var(--areia-2);max-width:48ch}
+.dados{margin:0;border-top:1px solid var(--linha)}
+.dados div{display:grid;grid-template-columns:9.5rem 1fr;gap:1rem;padding:.85rem 0;border-bottom:1px solid var(--linha)}
+.dados dt{color:var(--areia-2);font-weight:500}
+.dados dd{margin:0;font-weight:500}
+.loja{display:grid;grid-template-columns:minmax(0,1fr) 20rem;gap:2rem;align-items:start}
+.produtos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+.produto{background:var(--painel);border:1px solid var(--linha);border-radius:4px;padding:1.2rem;display:flex;flex-direction:column;overflow:hidden}
+.produto-foto{width:calc(100% + 2.4rem);max-width:none;margin:-1.2rem -1.2rem 1rem;aspect-ratio:4/3;object-fit:cover}
+.produto .cat{font-size:.85rem;color:var(--folha);font-weight:600;margin-bottom:.4rem}
+.produto h4{font-size:1.1rem;line-height:1.25;margin-bottom:.35rem}
+.produto p{font-size:.93rem;color:var(--areia-2);flex:1}
+.produto-rodape{display:flex;justify-content:space-between;align-items:center;gap:.5rem}
+.preco{font:800 1.6rem/1 var(--display)}
+.produto .btn{padding:.55rem .85rem;font-size:.92rem}
+.pedido{position:sticky;top:90px;background:var(--visor);border:1px solid var(--linha);border-top:5px solid var(--laranja);border-radius:4px;padding:1.4rem}
+.pedido h3{font:800 1.7rem/1 var(--display);margin-bottom:1rem}
+.pedido ul{list-style:none;margin:0 0 1rem;padding:0}
+.pedido li{display:grid;grid-template-columns:1fr auto;gap:.3rem .6rem;padding:.7rem 0;border-bottom:1px solid var(--linha);font-size:.95rem}
+.qtd{display:flex;align-items:center;gap:.35rem}
+.qtd button{width:1.8rem;height:1.8rem;background:transparent;border:1px solid var(--linha);color:var(--areia);border-radius:3px;cursor:pointer;font-size:1rem;line-height:1}
+.qtd button:hover{border-color:var(--areia-2)}
+.linha-preco{grid-column:1/-1;color:var(--areia-2);font-size:.88rem}
+.total{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1rem;font-weight:600}
+.total strong{font:800 1.9rem/1 var(--display)}
+.pedido-vazio{color:var(--areia-2);font-size:.95rem}
+.pedido-obs{margin:.7rem 0 0;font-size:.86rem;color:var(--areia-2)}
+.pedido-obs:empty{display:none}
+
+/* ---------- Rodapé ---------- */
+.rodape{background:var(--painel);border-top:1px solid var(--linha);padding:3.5rem 1.25rem 2rem}
+.rodape-in{max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:2.5rem}
+.rodape h3{font-size:1rem;margin-bottom:.8rem}
+.rodape ul{list-style:none;margin:0;padding:0}
+.rodape li{margin-bottom:.45rem}
+.rodape a{color:var(--areia-2);text-decoration:none}
+.rodape a:hover{color:var(--areia);text-decoration:underline}
+.rodape p{color:var(--areia-2);font-size:.95rem}
+.rodape-base{max-width:var(--max);margin:2.5rem auto 0;padding-top:1.25rem;border-top:1px solid var(--linha);font-size:.88rem;color:var(--areia-2)}
+
+/* ---------- Formulários ---------- */
+.f{display:grid;gap:.4rem;margin-bottom:1rem;align-content:start}
+.f label,.f-rot{font-weight:600;font-size:.95rem}
+.f small{color:var(--areia-2);font-size:.85rem}
+.f input:not([type="checkbox"]):not([type="file"]),.f select,.f textarea{width:100%;background:var(--visor);border:1px solid var(--linha);color:var(--areia);font:500 1rem var(--texto);padding:.7rem .8rem;border-radius:3px}
+.f textarea{min-height:10rem;resize:vertical;line-height:1.55}
+.f input:focus-visible,.f select:focus-visible,.f textarea:focus-visible{outline:3px solid var(--laranja);outline-offset:1px}
+.f-duplo{display:grid;grid-template-columns:1fr 1fr;gap:0 1rem}
+.f-check{display:flex;gap:.6rem;align-items:center;margin-bottom:1.2rem;font-weight:600;cursor:pointer}
+.f-check input{accent-color:var(--folha);width:1.15rem;height:1.15rem}
+.erro-form{color:#F08A7E;font-weight:600;font-size:.95rem;margin:0 0 1rem}
+.erro-form:empty{display:none}
+.ok-form{color:var(--folha);font-weight:600;font-size:.95rem;margin:0 0 1rem}
+.ok-form:empty{display:none}
+.foto-campo{display:grid;gap:.6rem}
+.foto-campo img{width:100%;max-height:220px;object-fit:cover;border-radius:3px;border:1px solid var(--linha)}
+.foto-campo img[hidden]{display:none}
+.foto-botoes{display:flex;gap:.5rem;flex-wrap:wrap}
+.form-acoes{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.5rem}
+
+/* ---------- Modal de login ---------- */
+.modal{position:fixed;inset:0;z-index:92;background:rgba(9,11,8,.86);display:grid;place-items:center;padding:1rem}
+.modal[hidden]{display:none}
+.modal-caixa{position:relative;width:min(100%,440px);max-height:calc(100vh - 2rem);overflow:auto;background:var(--painel);border:1px solid var(--linha);border-top:5px solid var(--laranja);border-radius:4px;padding:2rem}
+.modal-caixa h2{font:800 2.3rem/1 var(--display);margin-bottom:1.2rem;padding-right:2.5rem}
+.modal-fechar{position:absolute;top:.9rem;right:.9rem;width:2.4rem;height:2.4rem;background:none;border:1px solid var(--linha);color:var(--areia);border-radius:3px;font-size:1.3rem;cursor:pointer}
+.modal-motivo{background:var(--visor);border-left:3px solid var(--laranja);padding:.7rem .9rem;font-size:.95rem}
+.modal-motivo[hidden]{display:none}
+.alternar{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--linha);border-radius:3px;margin-bottom:1.4rem;padding:3px;gap:3px}
+.alternar button{background:none;border:none;color:var(--areia-2);font:600 .95rem var(--texto);padding:.55rem;border-radius:2px;cursor:pointer}
+.alternar button[aria-selected="true"]{background:var(--areia);color:var(--mato)}
+.modal-largo{width:min(100%,640px)}
+.texto-legal h3{font-size:1.08rem;margin:1.5rem 0 .4rem}
+.texto-legal p{color:var(--areia-2);font-size:.97rem}
+.texto-legal p strong{color:var(--areia)}
+.texto-legal .nota{margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--linha);font-size:.9rem}
+.aviso-privacidade{font-size:.88rem;color:var(--areia-2);background:var(--visor);border-left:3px solid var(--linha);padding:.7rem .85rem;margin:0 0 1rem}
+.aviso-privacidade[hidden]{display:none}
+.dica-demo{margin-top:1.4rem;padding:1rem;border:1px dashed var(--linha);border-radius:3px;font-size:.9rem;color:var(--areia-2)}
+.dica-demo[hidden]{display:none}
+.dica-demo ul{list-style:none;margin:.6rem 0 0;padding:0;display:grid;gap:.15rem}
+.dica-demo button{background:none;border:none;color:var(--areia);font:600 .9rem var(--texto);cursor:pointer;padding:.25rem 0;text-align:left;text-decoration:underline;text-decoration-color:var(--linha);text-underline-offset:3px}
+.dica-demo button span{color:var(--areia-2);font-weight:500;text-decoration:none}
+.alerta-demo{color:var(--laranja)}
+.dica-demo code{background:var(--visor);padding:.1rem .35rem;border-radius:2px;font-size:.88em}
+
+/* ---------- Painel de controle ---------- */
+.admin{position:fixed;inset:0;z-index:85;background:var(--mato);display:flex;flex-direction:column}
+.admin[hidden]{display:none}
+.admin-topo{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem 1.5rem;border-bottom:1px solid var(--linha);background:var(--painel)}
+.admin-topo h2{font:800 1.9rem/1 var(--display)}
+.admin-topo p{margin:.25rem 0 0;color:var(--areia-2);font-size:.92rem}
+.admin-abas{display:flex;gap:.4rem;padding:1rem 1.5rem 0;border-bottom:1px solid var(--linha);overflow-x:auto;background:var(--painel)}
+.admin-abas .aba{flex:none}
+.admin-abas .aba[aria-selected="true"]{background:var(--mato)}
+.aviso-demo{margin:0;padding:.7rem 1.5rem;background:rgba(176,141,87,.12);border-bottom:1px solid var(--linha);font-size:.92rem;color:var(--coiote)}
+.aviso-demo[hidden]{display:none}
+.admin-corpo{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 30rem}
+.admin-lista{overflow:auto;padding:1.5rem}
+.admin-form{overflow:auto;padding:1.5rem;border-left:1px solid var(--linha);background:var(--painel)}
+.admin-form h3{font:800 1.8rem/1 var(--display);margin-bottom:1.2rem}
+.lista-topo{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:.6rem}
+.lista-topo h3{font:800 1.8rem/1 var(--display)}
+.lista-ajuda{color:var(--areia-2);font-size:.93rem;margin-bottom:1rem;max-width:70ch}
+.linha-admin{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:1rem;align-items:center;padding:.85rem .5rem;border-bottom:1px solid var(--linha)}
+.linha-admin.ativa{background:linear-gradient(90deg,rgba(255,107,26,.1),transparent)}
+.linha-admin.passado{opacity:.6}
+.mini-foto{width:72px;height:54px;border-radius:3px;overflow:hidden;background:var(--painel-2);display:grid;place-items:center;font-size:.72rem;color:var(--areia-2);text-align:center;line-height:1.1}
+.mini-foto img{width:100%;height:100%;object-fit:cover}
+.linha-admin strong{font-weight:600}
+.linha-meta{display:block;color:var(--areia-2);font-size:.9rem}
+.linha-acoes{display:flex;gap:.4rem;flex-wrap:wrap;justify-content:flex-end}
+.linha-usuario{grid-template-columns:minmax(0,1fr) 14rem}
+.linha-usuario select{padding:.5rem .6rem}
+.form-vazio{color:var(--areia-2);padding:1rem 0}
+.grupo-titulo{font:800 1.3rem/1 var(--display);color:var(--folha);margin:1.5rem 0 .3rem;padding-bottom:.4rem;border-bottom:1px solid var(--linha)}
+.link-texto{background:none;border:none;color:inherit;font:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:0}
+.link-texto:hover{color:var(--areia)}
+.embreve{color:var(--coiote);font-weight:600}
+.admin-corpo.sem-form{grid-template-columns:minmax(0,1fr)}
+.admin-corpo.sem-form .admin-form{display:none!important}
+.busca{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+.campo-busca{flex:1;min-width:14rem;background:var(--visor);border:1px solid var(--linha);color:var(--areia);font:500 .97rem var(--texto);padding:.55rem .75rem;border-radius:3px}
+.resumo-acessos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem;margin-bottom:1.25rem}
+.resumo-acessos div{background:var(--painel);border:1px solid var(--linha);border-radius:3px;padding:.8rem 1rem}
+.resumo-acessos strong{display:block;font:800 2rem/1 var(--display)}
+.resumo-acessos span{font-size:.86rem;color:var(--areia-2)}
+.tabela-wrap{overflow-x:auto}
+.tabela{width:100%;border-collapse:collapse;font-size:.95rem}
+.tabela th{text-align:left;font-weight:600;color:var(--areia-2);font-size:.85rem;padding:.6rem .6rem;border-bottom:1px solid var(--linha);white-space:nowrap}
+.tabela td{padding:.7rem .6rem;border-bottom:1px solid var(--linha);vertical-align:top}
+.tabela td span:not(.tag){display:block;color:var(--areia-2);font-size:.86rem}
+.tabela td:first-child{white-space:nowrap;color:var(--areia-2)}
+.legenda-cargos{margin:1.5rem 0 0;border-top:1px solid var(--linha)}
+.legenda-cargos div{display:grid;grid-template-columns:11rem 1fr;gap:1rem;padding:.6rem 0;border-bottom:1px solid var(--linha);font-size:.93rem}
+.legenda-cargos dt{font-weight:600}
+.legenda-cargos dd{margin:0;color:var(--areia-2)}
+.inscritos{list-style:none;margin:0 0 1rem;padding:0;border-top:1px solid var(--linha)}
+.inscritos li{padding:.6rem 0;border-bottom:1px solid var(--linha);font-size:.95rem}
+.inscritos li span{display:block;color:var(--areia-2);font-size:.86rem}
+
+/* ---------- Toast ---------- */
+.toast{position:fixed;left:0;right:0;margin-inline:auto;width:fit-content;bottom:1.5rem;z-index:99;transform:translateY(calc(100% + 2.5rem));visibility:hidden;background:var(--areia);color:var(--mato);font-weight:600;padding:.85rem 1.25rem;border-radius:3px;box-shadow:0 10px 30px rgba(0,0,0,.45);transition:transform .3s,visibility .3s;max-width:calc(100% - 2rem)}
+.toast.mostrar{transform:none;visibility:visible}
+
+/* ---------- Responsivo ---------- */
+@media (max-width:1320px){
+  .menu-btn{display:block}
+  .menu{position:absolute;top:100%;left:0;right:0;background:var(--mato);border-bottom:1px solid var(--linha);display:none;margin:0}
+  .menu.aberto{display:block}
+  .menu ul{flex-direction:column;gap:0;padding:.5rem 1.25rem 1rem}
+  .menu a{display:block;padding:.75rem 0;border-bottom:1px solid var(--linha)}
+  .menu a.ativo{border-bottom-color:var(--linha);color:var(--laranja)}
+  .topo-acoes{margin-left:auto}
+}
+@media (max-width:1000px){
+  .hero-in,.aba-painel,.dupla,.crono,.campo-info,.loja,.cab,.kit-topo,.jornal,.equipe-painel{grid-template-columns:1fr}
+  .equipe-painel{gap:1.75rem}
+  .hero::after{background:linear-gradient(180deg,rgba(22,27,19,.55),var(--mato) 75%)}
+  .kit-grupos,.membros{grid-template-columns:1fr 1fr}
+  .evento,.evento.com-foto{grid-template-columns:6rem 1fr;gap:1.25rem}
+  .ev-foto-wrap{grid-column:1/-1;order:-1}
+  .ev-foto{aspect-ratio:16/9;max-height:280px}
+  .ev-acao{grid-column:2}
+  .passos{grid-template-columns:1fr 1fr}
+  .pedido{position:static}
+  .produtos{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rodape-in{grid-template-columns:1fr 1fr}
+  .admin-corpo{display:block;overflow:auto}
+  .admin-lista,.admin-form{overflow:visible}
+  .admin-form{border-left:none}
+  .admin-corpo.editando .admin-lista{display:none}
+  .admin-corpo:not(.editando) .admin-form{display:none}
+}
+@media (max-width:620px){
+  .marca{font-size:1.1rem;gap:.45rem}
+  .topo-in{padding-left:1rem;padding-right:1rem}
+  #btn-entrar{padding:.4rem .65rem}
+}
+@media (max-width:400px){
+  .marca{font-size:.98rem}
+  .marca svg{width:22px;height:17px}
+  .marca svg{width:26px;height:20px}
+  .conta-nome{display:none}
+  .topo-in{gap:.75rem}
+  .hero-in{padding:3.5rem 1.25rem}
+  .kit-grupos,.membros,.pc,.passos,.produtos,.rodape-in,.f-duplo,.equipe-painel .membros{grid-template-columns:1fr}
+  .equipe-painel{padding:1.5rem}
+  .patch-grande,.brasao-foto{width:80px;height:80px}
+  .patch-grande span{font-size:1.6rem}
+  .resumo-acessos{grid-template-columns:1fr 1fr}
+  .barra-equipes .gerenciar{margin-bottom:0}
+  .aba-painel{padding:1.5rem}
+  .abas{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .abas::-webkit-scrollbar{display:none}
+  .aba{flex:none}
+  .leituras{grid-template-columns:1fr 1fr}
+  .leitura:first-child{grid-column:1/-1}
+  .evento,.evento.com-foto{grid-template-columns:1fr}
+  .ev-data{border-right:none;padding-right:0;display:flex;align-items:baseline;gap:.6rem}
+  .ev-acao{grid-column:auto}
+  .galeria{grid-template-columns:1fr 1fr;grid-auto-rows:150px}
+  .foto:nth-child(1){grid-column:span 2;grid-row:span 1}
+  .lightbox{grid-template-columns:1fr;padding-top:4rem}
+  .lb-nav:not(.lb-fechar){display:none}
+  .dados div,.legenda-cargos div{grid-template-columns:1fr;gap:.15rem}
+  .quiz,.crono-visor,.crono-controles,.modal-caixa{padding:1.4rem}
+  .linha-admin{grid-template-columns:56px minmax(0,1fr)}
+  .mini-foto{width:56px;height:44px}
+  .linha-acoes{grid-column:1/-1;justify-content:flex-start}
+  .linha-usuario{grid-template-columns:1fr}
+  .admin-topo,.admin-lista,.admin-form{padding-left:1rem;padding-right:1rem}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .topografia path{stroke-dashoffset:0}
+}
+</style>
+</head>
+<body>
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
+
+<header class="topo">
+  <div class="topo-in">
+    <a href="#inicio" class="marca" aria-label="Início">
+      <svg viewBox="0 0 34 26" aria-hidden="true"><path d="M1 17 17 3l16 14h-8l-8-7-8 7z" fill="#DED5BC"/><rect x="13" y="20" width="8" height="5" fill="#FF6B1A"/></svg>
+      <span data-config="equipe">Esquadrão Vip Airsoft</span>
+    </a>
+    <nav class="menu" id="menu" aria-label="Principal">
+      <ul>
+        <li><a href="#eventos">Eventos</a></li>
+        <li><a href="#campo">Campo e loja</a></li>
+        <li><a href="#equipes">Equipes</a></li>
+        <li><a href="#avisos">Avisos</a></li>
+        <li><a href="#galeria">Galeria</a></li>
+        <li><a href="#replicas">Réplicas</a></li>
+        <li><a href="#seguranca">Segurança</a></li>
+        <li><a href="#cronografo">Cronógrafo</a></li>
+        <li><a href="#quiz">Quiz</a></li>
+      </ul>
+    </nav>
+    <div class="topo-acoes">
+      <div class="conta" id="conta"></div>
+      <button class="menu-btn" aria-expanded="false" aria-controls="menu" aria-label="Abrir menu"><span aria-hidden="true"></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="conteudo">
+
+<!-- ================= HERO ================= -->
+<section id="inicio" class="hero">
+  <svg class="topografia" viewBox="0 0 1200 720" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+  <div class="hero-in">
+    <div>
+      <h1>Tática, respeito e óculos no rosto.</h1>
+      <p class="lead"><span data-config="equipe">Esquadrão Vip Airsoft</span> é uma equipe de airsoft com campo próprio e loja de suprimentos. Aqui você aprende o básico, confere as regras e garante sua vaga no próximo jogo.</p>
+      <div class="acoes">
+        <a class="btn" href="#eventos">Ver próximos jogos</a>
+        <a class="btn btn-sec" href="#cronografo">Testar réplica no cronógrafo</a>
+      </div>
+    </div>
+    <aside class="proximo" aria-labelledby="proximo-rot">
+      <h2 class="proximo-rot" id="proximo-rot">Próximo jogo</h2>
+      <p class="proximo-nome" id="prox-nome">Carregando…</p>
+      <p class="proximo-data" id="prox-data"></p>
+      <div class="contagem" id="contagem">
+        <div><span id="c-d">00</span><small>dias</small></div>
+        <div><span id="c-h">00</span><small>horas</small></div>
+        <div><span id="c-m">00</span><small>min</small></div>
+        <div><span id="c-s">00</span><small>seg</small></div>
+      </div>
+      <div class="vagas" id="prox-vagas-box">
+        <div class="vagas-barra"><span id="prox-barra"></span></div>
+        <p id="prox-vagas"></p>
+      </div>
+      <a class="btn btn-bloco" id="prox-link" href="#eventos">Reservar vaga</a>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= EVENTOS ================= -->
+<section id="eventos" class="secao secao-alt">
+  <div class="largura">
+    <div class="cab">
+      <h2>Eventos</h2>
+      <p>Jogos abertos, treinos e operações. Entre na sua conta para reservar a vaga e chegue 40 minutos antes para a cronografia.</p>
+    </div>
+    <div class="barra">
+      <div class="filtros" id="ev-filtros" role="group" aria-label="Filtrar eventos por tipo"></div>
+      <button class="btn btn-sec btn-mini gerenciar" data-gerenciar="eventos" hidden>Gerenciar eventos</button>
+    </div>
+    <div class="eventos" id="ev-lista"><p class="carregando">Carregando eventos…</p></div>
+  </div>
+</section>
+
+<!-- ================= CAMPO E LOJA ================= -->
+<section id="campo" class="secao">
+  <div class="largura">
+    <div class="cab">
+      <h2>Campo e loja</h2>
+      <p>Três cenários, safe zone coberta e uma loja com o que você precisa para o dia de jogo.</p>
+    </div>
+    <div class="campo-info">
+      <div>
+        <h3 class="sub">O campo</h3>
+        <p>Jogos abertos todo fim de semana. Quem nunca jogou pode alugar o kit completo e jogar acompanhado por alguém da equipe.</p>
+        <p class="acoes"><a class="btn btn-sec" id="btn-mapa" href="#" target="_blank" rel="noopener">Como chegar no campo</a></p>
+      </div>
+      <dl class="dados" id="dados-campo"></dl>
+    </div>
+
+    <h3 class="sub">Loja</h3>
+    <div class="barra">
+      <div class="filtros" id="loja-filtros" role="group" aria-label="Filtrar produtos por categoria"></div>
+      <button class="btn btn-sec btn-mini gerenciar" data-gerenciar="produtos" hidden>Gerenciar loja</button>
+    </div>
+    <div class="loja">
+      <div class="produtos" id="produtos"><p class="carregando">Carregando produtos…</p></div>
+      <aside class="pedido" aria-labelledby="pedido-titulo">
+        <h3 id="pedido-titulo">Seu pedido</h3>
+        <div id="pedido-itens"></div>
+        <div class="total"><span>Total</span><strong id="pedido-total">R$ 0,00</strong></div>
+        <button class="btn btn-bloco" id="pedido-enviar" disabled>Enviar pedido pelo WhatsApp</button>
+        <p class="pedido-obs" id="pedido-obs"></p>
+      </aside>
+    </div>
+    <p class="nota">Retirada no campo ou combinada pelo WhatsApp.</p>
+  </div>
+</section>
+
+<!-- ================= EQUIPE ================= -->
+<section id="equipes" class="secao secao-alt">
+  <div class="largura">
+    <div class="cab">
+      <h2>Equipes</h2>
+      <p>As equipes que jogam no nosso campo. Escolha uma para conhecer a história, desde quando está na ativa e quem são os operadores.</p>
+    </div>
+    <div class="barra barra-equipes">
+      <div class="abas abas-escuras" role="tablist" aria-label="Equipes" id="equipes-abas"></div>
+      <button class="btn btn-sec btn-mini gerenciar" data-gerenciar="equipes" hidden>Gerenciar equipes</button>
+    </div>
+    <div class="equipe-painel" id="equipes-box" role="tabpanel" tabindex="0"><p class="carregando">Carregando equipes…</p></div>
+    <div class="entrar">
+      <h3 class="sub">Como entrar em uma equipe</h3>
+      <ol class="passos" id="passos"></ol>
+    </div>
+  </div>
+</section>
+
+<!-- ================= JORNAL ================= -->
+<section id="avisos" class="secao">
+  <div class="largura">
+    <div class="cab">
+      <h2>Avisos e novidades</h2>
+      <p>Resultados dos jogos, mudanças nas regras e recados da organização. O aviso mais recente fica em destaque e os anteriores ficam guardados aqui.</p>
+    </div>
+    <div class="barra">
+      <span></span>
+      <button class="btn btn-sec btn-mini gerenciar" data-gerenciar="jornal" hidden>Gerenciar avisos</button>
+    </div>
+    <div class="jornal" id="jornal-box"><p class="carregando">Carregando avisos…</p></div>
+  </div>
+</section>
+
+<!-- ================= GALERIA ================= -->
+<section id="galeria" class="secao secao-alt">
+  <div class="largura">
+    <div class="cab">
+      <h2>Galeria</h2>
+      <p>Registros dos nossos jogos e treinos. Clique em uma imagem para ampliar e use as setas do teclado para navegar.</p>
+    </div>
+    <div class="barra">
+      <span></span>
+      <button class="btn btn-sec btn-mini gerenciar" data-gerenciar="galeria" hidden>Gerenciar galeria</button>
+    </div>
+    <div class="galeria" id="galeria-grid"></div>
+  </div>
+</section>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Imagem ampliada" hidden>
+  <button class="lb-nav lb-fechar" id="lb-fechar" aria-label="Fechar">×</button>
+  <button class="lb-nav" id="lb-ant" aria-label="Imagem anterior">‹</button>
+  <figure class="lb-fig">
+    <div class="lb-img" id="lb-img" role="img"></div>
+    <figcaption><strong id="lb-leg"></strong><span id="lb-cont"></span></figcaption>
+  </figure>
+  <button class="lb-nav" id="lb-prox" aria-label="Próxima imagem">›</button>
+</div>
+
+<!-- ================= RÉPLICAS E EQUIPAMENTO ================= -->
+<section id="replicas" class="secao">
+  <div class="largura">
+    <div class="cab">
+      <h2>Réplicas e equipamento</h2>
+      <p>Cada sistema tem um jeito de funcionar, um custo e um estilo de jogo. Compare antes de comprar a sua primeira réplica.</p>
+    </div>
+    <div class="abas" role="tablist" aria-label="Tipos de réplica" id="abas"></div>
+    <div class="aba-painel" id="painel-replica" role="tabpanel" tabindex="0"></div>
+    <div class="kit">
+      <div class="kit-topo">
+        <div>
+          <h3 class="sub">Monte seu kit</h3>
+          <p>Marque o que você já tem. Os itens obrigatórios são conferidos na entrada do campo.</p>
+        </div>
+        <div>
+          <div class="kit-barra"><span id="kit-barra"></span></div>
+          <p class="kit-msg" id="kit-msg" aria-live="polite"></p>
+        </div>
+      </div>
+      <div class="kit-grupos" id="kit-grupos"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SEGURANÇA ================= -->
+<section id="seguranca" class="secao secao-alt">
+  <div class="largura">
+    <div class="cab">
+      <h2>Segurança, regras e legislação</h2>
+      <p>O airsoft só funciona com honestidade e proteção. Estas são as regras do nosso campo e um resumo do que diz a lei brasileira.</p>
+    </div>
+    <div class="dupla">
+      <div>
+        <h3 class="sub">Regras de campo</h3>
+        <div class="acordeao" id="regras"></div>
+      </div>
+      <div>
+        <h3 class="sub">O que diz a lei</h3>
+        <div class="leis" id="leis"></div>
+        <p class="aviso">Resumo informativo com base nas normas em vigor em 2026. Não substitui orientação jurídica. Confira sempre as portarias atualizadas do Exército Brasileiro (DFPC) e as regras do seu estado.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CRONÓGRAFO ================= -->
+<section id="cronografo" class="secao">
+  <div class="largura">
+    <div class="cab">
+      <h2>Cronógrafo</h2>
+      <p>Antes de cada jogo, toda réplica passa pelo cronógrafo, que mede a velocidade da BB. Simule aqui se a sua está dentro do limite da classe.</p>
+    </div>
+    <div class="crono">
+      <div class="crono-controles">
+        <div class="campo">
+          <label for="cr-classe">Classe da réplica</label>
+          <select id="cr-classe"></select>
+        </div>
+        <div class="campo">
+          <label for="cr-fps">Velocidade medida (FPS)</label>
+          <div class="fps-linha">
+            <input type="range" id="cr-fps-r" min="200" max="650" step="5" value="380" aria-label="Velocidade em FPS">
+            <input type="number" id="cr-fps" min="100" max="800" value="380" inputmode="numeric">
+          </div>
+        </div>
+        <div class="campo">
+          <fieldset>
+            <legend>Peso da BB</legend>
+            <div class="pesos" id="cr-pesos"></div>
+          </fieldset>
+        </div>
+      </div>
+      <div class="crono-visor" aria-live="polite">
+        <div class="visor-topo">
+          <p class="visor-classe" id="cr-classe-txt"></p>
+          <p class="status" id="cr-status"></p>
+        </div>
+        <div class="leituras">
+          <div class="leitura"><span id="cr-j">0,00</span><small>joules de energia</small></div>
+          <div class="leitura"><span id="cr-ms">0</span><small>metros por segundo</small></div>
+          <div class="leitura"><span id="cr-eq">0</span><small>FPS equivalente com BB de 0,20 g</small></div>
+        </div>
+        <div>
+          <div class="medidor-trilho"><span id="cr-barra"></span><i class="medidor-limite" id="cr-marca"></i></div>
+          <div class="medidor-leg"><span>0 J</span><span id="cr-lim"></span></div>
+        </div>
+        <p class="visor-obs" id="cr-obs"></p>
+      </div>
+    </div>
+    <p class="nota">Limites de exemplo usados no nosso campo. Cada campo define os seus, então confirme sempre no briefing.</p>
+  </div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section id="quiz" class="secao secao-alt">
+  <div class="largura">
+    <div class="cab">
+      <h2>Quiz do operador</h2>
+      <p>Oito perguntas sobre segurança, regras e legislação. Um bom treino antes do seu primeiro jogo.</p>
+    </div>
+    <div class="quiz" id="quiz-box"></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="rodape" id="contato">
+  <div class="rodape-in">
+    <div>
+      <h3 data-config="equipe">Esquadrão Vip Airsoft</h3>
+      <p>Equipe, campo e loja de airsoft. Jogo limpo, proteção sempre e respeito dentro e fora de campo.</p>
+    </div>
+    <div>
+      <h3>Equipes</h3>
+      <ul id="rodape-equipes"></ul>
+    </div>
+    <div>
+      <h3>Contato</h3>
+      <ul>
+        <li><a id="lnk-whats" href="#" target="_blank" rel="noopener">Grupo do WhatsApp</a></li>
+        <li><a id="lnk-insta" href="#" target="_blank" rel="noopener">Instagram</a></li>
+        <li id="lnk-email-li"></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Endereço do campo</h3>
+      <p data-config="endereco"></p>
+      <p><a id="lnk-mapa" href="#" target="_blank" rel="noopener">Ver no Google Maps</a></p>
+    </div>
+  </div>
+  <p class="rodape-base">© <span id="ano"></span> <span data-config="equipe">Esquadrão Vip Airsoft</span>. Réplicas de airsoft são vendidas somente para maiores de 18 anos. <button class="link-texto" id="abrir-privacidade">Aviso de privacidade</button></p>
+</footer>
+
+<!-- ================= AVISO DE PRIVACIDADE ================= -->
+<div class="modal" id="modal-privacidade" role="dialog" aria-modal="true" aria-labelledby="priv-titulo" hidden>
+  <div class="modal-caixa modal-largo">
+    <button class="modal-fechar" id="priv-fechar" aria-label="Fechar">×</button>
+    <h2 id="priv-titulo">Aviso de privacidade</h2>
+    <div class="texto-legal">
+      <p>Este aviso explica quais dados o site do <span data-config="equipe"></span> coleta e para que eles servem.</p>
+
+      <h3>Que dados guardamos</h3>
+      <p>Só o que você digita ao criar sua conta: <strong>nome ou callsign, e-mail e senha</strong>. A senha é guardada de forma criptografada, e nem a organização consegue vê-la. Também ficam registradas a data do seu cadastro, a data e hora em que você entra no site e as vagas que você reserva.</p>
+
+      <h3>Para que usamos</h3>
+      <p>Para identificar você no site, controlar a lista de inscritos nos jogos e avisar sobre o evento em que você reservou vaga. Não usamos seus dados para nenhuma outra finalidade.</p>
+
+      <h3>Quem tem acesso</h3>
+      <p>Seu nome e e-mail ficam visíveis para a organização do campo: administradores e organizadores de jogos, para conferir a lista de inscritos. O registro de acessos é visto apenas pelo administrador. <strong>Não vendemos, alugamos nem compartilhamos seus dados com terceiros.</strong></p>
+
+      <h3>Onde ficam guardados</h3>
+      <p>Os dados ficam no serviço de banco de dados que hospeda o site, protegidos por senha e por regras de acesso. O site não usa cookies de publicidade nem ferramentas de rastreamento.</p>
+
+      <h3>Seus direitos</h3>
+      <p>Pela Lei Geral de Proteção de Dados (Lei nº 13.709/2018), você pode a qualquer momento pedir para ver, corrigir ou apagar seus dados, e pode cancelar suas reservas pelo próprio site. Para apagar sua conta, fale com a organização pelo grupo do WhatsApp ou pelo Instagram, nos links do rodapé.</p>
+
+      <h3>Menores de 18 anos</h3>
+      <p>O cadastro é destinado a maiores de 18 anos. Menores podem jogar com autorização e presença do responsável legal, e nesse caso o cadastro deve ser feito pelo responsável.</p>
+
+      <p class="nota">Este texto é informativo e pode ser atualizado. Consulte-o sempre que precisar.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ================= LOGIN / CADASTRO ================= -->
+<div class="modal" id="modal-login" role="dialog" aria-modal="true" aria-labelledby="login-titulo" hidden>
+  <div class="modal-caixa">
+    <button class="modal-fechar" id="login-fechar" aria-label="Fechar">×</button>
+    <h2 id="login-titulo">Entrar</h2>
+    <p class="modal-motivo" id="login-motivo" hidden></p>
+    <div class="alternar" role="tablist" aria-label="Entrar ou criar conta">
+      <button role="tab" data-modo="entrar" aria-selected="true">Entrar</button>
+      <button role="tab" data-modo="cadastro" aria-selected="false">Criar conta</button>
+    </div>
+    <form id="form-login" novalidate>
+      <div class="f" id="l-nome-box" hidden>
+        <label for="l-nome">Nome ou callsign</label>
+        <input id="l-nome" autocomplete="nickname" maxlength="60">
+      </div>
+      <div class="f">
+        <label for="l-email">E-mail</label>
+        <input id="l-email" type="email" autocomplete="email" required>
+      </div>
+      <div class="f">
+        <label for="l-senha">Senha</label>
+        <input id="l-senha" type="password" autocomplete="current-password" minlength="6" required>
+        <small id="l-senha-dica" hidden>Pelo menos 6 caracteres.</small>
+      </div>
+      <p class="aviso-privacidade" id="login-privacidade" hidden>Ao criar sua conta, você concorda que a organização guarde seu nome e e-mail para controlar a lista de inscritos nos jogos. <button type="button" class="link-texto" id="priv-link">Leia o aviso de privacidade</button>.</p>
+      <p class="erro-form" id="login-erro" role="alert"></p>
+      <p class="ok-form" id="login-ok" role="status"></p>
+      <button class="btn btn-bloco" id="login-enviar" type="submit">Entrar</button>
+    </form>
+    <div class="dica-demo" id="dica-demo" hidden></div>
+  </div>
+</div>
+
+<!-- ================= PAINEL DE CONTROLE ================= -->
+<div class="admin" id="admin" role="dialog" aria-modal="true" aria-labelledby="admin-titulo" hidden>
+  <div class="admin-topo">
+    <div>
+      <h2 id="admin-titulo">Painel de controle</h2>
+      <p id="admin-quem"></p>
+    </div>
+    <button class="btn btn-sec btn-mini" id="admin-fechar">Voltar ao site</button>
+  </div>
+  <div class="admin-abas" role="tablist" aria-label="Áreas do painel" id="admin-abas"></div>
+  <p class="aviso-demo" id="aviso-demo" hidden></p>
+  <div class="admin-corpo" id="admin-corpo">
+    <div class="admin-lista" id="admin-lista"></div>
+    <div class="admin-form" id="admin-form"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* =========================================================
+   CONFIGURAÇÃO: edite aqui os dados da sua equipe
+   ========================================================= */
+const CONFIG = {
+  equipe: "Esquadrão Vip Airsoft",
+
+  // Link do grupo de WhatsApp para convidados e interessados
+  whatsappGrupo: "https://chat.whatsapp.com/CvdVdTkJeTWBl1ZhxYTn6H",
+  // Número direto para receber pedidos da loja (DDI + DDD + número, só dígitos).
+  // Deixe vazio enquanto não tiver: o pedido é copiado e enviado no grupo.
+  whatsappPedido: "",
+  instagram: "https://www.instagram.com/esquadraovip.airsoft/",
+  email: "",                            // deixe vazio para mostrar "Em breve"
+  endereco: "R. Santa Catarina, 330, Amambai - MS, 79990-000",
+  mapa: "https://maps.app.goo.gl/nn4mwVaaU2GFkiu28",
+
+  // Banco de dados (login, cargos, eventos, loja, avisos, galeria e equipes).
+  // Deixe vazio para usar o MODO DEMONSTRAÇÃO (nada fica salvo ao recarregar).
+  // Veja o GUIA para preencher com os dados do seu projeto no Supabase.
+  supabaseUrl: "",
+  supabaseKey: "",
+
+  // ATENÇÃO, LEIA ANTES DE DIVULGAR O SITE:
+  // As contas de teste (admin@vip.com e companhia) existem SÓ no modo
+  // demonstração e servem para apresentar o site sem configurar nada.
+  // Enquanto estiverem ligadas, qualquer pessoa pode entrar como
+  // administrador. Coloque false antes de divulgar o link.
+  contasDemo: false
+};
+
+/* ---------- Cargos e permissões ---------- */
+const CARGOS = {
+  admin: "Administrador",
+  organizador: "Organizador de jogos",
+  lojista: "Lojista",
+  redator: "Redator do jornal",
+  membro: "Membro"
+};
+const O_QUE_FAZ = {
+  admin: "Tudo: eventos, loja, jornal, equipes, membros cadastrados, registro de acessos e cargos. Só ele muda o cargo das pessoas.",
+  organizador: "Cria e edita eventos, fotos dos jogos e vê a lista de inscritos.",
+  lojista: "Adiciona, altera, oculta e remove produtos da loja.",
+  redator: "Escreve e agenda os avisos e novidades do site.",
+  membro: "Reserva vagas nos eventos. É o cargo de quem acabou de se cadastrar."
+};
+const PERMISSOES = {
+  eventos: ["admin", "organizador"],
+  produtos: ["admin", "lojista"],
+  jornal: ["admin", "redator"],
+  galeria: ["admin", "organizador"],
+  equipes: ["admin"],
+  operadores: ["admin"],
+  usuarios: ["admin"],
+  acessos: ["admin"]
+};
+const ABAS_ADMIN = [
+  { id: "eventos", nome: "Eventos" },
+  { id: "produtos", nome: "Loja" },
+  { id: "jornal", nome: "Avisos" },
+  { id: "galeria", nome: "Galeria" },
+  { id: "equipes", nome: "Equipes" },
+  { id: "operadores", nome: "Operadores" },
+  { id: "usuarios", nome: "Membros e cargos" },
+  { id: "acessos", nome: "Registro de acessos" }
+];
+const TIPOS_EVENTO = ["Aberto", "Milsim", "Treino", "Iniciantes", "Noturno"];
+const CATEGORIAS = ["Munição", "Energia", "Proteção", "Acessórios", "Réplicas"];
+
+/* ---------- Utilidades ---------- */
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const pad = n => String(n).padStart(2, "0");
+const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+const num = (v, d = 2) => v.toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d });
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const urlSegura = u => /^(https:\/\/|data:image\/)/i.test(u || "") ? u : "";
+const isoLocal = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const hojeISO = () => isoLocal(new Date());
+const dataDeISO = iso => { const [a, m, d] = iso.split("-").map(Number); return new Date(a, m - 1, d); };
+const somaDias = (iso, n) => { const d = dataDeISO(iso); d.setDate(d.getDate() + n); return isoLocal(d); };
+const segundaDaSemana = () => { const d = new Date(); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return isoLocal(d); };
+const fmtDiaMes = new Intl.DateTimeFormat("pt-BR", { day: "numeric", month: "long" });
+const fmtCurto = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
+const fmtData = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
+const primeiroNome = n => String(n || "").trim().split(/\s+/)[0] || "Conta";
+let toastTimer;
+function toast(msg) {
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.add("mostrar");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("mostrar"), 3400);
+}
+
+/* ---------- Conteúdo fixo do site ---------- */
+const REPLICAS = [
+  { id: "aeg", nome: "Elétrica (AEG)",
+    como: "Uma bateria alimenta o motor, que gira as engrenagens da gearbox e comprime a mola a cada disparo. É o sistema mais comum nos campos brasileiros.",
+    pros: ["Confiável e fácil de usar", "Custo baixo por disparo", "Tem modo automático", "Funciona bem em dias frios"],
+    contras: ["Depende de bateria carregada", "Reparo na gearbox pede técnico"],
+    ideal: "iniciantes e jogadores de assalto.",
+    niveis: { "Custo inicial": 2, "Manutenção": 1, "Realismo": 1 } },
+  { id: "gbb", nome: "A gás (GBB)",
+    como: "Um reservatório de green gas ou CO₂ impulsiona a BB e movimenta o ferrolho a cada disparo (blowback), gerando um recuo parecido com o real.",
+    pros: ["Recuo e manuseio realistas", "Ótima como arma secundária", "Não depende de bateria"],
+    contras: ["Perde pressão no frio", "Gás encarece cada disparo", "Vedações pedem cuidado"],
+    ideal: "pistolas e quem busca realismo.",
+    niveis: { "Custo inicial": 2, "Manutenção": 2, "Realismo": 3 } },
+  { id: "spring", nome: "Mola (spring)",
+    como: "O jogador arma a mola manualmente antes de cada disparo, puxando o ferrolho. Sem bateria e sem gás, só mecânica.",
+    pros: ["A mais barata para começar", "Mecânica simples e robusta", "Rifles de ferrolho muito precisos"],
+    contras: ["Um disparo por vez", "Cansa em jogos longos"],
+    ideal: "snipers e quem quer gastar pouco no início.",
+    niveis: { "Custo inicial": 1, "Manutenção": 1, "Realismo": 2 } },
+  { id: "hpa", nome: "Ar comprimido (HPA)",
+    como: "Um cilindro de ar comprimido, ligado por mangueira a um regulador, alimenta um motor pneumático. A pressão regulada define a velocidade da BB.",
+    pros: ["Velocidade muito constante", "Gatilho rápido e ajustável", "Poucas peças de desgaste"],
+    contras: ["Investimento inicial alto", "Precisa de cilindro e local de recarga", "Mangueira atrapalha em lugares apertados"],
+    ideal: "jogadores experientes e DMR.",
+    niveis: { "Custo inicial": 3, "Manutenção": 2, "Realismo": 2 } }
+];
+
+const KIT = [
+  { grupo: "Obrigatório", classe: "obrig", itens: ["Óculos ou máscara com proteção balística", "Réplica com ponteira laranja e nota fiscal", "Documento com foto", "Pano vermelho para sinalizar eliminação"] },
+  { grupo: "Recomendado", classe: "rec", itens: ["Proteção para boca e dentes", "Luvas", "Joelheiras", "Bota de cano alto", "Carregadores extras", "Água ou mochila de hidratação", "Roupa camuflada ou de cor neutra"] },
+  { grupo: "Opcional", classe: "opc", itens: ["Colete tático ou plate carrier", "Rádio comunicador", "Capacete", "Lanterna tática", "Mira red dot"] }
+];
+
+const REGRAS = [
+  { t: "Óculos sempre no rosto", d: "Na área de jogo, a proteção dos olhos não sai nem depois de você ser eliminado. Óculos e máscaras precisam ter proteção balística; óculos de sol comuns não servem." },
+  { t: "Atingido é atingido", d: "Qualquer BB que acerte você ou o seu equipamento conta como eliminação. Grite \"hit\", levante a mão ou o pano vermelho e saia pela lateral até o respawn. Tiro na réplica segue o que for definido no briefing." },
+  { t: "Safe zone é área sem disparos", d: "Ao entrar na safe zone: carregador fora, câmara vazia no ponto de disparo indicado, seletor em trava e cano para baixo. Só ali é permitido tirar os óculos." },
+  { t: "Rendição em curta distância", d: "Se o adversário está muito perto e não te viu, ofereça rendição falando \"rendido\" em vez de atirar. A distância é definida pela organização do jogo." },
+  { t: "Sem blind fire", d: "Não dispare com a réplica por cima ou ao lado da cobertura sem enxergar o alvo. Você pode acertar alguém de muito perto ou no rosto." },
+  { t: "Eliminado não fala", d: "Quem está fora de jogo não passa posição do inimigo nem informação pelo rádio, nem mesmo no respawn." },
+  { t: "Toda réplica passa no cronógrafo", d: "A cronografia é feita antes do jogo, com a BB fornecida pelo campo. Réplica acima do limite da classe não entra em campo." },
+  { t: "Menor de 18 anos só com responsável", d: "Quem tem menos de 18 anos joga acompanhado do pai, da mãe ou do responsável legal, que precisa estar presente no campo e assinar o termo de responsabilidade. O equipamento também fica no nome do responsável, já que a lei proíbe a venda de réplicas a menores." },
+  { t: "Termo de responsabilidade na entrada", d: "Todo jogador assina o termo antes de entrar em campo, declarando que conhece as regras de segurança e que está apto a jogar. Leve documento com foto." },
+  { t: "A decisão do juiz é final", d: "Dúvidas e discussões são resolvidas com a organização, nunca com o adversário. O jogo depende da confiança entre todos." }
+];
+
+const LEIS = [
+  { t: "É arma de pressão, não brinquedo", d: "A Portaria nº 002-COLOG/2010 enquadra a réplica de airsoft como arma de pressão, categoria diferente do simulacro (objeto que parece arma, mas não dispara). Os produtos controlados pelo Exército constam no Decreto nº 10.030/2019." },
+  { t: "Ponteira laranja obrigatória", d: "Réplicas fabricadas no país ou importadas devem ter a ponta do cano em laranja fluorescente ou vermelho vivo, para não serem confundidas com armas de fogo. Nunca remova nem pinte por cima." },
+  { t: "Compra só para maiores de 18 anos", d: "O art. 11 da Portaria nº 002-COLOG/2010 exige que o comprador de arma de pressão tenha no mínimo 18 anos, com base no art. 81, inciso I, do Estatuto da Criança e do Adolescente (Lei nº 8.069/90), que proíbe vender armas a crianças e adolescentes. Quem vende a menor responde pelo crime do art. 242 do mesmo Estatuto, com pena de 3 a 6 anos de reclusão. Compre em loja registrada, com nota fiscal e documento com foto." },
+  { t: "Menor de idade pode jogar?", d: "Não existe lei federal que proíba a prática por menores: a proibição é sobre comprar e possuir a réplica. Cada campo define sua própria idade mínima, e o comum é aceitar menores com autorização por escrito dos pais ou responsáveis, com o responsável presente durante o jogo e o equipamento no nome dele. Confirme sempre a regra do campo antes de ir." },
+  { t: "Transporte discreto", d: "Leve a réplica guardada em case, bag ou no porta-malas, nunca à mostra, com a nota fiscal junto. Exibir ou usar em local público pode resultar em abordagem policial e apreensão." },
+  { t: "Uso em local apropriado", d: "Pratique em campos, estandes e eventos organizados. Não há uma lei federal nova específica do airsoft; existem propostas em discussão, mas as regras continuam sendo as portarias do Exército." }
+];
+
+const CLASSES = {
+  cqb:     { nome: "CQB",     limite: 1.14, dist: 0,  obs: "Ambientes fechados e vila. Recomendado usar apenas semiautomático." },
+  assalto: { nome: "Assalto", limite: 1.49, dist: 0,  obs: "Classe padrão. Modo automático liberado conforme o briefing." },
+  dmr:     { nome: "DMR",     limite: 1.88, dist: 20, obs: "Somente semiautomático." },
+  sniper:  { nome: "Sniper",  limite: 2.81, dist: 30, obs: "Somente réplicas de ferrolho (bolt-action)." }
+};
+const PESOS = [0.20, 0.25, 0.28, 0.30, 0.32, 0.36, 0.40];
+
+const QUIZ = [
+  { p: "Qual cor deve marcar a ponta do cano de uma réplica de airsoft no Brasil?", o: ["Preto fosco", "Laranja fluorescente ou vermelho vivo", "Qualquer cor clara", "Não existe exigência"], c: 1, e: "A marcação laranja fluorescente ou vermelho vivo diferencia a réplica de uma arma de fogo. Nunca remova nem pinte por cima." },
+  { p: "A partir de que idade é permitido comprar uma réplica de airsoft?", o: ["14 anos", "16 anos", "18 anos", "21 anos"], c: 2, e: "A Portaria 002-COLOG/2010 exige 18 anos para comprar, com base no Estatuto da Criança e do Adolescente. Jogar é outra coisa: menores podem, nos campos que permitem, sempre com autorização e presença do responsável." },
+  { p: "Você foi atingido por uma BB durante o jogo. O que fazer?", o: ["Continuar se não doeu", "Gritar \"hit\", levantar a mão ou o pano vermelho e sair", "Se esconder até o fim da partida", "Discutir com quem atirou"], c: 1, e: "Honestidade é a base do airsoft. Sinalize com clareza e saia pela lateral até o respawn, sem passar informações." },
+  { p: "Onde você pode tirar os óculos de proteção?", o: ["Atrás de uma cobertura", "Depois de ser eliminado", "Somente na safe zone", "Quando o jogo estiver parado"], c: 2, e: "Na área de jogo os óculos ficam no rosto o tempo todo, inclusive depois da eliminação. Tire apenas na safe zone." },
+  { p: "O que o cronógrafo mede?", o: ["O peso da BB", "A velocidade de saída da BB", "A carga da bateria", "O alcance máximo da réplica"], c: 1, e: "Ele mede a velocidade da BB em FPS (pés por segundo). Com o peso da BB, calcula-se a energia em joules, que define a classe da réplica." },
+  { p: "Qual réplica usa bateria, motor e gearbox para disparar?", o: ["Spring", "GBB", "AEG", "HPA"], c: 2, e: "A AEG usa a bateria para acionar o motor, que comprime a mola dentro da gearbox a cada disparo." },
+  { p: "Como deve ser o transporte da réplica até o campo?", o: ["À mostra, para ninguém confundir", "Guardada em case, bag ou porta-malas, com nota fiscal", "Montada e carregada, pronta para jogar", "Na mão, com a ponteira visível"], c: 1, e: "O transporte deve ser discreto, com a réplica guardada e a nota fiscal junto. Portar à mostra em local público pode gerar apreensão." },
+  { p: "Ao entrar na safe zone, qual é o procedimento com a réplica?", o: ["Deixar carregada para ganhar tempo", "Tirar o carregador, esvaziar a câmara no local indicado e travar", "Apenas travar o seletor", "Apontar para cima e seguir"], c: 1, e: "Carregador fora, câmara vazia e seletor em trava. Assim ninguém dispara sem querer numa área onde todos estão sem proteção." }
+];
+
+const PASSOS = [
+  ["Jogue como visitante", "Participe de um jogo aberto e conheça a equipe em campo."],
+  ["Faça o treino de segurança", "Uma tarde de regras, comunicação e manuseio seguro."],
+  ["Complete três operações", "Jogue com a equipe e aprenda os procedimentos de rádio e formação."],
+  ["Receba seu patch", "Com a aprovação do grupo, você ganha callsign e o patch da equipe."]
+];
+
+const CAMPO = [
+  ["Funcionamento", "Sábados e domingos, das 7h30 às 17h"],
+  ["Day-use", "R$ 50 por jogador"],
+  ["Aluguel de kit", "R$ 120, com réplica AEG, óculos, máscara e 2.000 BBs"],
+  ["Cenários", "Mata fechada, vila de CQB e linha de trincheiras"],
+  ["Estrutura", "Safe zone coberta, cronógrafo, banheiros e estacionamento"],
+  ["Menores de 18", "Só jogam com autorização e presença do responsável legal"],
+  ["Na entrada", "Documento com foto e assinatura do termo de responsabilidade"]
+];
+
+/* ---------- Dados de exemplo (modo demonstração) ---------- */
+function eventosExemplo() {
+  const hoje = new Date();
+  const domingo = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() + ((7 - hoje.getDay()) % 7 || 7));
+  const em = (dias, hora) => { const d = new Date(domingo); d.setDate(d.getDate() + dias); const [h, m] = hora.split(":"); d.setHours(+h, +m, 0, 0); return d.toISOString(); };
+  return [
+    { id: 1, nome: "Jogo aberto de domingo", tipo: "Aberto", data: em(0, "08:00"), descricao: "Partidas rápidas de captura de bandeira e dominação. Visitantes são bem-vindos.", vagas: 40, reservas_externas: 18, foto_url: "" },
+    { id: 2, nome: "Operação Nevoeiro", tipo: "Milsim", data: em(7, "07:30"), descricao: "Dez horas de missão com objetivos, rádio e logística. Duas facções, briefing às 7h30.", vagas: 60, reservas_externas: 41, foto_url: "" },
+    { id: 3, nome: "Treino de CQB", tipo: "Treino", data: em(14, "14:00"), descricao: "Entrada em cômodos, comunicação e progressão em dupla na vila.", vagas: 16, reservas_externas: 13, foto_url: "" },
+    { id: 4, nome: "Dia do iniciante", tipo: "Iniciantes", data: em(21, "08:30"), descricao: "Aula de segurança, aluguel de kit incluso e jogos guiados. Ideal para a primeira vez.", vagas: 24, reservas_externas: 7, foto_url: "" },
+    { id: 5, nome: "Operação VIP Noturna", tipo: "Noturno", data: em(27, "18:00"), descricao: "Jogo noturno com lanternas e BBs traçantes. Kit de iluminação obrigatório.", vagas: 50, reservas_externas: 22, foto_url: "" }
+  ];
+}
+function produtosExemplo() {
+  return [
+    { id: 1, nome: "BBs biodegradáveis 0,25 g", categoria: "Munição", descricao: "Pacote com 4.000 unidades.", preco: 69.9 },
+    { id: 2, nome: "BBs biodegradáveis 0,30 g", categoria: "Munição", descricao: "Pacote com 3.300 unidades, para DMR e sniper.", preco: 84.9 },
+    { id: 3, nome: "Green gas", categoria: "Energia", descricao: "Refil para pistolas e rifles GBB.", preco: 99.9 },
+    { id: 4, nome: "Bateria LiPo 7,4 V", categoria: "Energia", descricao: "1.200 mAh, para AEGs de uso geral.", preco: 129.9 },
+    { id: 5, nome: "Óculos de proteção balística", categoria: "Proteção", descricao: "Lente antiembaçante com certificação ANSI Z87.1.", preco: 149.9 },
+    { id: 6, nome: "Máscara de tela meia-face", categoria: "Proteção", descricao: "Protege boca, dentes e bochechas.", preco: 59.9 },
+    { id: 7, nome: "Pano vermelho de eliminação", categoria: "Acessórios", descricao: "Tecido de alta visibilidade com presilha.", preco: 19.9 },
+    { id: 8, nome: "Speed loader", categoria: "Acessórios", descricao: "Carrega os magazines em segundos.", preco: 49.9 }
+  ].map(p => ({ ...p, foto_url: "", ativo: true }));
+}
+function equipesExemplo() {
+  return [
+    { id: 1, ordem: 1, nome: "Esquadrão VIP Airsoft", sigla: "VIP", desde: "2020", foto_url: "",
+      resumo: "O Esquadrão VIP Airsoft nasceu de um grupo de amigos que se reunia para jogar nos fins de semana e acabou montando o próprio campo. Hoje a equipe organiza jogos abertos, operações milsim e treinos para quem está começando.\n\nO foco é jogo limpo, segurança e trabalho em equipe: cada operador tem uma função definida em campo, da comunicação por rádio ao suporte." },
+    { id: 2, ordem: 2, nome: "AACC", sigla: "AACC", desde: "2023", foto_url: "",
+      resumo: "A AACC é a segunda equipe do nosso campo, formada por jogadores que querem treinar táticas em grupo e participar das operações ao lado do Esquadrão VIP.\n\nA equipe joga principalmente na vila de CQB e na mata, com treinos regulares de progressão, cobertura e comunicação." }
+  ];
+}
+function operadoresExemplo() {
+  const l = [
+    [1, "Carcará", "Líder e rádio", "AEG M4"],
+    [1, "Tatu", "Pointman", "AEG compacta"],
+    [1, "Sucuri", "Suporte", "AEG metralhadora leve"],
+    [1, "Gavião", "DMR", "HPA com luneta"],
+    [1, "Lobo-guará", "Sniper", "Spring de ferrolho"],
+    [1, "Quati", "Logística", "AEG e pistola GBB"],
+    [2, "Onça", "Líder", "AEG M4"],
+    [2, "Harpia", "DMR", "HPA com luneta"],
+    [2, "Cascavel", "Pointman", "AEG compacta"],
+    [2, "Tamanduá", "Suporte", "AEG metralhadora leve"],
+    [2, "Jaguatirica", "Rádio e navegação", "AEG e pistola GBB"]
+  ];
+  return l.map(([equipe_id, nome, funcao, replica], i) => ({ id: i + 1, equipe_id, nome, funcao, replica, foto_url: "", ordem: i + 1 }));
+}
+function galeriaExemplo() {
+  return ["Operação Nevoeiro", "Treino de CQB na vila", "Briefing antes da missão", "Posição de DMR na mata",
+          "Safe zone do campo", "Dia do iniciante", "Cronografia antes do jogo", "Jogo noturno"]
+    .map((titulo, i) => ({ id: i + 1, titulo, foto_url: "", ordem: i + 1 }));
+}
+function acessosExemplo() {
+  const h = n => new Date(Date.now() - n * 3600e3).toISOString();
+  return [
+    { id: 1, usuario_id: "u5", acao: "entrou", criado_em: h(3) },
+    { id: 2, usuario_id: "u2", acao: "entrou", criado_em: h(9) },
+    { id: 3, usuario_id: "u1", acao: "entrou", criado_em: h(26) },
+    { id: 4, usuario_id: "u3", acao: "entrou", criado_em: h(30) },
+    { id: 5, usuario_id: "u4", acao: "entrou", criado_em: h(52) },
+    { id: 6, usuario_id: "u5", acao: "entrou", criado_em: h(75) },
+    { id: 7, usuario_id: "u5", acao: "cadastro", criado_em: h(76) },
+    { id: 8, usuario_id: "u2", acao: "entrou", criado_em: h(98) }
+  ];
+}
+function jornalExemplo() {
+  const seg = segundaDaSemana();
+  return [
+    { id: 1, publicar_em: somaDias(seg, -7), autor: "Marina Costa", foto_url: "",
+      titulo: "Jogo aberto reúne 34 operadores e estreia as trincheiras",
+      conteudo: "O jogo aberto do último domingo reuniu 34 operadores em oito partidas de captura de bandeira e dominação. O destaque ficou para a nova linha de trincheiras, usada pela primeira vez.\n\nA partir deste mês, a proteção de boca e dentes passa a ser obrigatória para todos na vila de CQB. Quem não tiver pode alugar na safe zone.\n\nParabéns ao Tatu, que completou 50 jogos com a equipe." },
+    { id: 2, publicar_em: seg, autor: "Marina Costa", foto_url: "",
+      titulo: "Operação Nevoeiro: o que levar e como vai funcionar",
+      conteudo: "A Operação Nevoeiro está chegando: são dez horas de missão com duas facções. A cronografia abre às 6h50 e o briefing começa às 7h30 em ponto. Quem chegar depois do briefing entra só no segundo turno.\n\nCada facção terá um canal de rádio próprio, e os objetivos serão entregues aos líderes em envelope lacrado. Leve água para o dia todo, lanche, bateria ou gás extra e o pano vermelho de eliminação.\n\nAinda há vagas. Reserve pelo site na seção Eventos e confirme sua facção com a organização até sexta-feira." },
+    { id: 3, publicar_em: somaDias(seg, 7), autor: "Marina Costa", foto_url: "",
+      titulo: "Balanço da Operação Nevoeiro",
+      conteudo: "Placar final das facções, os destaques do dia e as fotos da Operação Nevoeiro.\n\nTambém nesta edição: as datas dos próximos treinos de CQB." }
+  ];
+}
+
+/* ---------- Erros em português ---------- */
+function traduzirErro(e) {
+  const m = (e?.message || String(e || "")).toLowerCase();
+  const tabela = [
+    ["invalid login credentials", "E-mail ou senha incorretos."],
+    ["email not confirmed", "Confirme seu e-mail antes de entrar. Veja sua caixa de entrada."],
+    ["user already registered", "Este e-mail já tem cadastro. Tente entrar."],
+    ["already been registered", "Este e-mail já tem cadastro. Tente entrar."],
+    ["password should be at least", "A senha precisa ter pelo menos 6 caracteres."],
+    ["rate limit", "Muitas tentativas seguidas. Aguarde alguns minutos e tente de novo."],
+    ["row-level security", "Você não tem permissão para esta ação."],
+    ["permission denied", "Você não tem permissão para esta ação."],
+    ["failed to fetch", "Sem conexão com o servidor. Verifique a internet e tente de novo."],
+    ["invalid email", "Digite um e-mail válido."],
+    ["unable to validate email", "Digite um e-mail válido."],
+    ["payload too large", "A imagem é grande demais. Use uma foto menor."]
+  ];
+  const achado = tabela.find(([k]) => m.includes(k));
+  const erro = new Error(achado ? achado[1] : (e?.message || "Algo deu errado. Tente de novo."));
+  erro.code = e?.code;
+  return erro;
+}
+
+/* ---------- Ordenação comum ---------- */
+function ordenar(tabela, lista) {
+  if (tabela === "eventos") return lista.sort((a, b) => new Date(a.data) - new Date(b.data));
+  if (tabela === "produtos") return lista.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+  if (tabela === "equipes") return lista.sort((a, b) => (a.ordem || 0) - (b.ordem || 0) || a.id - b.id);
+  if (tabela === "jornal") return lista.sort((a, b) => b.publicar_em.localeCompare(a.publicar_em) || b.id - a.id);
+  if (tabela === "galeria") return lista.sort((a, b) => (a.ordem || 0) - (b.ordem || 0) || b.id - a.id);
+  if (tabela === "operadores") return lista.sort((a, b) => (a.ordem || 0) - (b.ordem || 0) || a.id - b.id);
+  return lista;
+}
+
+/* =========================================================
+   BANCO DE DADOS: modo demonstração (tudo na memória)
+   ========================================================= */
+function criarDemo() {
+  let seq = 1000;
+  const novoId = () => ++seq;
+  const usuarios = [
+    { id: "u1", nome: "Carlos Mendes", email: "admin@vip.com", senha: "vip123", cargo: "admin" },
+    { id: "u2", nome: "Juliana Rocha", email: "organizador@vip.com", senha: "vip123", cargo: "organizador" },
+    { id: "u3", nome: "Pedro Alves", email: "lojista@vip.com", senha: "vip123", cargo: "lojista" },
+    { id: "u4", nome: "Marina Costa", email: "redator@vip.com", senha: "vip123", cargo: "redator" },
+    { id: "u5", nome: "Lucas Ferreira", email: "membro@vip.com", senha: "vip123", cargo: "membro" }
+  ];
+  if (!CONFIG.contasDemo) usuarios.length = 0;
+  const acessos = CONFIG.contasDemo ? acessosExemplo() : [];
+  usuarios.forEach((u, i) => {
+    u.criado_em = acessos.find(a => a.usuario_id === u.id && a.acao === "cadastro")?.criado_em || new Date(Date.now() - (90 - i * 12) * 86400e3).toISOString();
+    u.ultimo_acesso = acessos.filter(a => a.usuario_id === u.id).map(a => a.criado_em).sort().pop() || null;
+  });
+  const registrar = (u, acao) => {
+    const agora = new Date().toISOString();
+    acessos.unshift({ id: novoId(), usuario_id: u.id, acao, criado_em: agora });
+    if (acao === "entrou") u.ultimo_acesso = agora;
+  };
+  const dados = { eventos: eventosExemplo(), produtos: produtosExemplo(), jornal: jornalExemplo(),
+                  equipes: equipesExemplo(), operadores: operadoresExemplo(), galeria: galeriaExemplo() };
+  const reservas = [];
+  const ouvintes = [];
+  let atual = null;
+  const perfil = u => u ? { id: u.id, nome: u.nome, email: u.email, cargo: u.cargo, criado_em: u.criado_em, ultimo_acesso: u.ultimo_acesso } : null;
+  const avisar = () => ouvintes.forEach(cb => cb(perfil(atual)));
+  const pode = area => atual && PERMISSOES[area].includes(atual.cargo);
+  const exigir = area => { if (!pode(area)) throw new Error("Você não tem permissão para esta ação."); };
+  const copia = o => JSON.parse(JSON.stringify(o));
+  const espera = v => new Promise(r => setTimeout(() => r(v), 150));
+  return {
+    modo: "demo",
+    contasDemo: CONFIG.contasDemo ? usuarios.map(u => ({ email: u.email, cargo: u.cargo })) : [],
+    async sessao() { return perfil(atual); },
+    aoMudarSessao(cb) { ouvintes.push(cb); },
+    async entrar(email, senha) {
+      const u = usuarios.find(x => x.email === email.trim().toLowerCase());
+      if (!u || u.senha !== senha) throw new Error("E-mail ou senha incorretos.");
+      registrar(u, "entrou");
+      atual = u; avisar(); return perfil(u);
+    },
+    async cadastrar(nome, email, senha) {
+      email = email.trim().toLowerCase();
+      if (senha.length < 6) throw new Error("A senha precisa ter pelo menos 6 caracteres.");
+      if (usuarios.some(x => x.email === email)) throw new Error("Este e-mail já tem cadastro. Tente entrar.");
+      const u = { id: "u" + novoId(), nome: nome.trim(), email, senha, cargo: "membro", criado_em: new Date().toISOString(), ultimo_acesso: null };
+      usuarios.push(u);
+      registrar(u, "cadastro"); registrar(u, "entrou");
+      atual = u; avisar();
+      return { precisaConfirmar: false, perfil: perfil(u) };
+    },
+    async sair() { atual = null; avisar(); },
+    async listar(tabela) {
+      let l = copia(dados[tabela]);
+      if (tabela === "produtos" && !pode("produtos")) l = l.filter(p => p.ativo);
+      if (tabela === "jornal" && !pode("jornal")) l = l.filter(j => j.publicar_em <= hojeISO());
+      return espera(ordenar(tabela, l));
+    },
+    async salvar(tabela, obj) {
+      exigir(tabela);
+      const lista = dados[tabela];
+      if (obj.id) {
+        const i = lista.findIndex(x => x.id === obj.id);
+        lista[i] = { ...lista[i], ...obj };
+        return copia(lista[i]);
+      }
+      const novo = { ...obj, id: novoId() };
+      lista.push(novo);
+      return copia(novo);
+    },
+    async remover(tabela, id) {
+      exigir(tabela);
+      dados[tabela] = dados[tabela].filter(x => x.id !== id);
+      if (tabela === "eventos") for (let i = reservas.length - 1; i >= 0; i--) if (reservas[i].evento_id === id) reservas.splice(i, 1);
+    },
+    async enviarFoto(blob) {
+      if (!atual) throw new Error("Entre na sua conta para enviar fotos.");
+      return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(new Error("Não foi possível ler a imagem.")); r.readAsDataURL(blob); });
+    },
+    async contagemReservas() { const c = {}; reservas.forEach(r => c[r.evento_id] = (c[r.evento_id] || 0) + 1); return c; },
+    async minhasReservas() { return new Set(atual ? reservas.filter(r => r.usuario_id === atual.id).map(r => r.evento_id) : []); },
+    async reservar(evento_id) {
+      if (!atual) throw new Error("Entre na sua conta para reservar.");
+      const e = dados.eventos.find(x => x.id === evento_id);
+      if (!e || new Date(e.data) < new Date()) throw new Error("Este evento não está mais disponível.");
+      const usadas = (e.reservas_externas || 0) + reservas.filter(r => r.evento_id === evento_id).length;
+      if (usadas >= e.vagas) throw new Error("As vagas deste evento acabaram.");
+      if (!reservas.some(r => r.evento_id === evento_id && r.usuario_id === atual.id)) reservas.push({ evento_id, usuario_id: atual.id, criado_em: new Date().toISOString() });
+    },
+    async cancelarReserva(evento_id) {
+      const i = reservas.findIndex(r => r.evento_id === evento_id && r.usuario_id === atual?.id);
+      if (i >= 0) reservas.splice(i, 1);
+    },
+    async inscritos(evento_id) {
+      exigir("eventos");
+      return reservas.filter(r => r.evento_id === evento_id).map(r => {
+        const u = usuarios.find(x => x.id === r.usuario_id);
+        return { nome: u?.nome || "", email: u?.email || "", criado_em: r.criado_em };
+      });
+    },
+    async listarUsuarios() { exigir("usuarios"); return usuarios.map(perfil).sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR")); },
+    async listarAcessos() {
+      exigir("acessos");
+      return espera(acessos.slice(0, 300).map(a => { const u = usuarios.find(x => x.id === a.usuario_id); return { ...a, nome: u?.nome || "Conta apagada", email: u?.email || "" }; }));
+    },
+    async definirCargo(id, cargo) {
+      exigir("usuarios");
+      if (id === atual.id && cargo !== "admin") throw new Error("Você não pode remover seu próprio cargo de administrador.");
+      usuarios.find(u => u.id === id).cargo = cargo;
+    }
+  };
+}
+
+/* =========================================================
+   BANCO DE DADOS: Supabase (salva de verdade)
+   ========================================================= */
+async function criarSupabase() {
+  const { createClient } = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");
+  const sb = createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey);
+  let perfilAtual = null;
+  const falha = error => { if (error) throw traduzirErro(error); };
+  async function carregarPerfil(user) {
+    if (!user) return (perfilAtual = null);
+    const { data, error } = await sb.from("perfis").select("id, nome, email, cargo").eq("id", user.id).maybeSingle();
+    falha(error);
+    return (perfilAtual = data || { id: user.id, nome: user.email, email: user.email, cargo: "membro" });
+  }
+  const ORDEM = { eventos: ["data", true], produtos: ["nome", true], jornal: ["publicar_em", false], equipes: ["ordem", true], operadores: ["ordem", true], galeria: ["ordem", true] };
+  return {
+    modo: "supabase",
+    async sessao() { const { data } = await sb.auth.getSession(); return carregarPerfil(data.session?.user); },
+    aoMudarSessao(cb) {
+      sb.auth.onAuthStateChange((evento, session) => {
+        if (evento === "TOKEN_REFRESHED" || evento === "INITIAL_SESSION") return;
+        setTimeout(async () => { try { cb(await carregarPerfil(session?.user)); } catch { cb(null); } }, 0);
+      });
+    },
+    async entrar(email, senha) {
+      const { data, error } = await sb.auth.signInWithPassword({ email: email.trim(), password: senha });
+      falha(error);
+      return carregarPerfil(data.user);
+    },
+    async cadastrar(nome, email, senha) {
+      const { data, error } = await sb.auth.signUp({ email: email.trim(), password: senha, options: { data: { nome: nome.trim() } } });
+      falha(error);
+      if (!data.session) return { precisaConfirmar: true, perfil: null };
+      return { precisaConfirmar: false, perfil: await carregarPerfil(data.user) };
+    },
+    async sair() { const { error } = await sb.auth.signOut(); falha(error); perfilAtual = null; },
+    async listar(tabela) {
+      const [col, asc] = ORDEM[tabela];
+      const { data, error } = await sb.from(tabela).select("*").order(col, { ascending: asc });
+      falha(error);
+      return ordenar(tabela, data || []);
+    },
+    async salvar(tabela, obj) {
+      const { id, ...campos } = obj;
+      const consulta = id ? sb.from(tabela).update(campos).eq("id", id) : sb.from(tabela).insert(campos);
+      const { data, error } = await consulta.select().single();
+      falha(error);
+      return data;
+    },
+    async remover(tabela, id) { const { error } = await sb.from(tabela).delete().eq("id", id); falha(error); },
+    async enviarFoto(blob) {
+      const caminho = `${new Date().getFullYear()}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.jpg`;
+      const { error } = await sb.storage.from("fotos").upload(caminho, blob, { contentType: "image/jpeg", cacheControl: "31536000", upsert: false });
+      falha(error);
+      return sb.storage.from("fotos").getPublicUrl(caminho).data.publicUrl;
+    },
+    async contagemReservas() {
+      const { data, error } = await sb.rpc("contagem_reservas");
+      falha(error);
+      return Object.fromEntries((data || []).map(r => [r.evento_id, Number(r.total)]));
+    },
+    async minhasReservas() {
+      if (!perfilAtual) return new Set();
+      const { data, error } = await sb.from("reservas").select("evento_id").eq("usuario_id", perfilAtual.id);
+      falha(error);
+      return new Set((data || []).map(r => r.evento_id));
+    },
+    async reservar(evento_id) {
+      if (!perfilAtual) throw new Error("Entre na sua conta para reservar.");
+      const { error } = await sb.from("reservas").insert({ evento_id, usuario_id: perfilAtual.id });
+      if (error?.code === "23505") return;
+      if (error?.code === "42501") throw new Error("Não foi possível reservar: as vagas acabaram ou o evento já passou.");
+      falha(error);
+    },
+    async cancelarReserva(evento_id) {
+      const { error } = await sb.from("reservas").delete().eq("evento_id", evento_id).eq("usuario_id", perfilAtual?.id);
+      falha(error);
+    },
+    async inscritos(evento_id) {
+      const { data, error } = await sb.from("reservas").select("criado_em, perfis(nome, email)").eq("evento_id", evento_id).order("criado_em");
+      falha(error);
+      return (data || []).map(r => ({ nome: r.perfis?.nome || "", email: r.perfis?.email || "", criado_em: r.criado_em }));
+    },
+    async listarUsuarios() {
+      const { data, error } = await sb.from("perfis").select("id, nome, email, cargo, criado_em, ultimo_acesso").order("nome");
+      falha(error);
+      return data || [];
+    },
+    async listarAcessos() {
+      const { data, error } = await sb.from("acessos").select("id, criado_em, acao, nome, email").order("criado_em", { ascending: false }).limit(300);
+      falha(error);
+      return data || [];
+    },
+    async definirCargo(id, cargo) { const { error } = await sb.rpc("definir_cargo", { usuario: id, novo_cargo: cargo }); falha(error); }
+  };
+}
+
+/* =========================================================
+   ESTADO GERAL
+   ========================================================= */
+let DB = null;
+const estado = {
+  usuario: null,
+  eventos: [], produtos: [], jornal: [], equipes: [], operadores: [], galeria: [],
+  erro: { eventos: false, produtos: false, jornal: false, equipes: false, operadores: false, galeria: false },
+  contagem: {}, minhas: new Set(),
+  jornalSel: null, equipeSel: null
+};
+const pode = area => !!estado.usuario && PERMISSOES[area].includes(estado.usuario.cargo);
+const ehEquipe = () => Object.keys(PERMISSOES).some(pode);
+const ocupadas = e => (e.reservas_externas || 0) + (estado.contagem[e.id] || 0);
+
+/* ---------- Configuração aplicada ---------- */
+$$("[data-config]").forEach(el => el.textContent = CONFIG[el.dataset.config]);
+$("#lnk-whats").href = CONFIG.whatsappGrupo;
+$("#lnk-insta").href = CONFIG.instagram;
+$("#lnk-insta").textContent = "Instagram @" + (CONFIG.instagram.replace(/\/$/, "").split("/").pop() || "");
+$("#lnk-mapa").href = CONFIG.mapa;
+$("#lnk-email-li").innerHTML = CONFIG.email
+  ? `<a href="mailto:${esc(CONFIG.email)}">${esc(CONFIG.email)}</a>`
+  : `E-mail: <span class="embreve">em breve</span>`;
+$("#ano").textContent = new Date().getFullYear();
+
+/* ---------- Menu e navegação ---------- */
+const menuBtn = $(".menu-btn"), menu = $("#menu");
+menuBtn.addEventListener("click", () => {
+  const aberto = menuBtn.getAttribute("aria-expanded") === "true";
+  menuBtn.setAttribute("aria-expanded", String(!aberto));
+  menu.classList.toggle("aberto", !aberto);
+});
+menu.addEventListener("click", e => {
+  if (e.target.closest("a")) { menu.classList.remove("aberto"); menuBtn.setAttribute("aria-expanded", "false"); }
+});
+const linksMenu = $$("a", menu);
+const espiao = new IntersectionObserver(entradas => {
+  entradas.forEach(en => {
+    if (en.isIntersecting) linksMenu.forEach(a => a.classList.toggle("ativo", a.getAttribute("href") === "#" + en.target.id));
+  });
+}, { rootMargin: "-45% 0px -50% 0px" });
+$$("main section[id]").forEach(s => espiao.observe(s));
+
+/* ---------- Mapa topográfico do topo ---------- */
+(function topografia() {
+  const svg = $(".topografia"), ns = "http://www.w3.org/2000/svg";
+  const grupos = [
+    { cx: 910, cy: 360, n: 17, base: 26, passo: 33, fase: 1 },
+    { cx: 140, cy: 780, n: 9, base: 70, passo: 42, fase: 4 }
+  ];
+  let k = 0;
+  grupos.forEach(g => {
+    for (let i = 0; i < g.n; i++) {
+      const r0 = g.base + i * g.passo, pts = 110;
+      let d = "";
+      for (let j = 0; j <= pts; j++) {
+        const t = j / pts * Math.PI * 2;
+        const r = r0 * (1 + .1 * Math.sin(3 * t + i * .35 + g.fase) + .06 * Math.sin(5 * t - i * .22 + g.fase * 2) + .025 * Math.sin(9 * t + i));
+        d += (j ? "L" : "M") + (g.cx + r * Math.cos(t) * 1.18).toFixed(1) + " " + (g.cy + r * Math.sin(t) * .82).toFixed(1);
+      }
+      const p = document.createElementNS(ns, "path");
+      p.setAttribute("d", d + "Z");
+      p.setAttribute("pathLength", "1");
+      p.style.animationDelay = (k * .06) + "s";
+      if (i % 5 === 4) p.classList.add("indice");
+      svg.appendChild(p);
+      k++;
+    }
+  });
+})();
+
+/* ---------- Réplicas (abas) ---------- */
+const NIVEL_TXT = ["", "Baixo", "Médio", "Alto"];
+const abas = $("#abas"), painelReplica = $("#painel-replica");
+REPLICAS.forEach((r, i) => {
+  const b = document.createElement("button");
+  b.className = "aba"; b.setAttribute("role", "tab"); b.id = "aba-" + r.id; b.textContent = r.nome;
+  b.setAttribute("aria-controls", "painel-replica");
+  b.addEventListener("click", () => mostrarReplica(i, true));
+  abas.appendChild(b);
+});
+abas.addEventListener("keydown", e => {
+  if (!["ArrowRight", "ArrowLeft"].includes(e.key)) return;
+  const botoes = $$(".aba", abas), atual = botoes.indexOf(document.activeElement);
+  const prox = (atual + (e.key === "ArrowRight" ? 1 : -1) + botoes.length) % botoes.length;
+  botoes[prox].focus(); mostrarReplica(prox, true);
+});
+function mostrarReplica(i, animar) {
+  const r = REPLICAS[i];
+  $$(".aba", abas).forEach((b, j) => { b.setAttribute("aria-selected", String(i === j)); b.tabIndex = i === j ? 0 : -1; });
+  painelReplica.setAttribute("aria-labelledby", "aba-" + r.id);
+  painelReplica.innerHTML = `
+    <div>
+      <h3>${r.nome}</h3>
+      <p class="como">${r.como}</p>
+      <div class="pc">
+        <div><h4>Pontos fortes</h4><ul class="mais">${r.pros.map(x => `<li>${x}</li>`).join("")}</ul></div>
+        <div><h4>Pontos fracos</h4><ul class="menos">${r.contras.map(x => `<li>${x}</li>`).join("")}</ul></div>
+      </div>
+    </div>
+    <div class="ficha">
+      <h4>Ficha rápida</h4>
+      ${Object.entries(r.niveis).map(([nome, v]) => `
+        <div class="nivel">
+          <span class="nivel-nome">${nome}</span><span class="nivel-valor">${NIVEL_TXT[v]}</span>
+          <div class="segmentos" aria-hidden="true">${[1, 2, 3].map(s => `<i class="${s <= v ? "on" : ""}"></i>`).join("")}</div>
+        </div>`).join("")}
+      <p class="ideal"><strong>Ideal para</strong> ${r.ideal}</p>
+    </div>`;
+  if (animar) { painelReplica.classList.remove("trocou"); void painelReplica.offsetWidth; painelReplica.classList.add("trocou"); }
+}
+mostrarReplica(0, false);
+
+/* ---------- Monte seu kit ---------- */
+const kitGrupos = $("#kit-grupos");
+KIT.forEach((g, gi) => {
+  const div = document.createElement("div");
+  div.className = "kit-grupo " + g.classe;
+  div.innerHTML = `<h4>${g.grupo} <small data-cont="${gi}"></small></h4>` +
+    g.itens.map((it, ii) => `<label class="item"><input type="checkbox" data-g="${gi}" value="${ii}"><span>${it}</span></label>`).join("");
+  kitGrupos.appendChild(div);
+});
+kitGrupos.addEventListener("change", atualizarKit);
+function atualizarKit() {
+  const marcados = $$("input:checked", kitGrupos);
+  const total = KIT.reduce((s, g) => s + g.itens.length, 0);
+  KIT.forEach((g, gi) => {
+    $(`[data-cont="${gi}"]`).textContent = `${marcados.filter(m => m.dataset.g == gi).length} de ${g.itens.length}`;
+  });
+  const faltam = KIT[0].itens.length - marcados.filter(m => m.dataset.g === "0").length;
+  $("#kit-barra").style.width = (marcados.length / total * 100) + "%";
+  const msg = $("#kit-msg");
+  msg.classList.toggle("pronto", faltam === 0);
+  msg.textContent = faltam === 0
+    ? `Kit mínimo pronto para entrar em campo. ${marcados.length} de ${total} itens marcados.`
+    : `Falta${faltam > 1 ? "m" : ""} ${faltam} ${faltam > 1 ? "itens obrigatórios" : "item obrigatório"} para entrar em campo.`;
+}
+atualizarKit();
+
+/* ---------- Regras (acordeão) e leis ---------- */
+$("#regras").innerHTML = REGRAS.map((r, i) => `
+  <h4><button class="ac-botao" aria-expanded="false" aria-controls="ac-${i}" id="acb-${i}">${r.t}<span class="ac-icone" aria-hidden="true"></span></button></h4>
+  <div class="ac-painel" id="ac-${i}" role="region" aria-labelledby="acb-${i}" hidden><p>${r.d}</p></div>`).join("");
+$("#regras").addEventListener("click", e => {
+  const b = e.target.closest(".ac-botao"); if (!b) return;
+  const aberto = b.getAttribute("aria-expanded") === "true";
+  b.setAttribute("aria-expanded", String(!aberto));
+  $("#" + b.getAttribute("aria-controls")).hidden = aberto;
+});
+$("#leis").innerHTML = LEIS.map(l => `<div class="lei"><h4>${l.t}</h4><p>${l.d}</p></div>`).join("");
+
+/* ---------- Cronógrafo ---------- */
+const crClasse = $("#cr-classe"), crFps = $("#cr-fps"), crFpsR = $("#cr-fps-r");
+crClasse.innerHTML = Object.entries(CLASSES).map(([k, c]) => `<option value="${k}" ${k === "assalto" ? "selected" : ""}>${c.nome} (até ${num(c.limite)} J)</option>`).join("");
+$("#cr-pesos").innerHTML = PESOS.map(p => `<label class="chip"><input type="radio" name="peso" value="${p}" ${p === .20 ? "checked" : ""}>${num(p)} g</label>`).join("");
+function calcular() {
+  const c = CLASSES[crClasse.value];
+  const fps = Math.max(0, Number(crFps.value) || 0);
+  const peso = Number($("input[name=peso]:checked").value);
+  const ms = fps * .3048;
+  const j = .5 * (peso / 1000) * ms * ms;
+  const eq = Math.sqrt(2 * j / .0002) / .3048;
+  const escala = c.limite * 1.3;
+  const acima = j > c.limite;
+  $("#cr-classe-txt").textContent = `Classe ${c.nome}, limite de ${num(c.limite)} J`;
+  $("#cr-j").textContent = num(j);
+  $("#cr-ms").textContent = num(ms, 0);
+  $("#cr-eq").textContent = num(eq, 0);
+  const st = $("#cr-status");
+  st.textContent = acima ? "Acima do limite" : "Liberada";
+  st.className = "status " + (acima ? "acima" : "ok");
+  const barra = $("#cr-barra");
+  barra.style.width = Math.min(j / escala * 100, 100) + "%";
+  barra.classList.toggle("acima", acima);
+  $("#cr-marca").style.left = (100 / 1.3) + "%";
+  $("#cr-lim").textContent = `Limite ${num(c.limite)} J`;
+  const dist = c.dist ? `Distância mínima de engajamento: <strong>${c.dist} metros</strong>. ` : "Sem distância mínima de engajamento. ";
+  const excesso = acima ? ` Reduza ${num((1 - c.limite / j) * 100, 0)}% da energia, trocando a mola ou ajustando a pressão.` : "";
+  $("#cr-obs").innerHTML = dist + c.obs + excesso;
+}
+crFpsR.addEventListener("input", () => { crFps.value = crFpsR.value; calcular(); });
+crFps.addEventListener("input", () => { crFpsR.value = crFps.value; calcular(); });
+crClasse.addEventListener("change", calcular);
+$("#cr-pesos").addEventListener("change", calcular);
+calcular();
+
+/* =========================================================
+   EVENTOS
+   ========================================================= */
+let filtroEv = "Todos";
+let pendenteReserva = null;
+const fmtQuando = new Intl.DateTimeFormat("pt-BR", { weekday: "long", hour: "2-digit", minute: "2-digit" });
+const fmtLongo = new Intl.DateTimeFormat("pt-BR", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" });
+const fmtMes = new Intl.DateTimeFormat("pt-BR", { month: "long" });
+const eventosFuturos = () => estado.eventos.filter(e => new Date(e.data) > new Date());
+
+function vagasTexto(e) {
+  const livres = e.vagas - ocupadas(e);
+  return livres <= 0 ? "Vagas esgotadas" : `${livres} ${livres === 1 ? "vaga restante" : "vagas restantes"} de ${e.vagas}`;
+}
+function renderFiltrosEventos() {
+  const tipos = ["Todos", ...new Set(eventosFuturos().map(e => e.tipo))];
+  if (!tipos.includes(filtroEv)) filtroEv = "Todos";
+  $("#ev-filtros").innerHTML = tipos.map(t => `<button class="chip" aria-pressed="${t === filtroEv}" data-tipo="${esc(t)}">${esc(t)}</button>`).join("");
+}
+$("#ev-filtros").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  filtroEv = b.dataset.tipo;
+  renderEventos();
+});
+function renderEventos() {
+  renderFiltrosEventos();
+  const alvo = $("#ev-lista");
+  if (estado.erro.eventos) { alvo.innerHTML = `<p class="vazio">Não foi possível carregar os eventos agora. Recarregue a página em alguns instantes.</p>`; return; }
+  const lista = eventosFuturos().filter(e => filtroEv === "Todos" || e.tipo === filtroEv);
+  if (!lista.length) {
+    alvo.innerHTML = filtroEv === "Todos"
+      ? `<p class="vazio">Nenhum evento agendado no momento. Siga a equipe no Instagram para saber a próxima data.</p>`
+      : `<div class="vazio"><p>Nenhum evento desse tipo agendado no momento.</p><button class="btn btn-sec" data-tipo-reset>Ver todos os eventos</button></div>`;
+    return;
+  }
+  alvo.innerHTML = lista.map(e => {
+    const quando = new Date(e.data);
+    const reservado = estado.minhas.has(e.id);
+    const cheio = ocupadas(e) >= e.vagas && !reservado;
+    const foto = urlSegura(e.foto_url);
+    return `
+    <article class="evento ${foto ? "com-foto" : ""} ${reservado ? "reservado" : ""}" id="ev-${e.id}">
+      <div class="ev-data"><span class="ev-dia">${pad(quando.getDate())}</span><span class="ev-mes">${fmtMes.format(quando)}</span></div>
+      ${foto ? `<div class="ev-foto-wrap"><img class="ev-foto" src="${esc(foto)}" alt="Foto do evento ${esc(e.nome)}" loading="lazy"></div>` : ""}
+      <div>
+        <span class="ev-tipo t-${esc(e.tipo)}">${esc(e.tipo)}</span>
+        <h3 class="ev-nome">${esc(e.nome)}</h3>
+        <p class="ev-quando">${fmtQuando.format(quando)}</p>
+        <p class="ev-desc">${esc(e.descricao)}</p>
+      </div>
+      <div class="ev-acao">
+        <div class="vagas"><div class="vagas-barra"><span style="width:${Math.min(ocupadas(e) / Math.max(e.vagas, 1) * 100, 100)}%"></span></div>
+          <p>${reservado ? `<span class="ev-ok">Sua vaga está reservada.</span>` : vagasTexto(e)}</p></div>
+        <button class="btn btn-sec btn-bloco" data-reservar="${e.id}" ${cheio ? "disabled" : ""}>${reservado ? "Cancelar reserva" : cheio ? "Esgotado" : "Reservar vaga"}</button>
+      </div>
+    </article>`;
+  }).join("");
+}
+$("#ev-lista").addEventListener("click", e => {
+  if (e.target.closest("[data-tipo-reset]")) { filtroEv = "Todos"; renderEventos(); return; }
+  const b = e.target.closest("[data-reservar]");
+  if (b) alternarReserva(Number(b.dataset.reservar) || b.dataset.reservar, b);
+});
+async function alternarReserva(id, botao) {
+  if (!estado.usuario) {
+    pendenteReserva = id;
+    abrirLogin("entrar", "Entre ou crie sua conta para reservar sua vaga. Leva menos de um minuto.");
+    return;
+  }
+  const ev = estado.eventos.find(x => x.id === id);
+  if (!ev) return;
+  if (botao) botao.disabled = true;
+  try {
+    if (estado.minhas.has(id)) { await DB.cancelarReserva(id); toast(`Reserva cancelada em ${ev.nome}.`); }
+    else { await DB.reservar(id); toast(`Vaga reservada em ${ev.nome}. Chegue 40 min antes.`); }
+  } catch (err) { toast(err.message); }
+  await carregarReservas();
+  renderEventos(); atualizarProximo();
+  $(`[data-reservar="${id}"]`)?.focus();
+}
+
+/* ---------- Próximo jogo e contagem regressiva ---------- */
+function atualizarProximo() {
+  const e = eventosFuturos()[0];
+  const semEvento = !e;
+  $("#contagem").hidden = semEvento;
+  $("#prox-vagas-box").hidden = semEvento;
+  if (semEvento) {
+    $("#prox-nome").textContent = estado.erro.eventos ? "Agenda indisponível" : "Sem jogos agendados";
+    $("#prox-data").textContent = "Siga a equipe no Instagram para saber a próxima data.";
+    $("#prox-link").textContent = "Falar com a equipe"; $("#prox-link").href = "#contato";
+    return;
+  }
+  $("#prox-nome").textContent = e.nome;
+  $("#prox-data").textContent = fmtLongo.format(new Date(e.data));
+  $("#prox-barra").style.width = Math.min(ocupadas(e) / Math.max(e.vagas, 1) * 100, 100) + "%";
+  $("#prox-vagas").textContent = vagasTexto(e);
+  $("#prox-link").href = "#ev-" + e.id;
+  $("#prox-link").textContent = estado.minhas.has(e.id) ? "Ver minha reserva" : "Reservar vaga";
+}
+function tique() {
+  const e = eventosFuturos()[0];
+  if (!e) return;
+  let s = Math.max(0, Math.floor((new Date(e.data) - new Date()) / 1000));
+  if (s === 0) { atualizarProximo(); renderEventos(); return; }
+  const d = Math.floor(s / 86400); s %= 86400;
+  const h = Math.floor(s / 3600); s %= 3600;
+  const m = Math.floor(s / 60); s %= 60;
+  $("#c-d").textContent = pad(d); $("#c-h").textContent = pad(h);
+  $("#c-m").textContent = pad(m); $("#c-s").textContent = pad(s);
+}
+setInterval(tique, 1000);
+
+/* =========================================================
+   JORNAL SEMANAL
+   ========================================================= */
+function edicoesPublicadas() {
+  const hoje = hojeISO();
+  return estado.jornal.filter(j => j.publicar_em <= hoje).sort((a, b) => b.publicar_em.localeCompare(a.publicar_em) || b.id - a.id);
+}
+function paragrafos(texto) {
+  return esc(texto).split(/\n\s*\n/).map(p => p.trim()).filter(Boolean).map(p => `<p>${p.replace(/\n/g, "<br>")}</p>`).join("");
+}
+function renderJornal() {
+  const box = $("#jornal-box");
+  if (estado.erro.jornal) { box.innerHTML = `<p class="vazio">Não foi possível carregar os avisos agora. Recarregue a página em alguns instantes.</p>`; return; }
+  const pub = edicoesPublicadas();
+  if (!pub.length) { box.innerHTML = `<p class="vazio">Nenhum aviso publicado ainda.</p>`; return; }
+  const atual = pub[0];
+  const sel = pub.find(j => j.id === estado.jornalSel) || atual;
+  const foto = urlSegura(sel.foto_url);
+  const ehAtual = sel.id === atual.id;
+  box.innerHTML = `
+    <article class="edicao" aria-live="polite">
+      <div class="edicao-meta">
+        ${ehAtual ? `<span class="tag tag-ar">Aviso mais recente</span>` : `<span class="tag tag-antiga">Aviso anterior</span>`}
+        <span>publicado em ${fmtDiaMes.format(dataDeISO(sel.publicar_em))}</span>
+      </div>
+      <h3>${esc(sel.titulo)}</h3>
+      ${foto ? `<img class="edicao-foto" src="${esc(foto)}" alt="" loading="lazy">` : ""}
+      <div class="edicao-texto">${paragrafos(sel.conteudo)}</div>
+      ${sel.autor ? `<p class="edicao-autor">Por ${esc(sel.autor)}</p>` : ""}
+      ${ehAtual ? "" : `<p style="margin-top:1.25rem"><button class="btn btn-sec btn-mini" data-edicao="${atual.id}">Voltar para o aviso mais recente</button></p>`}
+    </article>
+    <aside class="arquivo" aria-labelledby="arquivo-titulo">
+      <h4 id="arquivo-titulo">Avisos anteriores</h4>
+      <ul>${pub.map(j => `
+        <li><button data-edicao="${j.id}" aria-current="${j.id === sel.id}">
+          <strong>${esc(j.titulo)}</strong>
+          <span>${fmtDiaMes.format(dataDeISO(j.publicar_em))}</span>
+        </button></li>`).join("")}</ul>
+      <p>Cada aviso entra no ar sozinho na data marcada pela organização.</p>
+    </aside>`;
+}
+$("#jornal-box").addEventListener("click", e => {
+  const b = e.target.closest("[data-edicao]"); if (!b) return;
+  estado.jornalSel = Number(b.dataset.edicao) || b.dataset.edicao;
+  renderJornal();
+  $("#avisos").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+});
+
+/* =========================================================
+   GALERIA
+   ========================================================= */
+const PALETAS = [
+  ["#3E4A2E", "#5C6B3F", "#29311F", "#8A7A55"],
+  ["#4A4432", "#6E6247", "#2E2B20", "#8F8A63"],
+  ["#2F3A26", "#4D5B36", "#1E251A", "#6F7A4E"],
+  ["#55503A", "#7A6E4C", "#3A3829", "#A09068"]
+];
+function camuflado(seed) {
+  let s = seed * 7919;
+  const rnd = () => { s = (s * 9301 + 49297) % 233280; return s / 233280; };
+  const cores = PALETAS[seed % PALETAS.length];
+  let svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'><rect width='400' height='300' fill='${cores[0]}'/>`;
+  for (let c = 1; c < cores.length; c++) {
+    for (let b = 0; b < 13; b++) {
+      const cx = rnd() * 440 - 20, cy = rnd() * 340 - 20, r = 16 + rnd() * 34;
+      let d = "";
+      for (let k = 0; k < 9; k++) {
+        const a = k / 9 * Math.PI * 2, rr = r * (.55 + rnd() * .75);
+        d += (k ? "L" : "M") + (cx + Math.cos(a) * rr * 1.5).toFixed(0) + " " + (cy + Math.sin(a) * rr).toFixed(0);
+      }
+      svg += `<path d='${d}Z' fill='${cores[c]}' stroke='${cores[c]}' stroke-width='14' stroke-linejoin='round'/>`;
+    }
+  }
+  return `url("data:image/svg+xml,${encodeURIComponent(svg + "</svg>")}")`;
+}
+const imagemDe = (g, i) => urlSegura(g.foto_url) ? `url("${g.foto_url}")` : camuflado(i + 3);
+function renderGaleria() {
+  const grid = $("#galeria-grid");
+  if (estado.erro.galeria) { grid.innerHTML = `<p class="vazio" style="grid-column:1/-1">Não foi possível carregar a galeria agora.</p>`; return; }
+  if (!estado.galeria.length) { grid.innerHTML = `<p class="vazio" style="grid-column:1/-1">Nenhuma foto na galeria ainda.</p>`; return; }
+  grid.innerHTML = estado.galeria.map((g, i) =>
+    `<button class="foto" data-i="${i}" aria-label="Ampliar: ${esc(g.titulo)}"><span>${esc(g.titulo)}</span></button>`).join("");
+  $$(".foto", grid).forEach(b => b.style.backgroundImage = imagemDe(estado.galeria[b.dataset.i], Number(b.dataset.i)));
+}
+
+const lb = $("#lightbox");
+let lbIndice = 0, lbOrigem = null;
+function abrirLb(i) {
+  if (!estado.galeria.length) return;
+  lbIndice = (i + estado.galeria.length) % estado.galeria.length;
+  const g = estado.galeria[lbIndice];
+  $("#lb-img").style.backgroundImage = imagemDe(g, lbIndice);
+  $("#lb-img").setAttribute("aria-label", g.titulo);
+  $("#lb-leg").textContent = g.titulo;
+  $("#lb-cont").textContent = `${lbIndice + 1} de ${estado.galeria.length}`;
+  if (lb.hidden) { lbOrigem = document.activeElement; lb.hidden = false; travar(); $("#lb-fechar").focus(); }
+}
+function fecharLb() { lb.hidden = true; destravar(); lbOrigem?.focus(); }
+$("#galeria-grid").addEventListener("click", e => { const b = e.target.closest(".foto"); if (b) abrirLb(Number(b.dataset.i)); });
+$("#lb-fechar").addEventListener("click", fecharLb);
+$("#lb-ant").addEventListener("click", () => abrirLb(lbIndice - 1));
+$("#lb-prox").addEventListener("click", () => abrirLb(lbIndice + 1));
+lb.addEventListener("click", e => { if (e.target === lb) fecharLb(); });
+
+/* ---------- Quiz ---------- */
+const quizBox = $("#quiz-box");
+let qAtual = 0, acertos = 0;
+function renderPergunta() {
+  const q = QUIZ[qAtual];
+  quizBox.innerHTML = `
+    <div class="quiz-prog"><span>Pergunta ${qAtual + 1} de ${QUIZ.length}</span><span>${acertos} ${acertos === 1 ? "acerto" : "acertos"}</span></div>
+    <div class="quiz-barra"><span style="width:${qAtual / QUIZ.length * 100}%"></span></div>
+    <h3 id="q-titulo">${q.p}</h3>
+    <div class="opcoes" role="group" aria-labelledby="q-titulo">${q.o.map((o, i) => `<button class="opcao" data-o="${i}">${o}</button>`).join("")}</div>
+    <div id="q-feedback" aria-live="polite"></div>`;
+}
+quizBox.addEventListener("click", e => {
+  const op = e.target.closest(".opcao");
+  if (op && !op.disabled) {
+    const q = QUIZ[qAtual], escolha = Number(op.dataset.o), certo = escolha === q.c;
+    if (certo) acertos++;
+    $$(".opcao", quizBox).forEach((b, i) => { b.disabled = true; if (i === q.c) b.classList.add("certa"); else if (i === escolha) b.classList.add("errada"); });
+    const ultima = qAtual === QUIZ.length - 1;
+    $("#q-feedback").innerHTML = `
+      <div class="explica ${certo ? "" : "errou"}"><strong>${certo ? "Correto." : "Resposta errada."}</strong><p>${q.e}</p></div>
+      <div class="quiz-rodape"><button class="btn" id="q-prox">${ultima ? "Ver resultado" : "Próxima pergunta"}</button></div>`;
+    $("#q-prox").focus();
+    return;
+  }
+  if (e.target.id === "q-prox") {
+    qAtual++;
+    if (qAtual < QUIZ.length) { renderPergunta(); $(".opcao", quizBox).focus(); }
+    else renderResultado();
+    return;
+  }
+  if (e.target.id === "q-refazer") { qAtual = 0; acertos = 0; renderPergunta(); $(".opcao", quizBox).focus(); }
+});
+function renderResultado() {
+  const msg = acertos === QUIZ.length ? "Nota máxima. Você está pronto para o campo."
+    : acertos >= 6 ? "Você conhece bem as regras. Nos vemos no próximo jogo."
+    : acertos >= 4 ? "Bom começo. Releia a seção de segurança antes de jogar."
+    : "Vale revisar a seção de segurança antes do primeiro jogo.";
+  quizBox.innerHTML = `
+    <div>
+      <div class="quiz-barra"><span style="width:100%"></span></div>
+      <p class="placar">${acertos}<small> de ${QUIZ.length}</small></p>
+      <p>${msg}</p>
+      <div class="acoes"><button class="btn" id="q-refazer">Refazer quiz</button><a class="btn btn-sec" href="#seguranca">Revisar regras</a></div>
+    </div>`;
+  $("#q-refazer").focus();
+}
+renderPergunta();
+
+/* =========================================================
+   EQUIPES
+   ========================================================= */
+const iniciais = cs => cs.includes("-") ? cs.split("-").map(p => p[0] || "").join("").slice(0, 3).toUpperCase() : cs.slice(0, 2).toUpperCase();
+const siglaDe = t => (t.sigla || t.nome.split(/\s+/).filter(p => p.length > 2).map(p => p[0]).join("").slice(0, 4) || t.nome.slice(0, 2)).toUpperCase();
+const operadoresDa = id => estado.operadores.filter(o => String(o.equipe_id) === String(id));
+function renderEquipes(animar) {
+  const abasEl = $("#equipes-abas"), box = $("#equipes-box");
+  if (estado.erro.equipes || !estado.equipes.length) {
+    abasEl.innerHTML = "";
+    box.innerHTML = `<p class="vazio">${estado.erro.equipes ? "Não foi possível carregar as equipes agora. Recarregue a página em alguns instantes." : "Nenhuma equipe cadastrada ainda."}</p>`;
+    renderRodapeEquipes();
+    return;
+  }
+  const sel = estado.equipes.find(t => t.id === estado.equipeSel) || estado.equipes[0];
+  abasEl.innerHTML = estado.equipes.map(t => `<button class="aba" role="tab" id="eq-aba-${t.id}" aria-controls="equipes-box" aria-selected="${t.id === sel.id}" tabindex="${t.id === sel.id ? 0 : -1}" data-equipe="${t.id}">${esc(t.nome)}</button>`).join("");
+  box.setAttribute("aria-labelledby", "eq-aba-" + sel.id);
+  const membros = operadoresDa(sel.id);
+  const foto = urlSegura(sel.foto_url);
+  const meta = [sel.desde ? `Na ativa desde ${esc(sel.desde)}` : "", membros.length ? `${membros.length} ${membros.length === 1 ? "operador" : "operadores"}` : ""].filter(Boolean).join(", ");
+  box.innerHTML = `
+    <div>
+      <div class="equipe-topo">
+        ${foto ? `<img class="brasao-foto" src="${esc(foto)}" alt="Brasão da equipe ${esc(sel.nome)}">` : `<div class="patch patch-grande" aria-hidden="true"><span>${esc(siglaDe(sel))}</span></div>`}
+        <div><h3 class="equipe-nome">${esc(sel.nome)}</h3>${meta ? `<p class="equipe-meta">${meta}</p>` : ""}</div>
+      </div>
+      <div class="equipe-resumo">${paragrafos(sel.resumo) || `<p>Resumo da equipe ainda não escrito.</p>`}</div>
+    </div>
+    <div>
+      <h4 class="equipe-sub">Operadores</h4>
+      ${membros.length ? `<div class="membros">${membros.map(m => {
+        const f = urlSegura(m.foto_url);
+        return `<div class="membro">
+          ${f ? `<img class="membro-foto" src="${esc(f)}" alt="Foto de ${esc(m.nome)}" loading="lazy">`
+              : `<div class="patch" aria-hidden="true"><span>${esc(iniciais(m.nome))}</span></div>`}
+          <div><h3>${esc(m.nome)}</h3>${m.funcao ? `<p class="funcao">${esc(m.funcao)}</p>` : ""}${m.replica ? `<p>${esc(m.replica)}</p>` : ""}</div>
+        </div>`; }).join("")}</div>` : `<p class="vazio">Os operadores desta equipe ainda não foram cadastrados.</p>`}
+    </div>`;
+  if (animar) { box.classList.remove("trocou"); void box.offsetWidth; box.classList.add("trocou"); }
+  renderRodapeEquipes();
+}
+function renderRodapeEquipes() {
+  $("#rodape-equipes").innerHTML = estado.equipes.map(t => `<li><a href="#equipes" data-ver-equipe="${t.id}">${esc(t.nome)}</a></li>`).join("");
+}
+function mostrarEquipe(id, focar) {
+  estado.equipeSel = id;
+  renderEquipes(true);
+  if (focar) $(`[data-equipe="${id}"]`)?.focus();
+}
+$("#equipes-abas").addEventListener("click", e => {
+  const b = e.target.closest("[data-equipe]");
+  if (b) mostrarEquipe(Number(b.dataset.equipe) || b.dataset.equipe, true);
+});
+$("#equipes-abas").addEventListener("keydown", e => {
+  if (!["ArrowRight", "ArrowLeft"].includes(e.key) || !estado.equipes.length) return;
+  const i = estado.equipes.findIndex(t => t.id === (estado.equipeSel ?? estado.equipes[0].id));
+  const prox = estado.equipes[(i + (e.key === "ArrowRight" ? 1 : -1) + estado.equipes.length) % estado.equipes.length];
+  mostrarEquipe(prox.id, true);
+});
+$("#rodape-equipes").addEventListener("click", e => {
+  const a = e.target.closest("[data-ver-equipe]");
+  if (a) mostrarEquipe(Number(a.dataset.verEquipe) || a.dataset.verEquipe, false);
+});
+
+/* ---------- Campo ---------- */
+$("#passos").innerHTML = PASSOS.map(([t, d]) => `<li><h4>${t}</h4><p>${d}</p></li>`).join("");
+$("#btn-mapa").href = CONFIG.mapa;
+$("#dados-campo").innerHTML = [...CAMPO, ["Endereço", CONFIG.endereco]].map(([t, d]) => `<div><dt>${esc(t)}</dt><dd>${esc(d)}</dd></div>`).join("");
+
+/* =========================================================
+   LOJA E PEDIDO
+   ========================================================= */
+let filtroLoja = "Todos";
+const pedido = new Map();
+const produtosVisiveis = () => estado.produtos.filter(p => p.ativo !== false);
+function renderFiltrosLoja() {
+  const cats = ["Todos", ...new Set(produtosVisiveis().map(p => p.categoria))];
+  if (!cats.includes(filtroLoja)) filtroLoja = "Todos";
+  $("#loja-filtros").innerHTML = cats.map(c => `<button class="chip" aria-pressed="${c === filtroLoja}" data-cat="${esc(c)}">${esc(c)}</button>`).join("");
+}
+$("#loja-filtros").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  filtroLoja = b.dataset.cat;
+  renderProdutos();
+});
+function renderProdutos() {
+  renderFiltrosLoja();
+  const alvo = $("#produtos");
+  if (estado.erro.produtos) { alvo.innerHTML = `<p class="vazio">Não foi possível carregar a loja agora. Recarregue a página em alguns instantes.</p>`; return; }
+  const lista = produtosVisiveis().filter(p => filtroLoja === "Todos" || p.categoria === filtroLoja);
+  if (!lista.length) { alvo.innerHTML = `<p class="vazio">Nenhum produto disponível no momento.</p>`; renderPedido(); return; }
+  alvo.innerHTML = lista.map(p => {
+    const foto = urlSegura(p.foto_url);
+    return `
+    <div class="produto">
+      ${foto ? `<img class="produto-foto" src="${esc(foto)}" alt="${esc(p.nome)}" loading="lazy">` : ""}
+      <span class="cat">${esc(p.categoria)}</span>
+      <h4>${esc(p.nome)}</h4>
+      <p>${esc(p.descricao)}</p>
+      <div class="produto-rodape"><span class="preco">${brl.format(Number(p.preco) || 0)}</span><button class="btn btn-sec" data-add="${p.id}">Adicionar</button></div>
+    </div>`;
+  }).join("");
+  renderPedido();
+}
+$("#produtos").addEventListener("click", e => {
+  const b = e.target.closest("[data-add]"); if (!b) return;
+  const p = estado.produtos.find(x => String(x.id) === b.dataset.add);
+  if (!p) return;
+  pedido.set(p.id, (pedido.get(p.id) || 0) + 1);
+  renderPedido(); toast(`${p.nome} adicionado ao pedido.`);
+});
+function renderPedido() {
+  for (const id of pedido.keys()) if (!produtosVisiveis().some(p => p.id === id)) pedido.delete(id);
+  const itens = [...pedido.entries()];
+  const alvo = $("#pedido-itens");
+  if (!itens.length) {
+    alvo.innerHTML = `<p class="pedido-vazio">Seu pedido está vazio. Adicione produtos para montar a mensagem.</p>`;
+  } else {
+    alvo.innerHTML = "<ul>" + itens.map(([id, q]) => {
+      const p = estado.produtos.find(x => x.id === id);
+      return `<li><span>${esc(p.nome)}</span>
+        <span class="qtd"><button data-menos="${id}" aria-label="Diminuir ${esc(p.nome)}">−</button><span>${q}</span><button data-mais="${id}" aria-label="Aumentar ${esc(p.nome)}">+</button></span>
+        <span class="linha-preco">${q} × ${brl.format(Number(p.preco))} = ${brl.format(q * Number(p.preco))}</span></li>`;
+    }).join("") + "</ul>";
+  }
+  const total = itens.reduce((s, [id, q]) => s + q * Number(estado.produtos.find(x => x.id === id).preco), 0);
+  $("#pedido-total").textContent = brl.format(total);
+  $("#pedido-enviar").disabled = !itens.length;
+}
+$("#pedido-itens").addEventListener("click", e => {
+  const mais = e.target.closest("[data-mais]"), menos = e.target.closest("[data-menos]");
+  const achar = v => [...pedido.keys()].find(k => String(k) === v);
+  if (mais) { const id = achar(mais.dataset.mais); pedido.set(id, pedido.get(id) + 1); }
+  if (menos) { const id = achar(menos.dataset.menos), q = pedido.get(id) - 1; q > 0 ? pedido.set(id, q) : pedido.delete(id); }
+  if (mais || menos) renderPedido();
+});
+$("#pedido-obs").textContent = CONFIG.whatsappPedido ? "" : "O pedido é copiado e você cola no grupo do WhatsApp.";
+$("#pedido-enviar").textContent = CONFIG.whatsappPedido ? "Enviar pedido pelo WhatsApp" : "Copiar pedido e abrir o grupo";
+$("#pedido-enviar").addEventListener("click", async () => {
+  let total = 0;
+  const linhas = [...pedido.entries()].map(([id, q]) => { const p = estado.produtos.find(x => x.id === id); total += q * Number(p.preco); return `• ${q}x ${p.nome} (${brl.format(q * Number(p.preco))})`; });
+  const texto = `Olá, ${CONFIG.equipe}! Quero fazer um pedido:\n${linhas.join("\n")}\nTotal: ${brl.format(total)}`;
+  if (CONFIG.whatsappPedido) {
+    window.open(`https://wa.me/${CONFIG.whatsappPedido}?text=${encodeURIComponent(texto)}`, "_blank", "noopener");
+    return;
+  }
+  try { await navigator.clipboard.writeText(texto); toast("Pedido copiado. Cole no grupo do WhatsApp."); }
+  catch { toast("Copie o pedido da lista e envie no grupo do WhatsApp."); }
+  window.open(CONFIG.whatsappGrupo, "_blank", "noopener");
+});
+
+/* =========================================================
+   CARREGAMENTO DE DADOS
+   ========================================================= */
+async function carregarReservas() {
+  try { estado.contagem = await DB.contagemReservas(); } catch { estado.contagem = {}; }
+  try { estado.minhas = await DB.minhasReservas(); } catch { estado.minhas = new Set(); }
+}
+async function carregarTabela(tabela) {
+  try { estado[tabela] = await DB.listar(tabela); estado.erro[tabela] = false; }
+  catch (e) { console.error(e); estado.erro[tabela] = true; }
+}
+async function carregarTudo() {
+  await Promise.all(["eventos", "produtos", "jornal", "equipes", "operadores", "galeria"].map(carregarTabela));
+  await carregarReservas();
+  renderTudo();
+}
+function renderTudo() {
+  renderEventos(); atualizarProximo(); tique();
+  renderProdutos(); renderJornal(); renderEquipes(); renderGaleria(); renderGerenciar();
+}
+function renderGerenciar() { $$("[data-gerenciar]").forEach(b => b.hidden = !pode(b.dataset.gerenciar)); }
+$$("[data-gerenciar]").forEach(b => b.addEventListener("click", () => abrirAdmin(b.dataset.gerenciar)));
+
+/* =========================================================
+   CONTA (topo)
+   ========================================================= */
+function renderConta() {
+  const box = $("#conta");
+  const u = estado.usuario;
+  if (!u) { box.innerHTML = `<button class="btn btn-sec btn-mini" id="btn-entrar">Entrar</button>`; return; }
+  box.innerHTML = `
+    <button class="conta-btn" id="conta-btn" aria-expanded="false" aria-controls="conta-menu" aria-label="Minha conta: ${esc(u.nome)}">
+      <span class="conta-inicial" aria-hidden="true">${esc(primeiroNome(u.nome).charAt(0).toUpperCase())}</span>
+      <span class="conta-nome">${esc(primeiroNome(u.nome))}</span>
+    </button>
+    <div class="conta-menu" id="conta-menu" hidden>
+      <p class="conta-quem"><strong>${esc(u.nome)}</strong><span>${esc(CARGOS[u.cargo] || u.cargo)}</span></p>
+      ${ehEquipe() ? `<button data-conta="painel">Painel de controle</button>` : ""}
+      <button data-conta="reservas">Minhas reservas</button>
+      <button data-conta="sair">Sair</button>
+    </div>`;
+}
+function fecharMenuConta() {
+  const m = $("#conta-menu"); if (!m) return;
+  m.hidden = true; $("#conta-btn")?.setAttribute("aria-expanded", "false");
+}
+$("#conta").addEventListener("click", async e => {
+  if (e.target.closest("#btn-entrar")) { abrirLogin("entrar"); return; }
+  if (e.target.closest("#conta-btn")) {
+    const m = $("#conta-menu"), abrir = m.hidden;
+    m.hidden = !abrir; $("#conta-btn").setAttribute("aria-expanded", String(abrir));
+    if (abrir) $("button", m)?.focus();
+    return;
+  }
+  const acao = e.target.closest("[data-conta]")?.dataset.conta;
+  if (!acao) return;
+  fecharMenuConta();
+  if (acao === "painel") abrirAdmin();
+  if (acao === "reservas") {
+    const minhas = eventosFuturos().filter(ev => estado.minhas.has(ev.id));
+    location.hash = minhas.length ? "#ev-" + minhas[0].id : "#eventos";
+    toast(minhas.length ? `Você tem ${minhas.length} ${minhas.length === 1 ? "reserva" : "reservas"}.` : "Você ainda não reservou nenhum evento.");
+  }
+  if (acao === "sair") {
+    try { await DB.sair(); toast("Você saiu da sua conta."); } catch (err) { toast(err.message); }
+  }
+});
+document.addEventListener("click", e => { if (!e.target.closest("#conta")) fecharMenuConta(); });
+
+async function aoMudarUsuario(perfil) {
+  const antes = estado.usuario?.cargo;
+  estado.usuario = perfil;
+  renderConta();
+  if (!perfil && !$("#admin").hidden) fecharAdmin();
+  if (antes !== perfil?.cargo) await Promise.all(["produtos", "jornal"].map(carregarTabela));
+  await carregarReservas();
+  renderTudo();
+}
+
+/* =========================================================
+   LOGIN E CADASTRO
+   ========================================================= */
+const modalLogin = $("#modal-login");
+let modoLogin = "entrar", focoAntesLogin = null;
+function abrirLogin(modo = "entrar", motivo = "") {
+  focoAntesLogin = document.activeElement;
+  trocarModoLogin(modo);
+  $("#login-motivo").hidden = !motivo;
+  $("#login-motivo").textContent = motivo;
+  $("#login-erro").textContent = ""; $("#login-ok").textContent = "";
+  const dica = $("#dica-demo");
+  dica.hidden = DB?.modo !== "demo";
+  if (DB?.modo === "demo") {
+    dica.innerHTML = DB.contasDemo.length
+      ? `<strong class="alerta-demo">Contas de teste ligadas.</strong> Antes de divulgar o site, coloque <code>contasDemo: false</code> no início do código.
+         Clique em uma conta para preencher (senha <strong>vip123</strong>):
+         <ul>${DB.contasDemo.map(c => `<li><button type="button" data-demo="${c.email}">${c.email} <span>${CARGOS[c.cargo]}</span></button></li>`).join("")}</ul>`
+      : `Modo demonstração: a conta que você criar funciona enquanto a página estiver aberta e some ao recarregar. Configure o Supabase para as contas valerem de verdade.`;
+  }
+  modalLogin.hidden = false; travar();
+  setTimeout(() => (modo === "cadastro" ? $("#l-nome") : $("#l-email")).focus(), 30);
+}
+function fecharLogin() {
+  modalLogin.hidden = true; destravar(); pendenteReserva = null;
+  (focoAntesLogin && document.contains(focoAntesLogin) ? focoAntesLogin : $("#btn-entrar") || $("#conta-btn"))?.focus();
+}
+function trocarModoLogin(modo) {
+  modoLogin = modo;
+  const cad = modo === "cadastro";
+  $$(".alternar button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.modo === modo)));
+  $("#login-titulo").textContent = cad ? "Criar conta" : "Entrar";
+  $("#l-nome-box").hidden = !cad;
+  $("#login-privacidade").hidden = !cad;
+  $("#l-senha-dica").hidden = !cad;
+  $("#l-senha").autocomplete = cad ? "new-password" : "current-password";
+  $("#login-enviar").textContent = cad ? "Criar conta" : "Entrar";
+  $("#login-erro").textContent = ""; $("#login-ok").textContent = "";
+}
+$$(".alternar button").forEach(b => b.addEventListener("click", () => trocarModoLogin(b.dataset.modo)));
+$("#login-fechar").addEventListener("click", fecharLogin);
+modalLogin.addEventListener("click", e => {
+  if (e.target === modalLogin) fecharLogin();
+  const demo = e.target.closest("[data-demo]");
+  if (e.target.closest("#priv-link")) { abrirPrivacidade(); return; }
+  if (demo) { trocarModoLogin("entrar"); $("#l-email").value = demo.dataset.demo; $("#l-senha").value = "vip123"; $("#login-enviar").focus(); }
+});
+$("#form-login").addEventListener("submit", async e => {
+  e.preventDefault();
+  const nome = $("#l-nome").value.trim(), email = $("#l-email").value.trim(), senha = $("#l-senha").value;
+  const erro = $("#login-erro"), ok = $("#login-ok"), botao = $("#login-enviar");
+  erro.textContent = ""; ok.textContent = "";
+  if (modoLogin === "cadastro" && nome.length < 2) { erro.textContent = "Digite seu nome ou callsign."; $("#l-nome").focus(); return; }
+  if (!/^\S+@\S+\.\S+$/.test(email)) { erro.textContent = "Digite um e-mail válido."; $("#l-email").focus(); return; }
+  if (senha.length < 6) { erro.textContent = "A senha precisa ter pelo menos 6 caracteres."; $("#l-senha").focus(); return; }
+  const textoOriginal = botao.textContent;
+  botao.disabled = true; botao.textContent = modoLogin === "cadastro" ? "Criando conta…" : "Entrando…";
+  try {
+    let perfil = null;
+    if (modoLogin === "cadastro") {
+      const r = await DB.cadastrar(nome, email, senha);
+      if (r.precisaConfirmar) {
+        ok.textContent = "Conta criada. Enviamos um link de confirmação para o seu e-mail. Confirme e depois entre aqui.";
+        trocarModoLogin("entrar"); $("#l-email").value = email;
+        $("#login-ok").textContent = "Conta criada. Enviamos um link de confirmação para o seu e-mail. Confirme e depois entre aqui.";
+        return;
+      }
+      perfil = r.perfil;
+    } else {
+      perfil = await DB.entrar(email, senha);
+    }
+    const reservaPendente = pendenteReserva;
+    await aoMudarUsuario(perfil);
+    $("#form-login").reset();
+    modalLogin.hidden = true; destravar(); pendenteReserva = null;
+    toast(`Olá, ${primeiroNome(perfil.nome)}! Você entrou como ${CARGOS[perfil.cargo] || perfil.cargo}.`);
+    if (reservaPendente) {
+      await alternarReserva(reservaPendente);
+    } else {
+      $("#conta-btn")?.focus();
+    }
+  } catch (err) {
+    erro.textContent = err.message;
+  } finally {
+    botao.disabled = false;
+    if (botao.textContent.endsWith("…")) botao.textContent = textoOriginal;
+  }
+});
+
+/* ---------- Aviso de privacidade ---------- */
+const modalPriv = $("#modal-privacidade");
+let focoAntesPriv = null;
+function abrirPrivacidade() {
+  focoAntesPriv = document.activeElement;
+  modalPriv.hidden = false; travar();
+  $("#priv-fechar").focus();
+}
+function fecharPrivacidade() {
+  modalPriv.hidden = true; destravar();
+  (focoAntesPriv && document.contains(focoAntesPriv) ? focoAntesPriv : $("#abrir-privacidade"))?.focus();
+}
+$("#abrir-privacidade").addEventListener("click", abrirPrivacidade);
+$("#priv-fechar").addEventListener("click", fecharPrivacidade);
+modalPriv.addEventListener("click", e => { if (e.target === modalPriv) fecharPrivacidade(); });
+
+/* =========================================================
+   PAINEL DE CONTROLE
+   ========================================================= */
+const adminEl = $("#admin");
+const admin = { aba: null, editando: null, fotoNova: null, fotoUrl: "", previewUrl: "", focoAntes: null,
+  usuarios: [], buscaUsuario: "", acessos: [], buscaAcesso: "", filtroAcesso: "todos" };
+const NOMES_TABELA = { eventos: "evento", produtos: "produto", jornal: "aviso", equipes: "equipe", galeria: "foto", operadores: "operador" };
+const FEMININO = ["equipes", "galeria"];
+const ACOES = { entrou: "Entrou no site", cadastro: "Criou a conta" };
+const CARGOS_PLURAL = { admin: "administradores", organizador: "organizadores de jogos", lojista: "lojistas", redator: "redatores do jornal", membro: "membros" };
+const fem = (aba, m, f) => FEMININO.includes(aba) ? f : m;
+
+function abrirAdmin(abaInicial) {
+  if (!ehEquipe()) { toast("Seu cargo não tem acesso ao painel."); return; }
+  admin.focoAntes = document.activeElement;
+  const abasPermitidas = ABAS_ADMIN.filter(a => pode(a.id));
+  $("#admin-abas").innerHTML = abasPermitidas.map(a => `<button class="aba" role="tab" data-aba="${a.id}" aria-selected="false">${a.nome}</button>`).join("");
+  $("#admin-quem").textContent = `${estado.usuario.nome}, ${CARGOS[estado.usuario.cargo]}`;
+  $("#aviso-demo").hidden = DB.modo !== "demo";
+  $("#aviso-demo").innerHTML = "Modo demonstração: as alterações funcionam, mas somem ao recarregar a página. Configure o Supabase para salvar de verdade."
+    + (CONFIG.contasDemo ? " <strong>As contas de teste estão ligadas: não divulgue o link assim.</strong>" : "");
+  adminEl.hidden = false; travar();
+  trocarAba(abasPermitidas.some(a => a.id === abaInicial) ? abaInicial : abasPermitidas[0].id);
+  $(`[data-aba="${admin.aba}"]`).focus();
+}
+function fecharAdmin() {
+  adminEl.hidden = true; destravar(); limparForm();
+  admin.focoAntes?.focus?.();
+}
+$("#admin-fechar").addEventListener("click", fecharAdmin);
+$("#admin-abas").addEventListener("click", e => { const b = e.target.closest("[data-aba]"); if (b) trocarAba(b.dataset.aba); });
+
+function trocarAba(aba) {
+  admin.aba = aba;
+  $$("#admin-abas .aba").forEach(b => b.setAttribute("aria-selected", String(b.dataset.aba === aba)));
+  limparForm();
+  renderListaAdmin();
+}
+function limparForm() {
+  admin.editando = null; admin.fotoNova = null; admin.fotoUrl = "";
+  if (admin.previewUrl) URL.revokeObjectURL(admin.previewUrl);
+  admin.previewUrl = "";
+  $("#admin-corpo").classList.remove("editando");
+  $("#admin-corpo").classList.toggle("sem-form", admin.aba === "acessos");
+  $("#admin-form").innerHTML = admin.aba === "usuarios"
+    ? `<h3>Cargos</h3><p class="form-vazio">Só o administrador escolhe o cargo de cada pessoa. Todo cadastro novo entra como Membro, e a mudança de cargo vale na hora.</p>${legendaCargos()}`
+    : admin.aba === "acessos" ? ""
+    : `<p class="form-vazio">Escolha um item na lista para editar, ou clique em <strong>${FEMININO.includes(admin.aba) ? "Nova" : "Novo"}</strong> para criar.</p>`;
+}
+function legendaCargos() {
+  return `<dl class="legenda-cargos">${Object.keys(CARGOS).map(c => `<div><dt>${CARGOS[c]}</dt><dd>${O_QUE_FAZ[c]}</dd></div>`).join("")}</dl>`;
+}
+function miniFoto(url) {
+  const u = urlSegura(url);
+  return `<div class="mini-foto">${u ? `<img src="${esc(u)}" alt="">` : "Sem foto"}</div>`;
+}
+function statusJornal(j) {
+  const hoje = hojeISO(), pub = edicoesPublicadas();
+  if (j.publicar_em > hoje) return `<span class="tag tag-agendada">Agendada</span>`;
+  if (pub[0] && pub[0].id === j.id) return `<span class="tag tag-ar">No ar</span>`;
+  return `<span class="tag tag-antiga">Anterior</span>`;
+}
+function botaoExcluir(id) { return `<button class="btn btn-sec btn-mini btn-perigo" data-acao="excluir" data-id="${id}">Excluir</button>`; }
+
+async function renderListaAdmin() {
+  const alvo = $("#admin-lista");
+  const aba = admin.aba;
+  if (aba === "eventos") {
+    const lista = [...estado.eventos].sort((a, b) => new Date(a.data) - new Date(b.data));
+    alvo.innerHTML = `
+      <div class="lista-topo"><h3>Eventos</h3><button class="btn btn-mini" data-acao="novo">Novo evento</button></div>
+      <p class="lista-ajuda">Crie os dias de jogo, coloque a foto e acompanhe quem reservou. Eventos que já passaram ficam apagados na lista e somem do site.</p>
+      ${lista.length ? lista.map(e => {
+        const passado = new Date(e.data) < new Date();
+        return `<div class="linha-admin ${passado ? "passado" : ""} ${admin.editando?.id === e.id ? "ativa" : ""}">
+          ${miniFoto(e.foto_url)}
+          <div><strong>${esc(e.nome)}</strong><span class="linha-meta">${fmtCurto.format(new Date(e.data))}, ${esc(e.tipo)}, ${ocupadas(e)} de ${e.vagas} vagas${passado ? ", encerrado" : ""}</span></div>
+          <div class="linha-acoes">
+            <button class="btn btn-sec btn-mini" data-acao="editar" data-id="${e.id}">Editar</button>
+            <button class="btn btn-sec btn-mini" data-acao="inscritos" data-id="${e.id}">Inscritos</button>
+            ${botaoExcluir(e.id)}
+          </div></div>`;
+      }).join("") : `<p class="form-vazio">Nenhum evento ainda. Clique em Novo evento para criar o primeiro.</p>`}`;
+  }
+  if (aba === "produtos") {
+    alvo.innerHTML = `
+      <div class="lista-topo"><h3>Loja</h3><button class="btn btn-mini" data-acao="novo">Novo produto</button></div>
+      <p class="lista-ajuda">Produtos ocultos continuam salvos, mas não aparecem na loja. Use isso quando um item estiver em falta.</p>
+      ${estado.produtos.length ? estado.produtos.map(p => `
+        <div class="linha-admin ${admin.editando?.id === p.id ? "ativa" : ""}">
+          ${miniFoto(p.foto_url)}
+          <div><strong>${esc(p.nome)}</strong> ${p.ativo === false ? `<span class="tag tag-oculto">Oculto</span>` : ""}<span class="linha-meta">${esc(p.categoria)}, ${brl.format(Number(p.preco) || 0)}</span></div>
+          <div class="linha-acoes">
+            <button class="btn btn-sec btn-mini" data-acao="editar" data-id="${p.id}">Editar</button>
+            ${botaoExcluir(p.id)}
+          </div></div>`).join("") : `<p class="form-vazio">Nenhum produto ainda. Clique em Novo produto para criar o primeiro.</p>`}`;
+  }
+  if (aba === "jornal") {
+    alvo.innerHTML = `
+      <div class="lista-topo"><h3>Avisos e novidades</h3><button class="btn btn-mini" data-acao="novo">Novo aviso</button></div>
+      <p class="lista-ajuda">O site mostra sempre o aviso mais recente cuja data já chegou. Dá para deixar um aviso pronto com data futura: ele entra no ar sozinho no dia marcado.</p>
+      ${estado.jornal.length ? estado.jornal.map(j => `
+        <div class="linha-admin ${admin.editando?.id === j.id ? "ativa" : ""}">
+          ${miniFoto(j.foto_url)}
+          <div><strong>${esc(j.titulo)}</strong> ${statusJornal(j)}<span class="linha-meta">Publicação em ${fmtDiaMes.format(dataDeISO(j.publicar_em))}</span></div>
+          <div class="linha-acoes">
+            <button class="btn btn-sec btn-mini" data-acao="editar" data-id="${j.id}">Editar</button>
+            ${botaoExcluir(j.id)}
+          </div></div>`).join("") : `<p class="form-vazio">Nenhum aviso ainda. Clique em Novo aviso para escrever o primeiro.</p>`}`;
+  }
+  if (aba === "galeria") {
+    alvo.innerHTML = `
+      <div class="lista-topo"><h3>Galeria</h3><button class="btn btn-mini" data-acao="novo">Nova foto</button></div>
+      <p class="lista-ajuda">As fotos aparecem na galeria do site na ordem definida aqui. Enquanto uma foto não for enviada, o site mostra um padrão camuflado no lugar.</p>
+      ${estado.galeria.length ? estado.galeria.map(g => `
+        <div class="linha-admin ${admin.editando?.id === g.id ? "ativa" : ""}">
+          ${miniFoto(g.foto_url)}
+          <div><strong>${esc(g.titulo)}</strong><span class="linha-meta">Posição ${g.ordem || "—"}${urlSegura(g.foto_url) ? "" : ", sem foto enviada"}</span></div>
+          <div class="linha-acoes">
+            <button class="btn btn-sec btn-mini" data-acao="editar" data-id="${g.id}">Editar</button>
+            ${botaoExcluir(g.id)}
+          </div></div>`).join("") : `<p class="form-vazio">Nenhuma foto ainda. Clique em Nova foto para enviar a primeira.</p>`}`;
+  }
+  if (aba === "operadores") {
+    const semEquipe = !estado.equipes.length;
+    alvo.innerHTML = `
+      <div class="lista-topo"><h3>Operadores</h3>${semEquipe ? "" : `<button class="btn btn-mini" data-acao="novo">Novo operador</button>`}</div>
+      <p class="lista-ajuda">Cada operador aparece na aba da sua equipe, com foto, callsign, função e réplica. Sem foto, o site mostra um patch com as iniciais.</p>
+      ${semEquipe ? `<p class="form-vazio">Crie uma equipe primeiro, na aba Equipes.</p>` : estado.equipes.map(t => {
+        const lista = operadoresDa(t.id);
+        return `<h4 class="grupo-titulo">${esc(t.nome)}</h4>
+          ${lista.length ? lista.map(o => `
+            <div class="linha-admin ${admin.editando?.id === o.id ? "ativa" : ""}">
+              ${urlSegura(o.foto_url) ? miniFoto(o.foto_url) : `<div class="mini-foto"><strong style="font:800 1.1rem/1 var(--display);color:var(--areia)">${esc(iniciais(o.nome))}</strong></div>`}
+              <div><strong>${esc(o.nome)}</strong><span class="linha-meta">${[o.funcao, o.replica].filter(Boolean).map(esc).join(", ") || "sem função definida"}</span></div>
+              <div class="linha-acoes">
+                <button class="btn btn-sec btn-mini" data-acao="editar" data-id="${o.id}">Editar</button>
+                ${botaoExcluir(o.id)}
+              </div></div>`).join("") : `<p class="form-vazio">Nenhum operador nesta equipe ainda.</p>`}`;
+      }).join("")}`;
+  }
+  if (aba === "equipes") {
+    alvo.innerHTML = `
+      <div class="lista-topo"><h3>Equipes</h3><button class="btn btn-mini" data-acao="novo">Nova equipe</button></div>
+      <p class="lista-ajuda">Cada equipe aparece como uma aba na seção Equipes do site, com resumo, data de início e operadores.</p>
+      ${estado.equipes.length ? estado.equipes.map(t => {
+        const n = operadoresDa(t.id).length;
+        return `<div class="linha-admin ${admin.editando?.id === t.id ? "ativa" : ""}">
+          ${urlSegura(t.foto_url) ? miniFoto(t.foto_url) : `<div class="mini-foto"><strong style="font:800 1.2rem/1 var(--display);color:var(--areia)">${esc(siglaDe(t))}</strong></div>`}
+          <div><strong>${esc(t.nome)}</strong><span class="linha-meta">${t.desde ? `Desde ${esc(t.desde)}, ` : ""}${n} ${n === 1 ? "operador" : "operadores"}</span></div>
+          <div class="linha-acoes">
+            <button class="btn btn-sec btn-mini" data-acao="editar" data-id="${t.id}">Editar</button>
+            ${botaoExcluir(t.id)}
+          </div></div>`;
+      }).join("") : `<p class="form-vazio">Nenhuma equipe ainda. Clique em Nova equipe para criar a primeira.</p>`}`;
+  }
+  if (aba === "usuarios") {
+    alvo.innerHTML = `<div class="lista-topo"><h3>Membros e cargos</h3></div><p class="carregando">Carregando membros…</p>`;
+    try {
+      admin.usuarios = await DB.listarUsuarios();
+      if (admin.aba !== "usuarios") return;
+      const total = admin.usuarios.length;
+      const porCargo = Object.keys(CARGOS).map(c => [c, admin.usuarios.filter(u => u.cargo === c).length]).filter(([, n]) => n);
+      alvo.innerHTML = `
+        <div class="lista-topo"><h3>Membros e cargos</h3></div>
+        <p class="lista-ajuda">${total} ${total === 1 ? "pessoa cadastrada" : "pessoas cadastradas"}: ${porCargo.map(([c, n]) => `${n} ${n === 1 ? CARGOS[c].toLowerCase() : CARGOS_PLURAL[c]}`).join(", ")}. Todo cadastro novo entra como Membro.</p>
+        <div class="busca"><input class="campo-busca" id="busca-usuario" type="search" placeholder="Buscar por nome ou e-mail" aria-label="Buscar membro" value="${esc(admin.buscaUsuario)}"></div>
+        <div id="usuarios-lista"></div>`;
+      renderUsuarios();
+    } catch (err) {
+      alvo.innerHTML = `<div class="lista-topo"><h3>Membros e cargos</h3></div><p class="erro-form">${esc(err.message)}</p>`;
+    }
+  }
+  if (aba === "acessos") {
+    alvo.innerHTML = `<div class="lista-topo"><h3>Registro de acessos</h3></div><p class="carregando">Carregando registro…</p>`;
+    try {
+      admin.acessos = await DB.listarAcessos();
+      if (admin.aba !== "acessos") return;
+      const hoje = hojeISO(), semana = Date.now() - 7 * 86400e3;
+      const entradasHoje = admin.acessos.filter(a => a.acao === "entrou" && isoLocal(new Date(a.criado_em)) === hoje).length;
+      const pessoasSemana = new Set(admin.acessos.filter(a => a.acao === "entrou" && new Date(a.criado_em) >= semana).map(a => a.email || a.nome)).size;
+      const cadastrosSemana = admin.acessos.filter(a => a.acao === "cadastro" && new Date(a.criado_em) >= semana).length;
+      alvo.innerHTML = `
+        <div class="lista-topo"><h3>Registro de acessos</h3><button class="btn btn-sec btn-mini" data-acao="atualizar-acessos">Atualizar</button></div>
+        <p class="lista-ajuda">Cada vez que alguém entra no site ou cria uma conta, fica registrado aqui. Mostrando os ${admin.acessos.length} registros mais recentes.</p>
+        <div class="resumo-acessos">
+          <div><strong>${entradasHoje}</strong><span>entradas hoje</span></div>
+          <div><strong>${pessoasSemana}</strong><span>pessoas diferentes nos últimos 7 dias</span></div>
+          <div><strong>${cadastrosSemana}</strong><span>contas novas nos últimos 7 dias</span></div>
+        </div>
+        <div class="busca">
+          <input class="campo-busca" id="busca-acesso" type="search" placeholder="Buscar por nome ou e-mail" aria-label="Buscar no registro" value="${esc(admin.buscaAcesso)}">
+          <div class="filtros" style="margin:0" role="group" aria-label="Filtrar por tipo">
+            ${[["todos", "Todos"], ["entrou", "Entradas"], ["cadastro", "Cadastros"]].map(([v, t]) => `<button class="chip" data-filtro-acesso="${v}" aria-pressed="${admin.filtroAcesso === v}">${t}</button>`).join("")}
+          </div>
+        </div>
+        <div id="acessos-tabela"></div>`;
+      renderAcessos();
+    } catch (err) {
+      alvo.innerHTML = `<div class="lista-topo"><h3>Registro de acessos</h3></div><p class="erro-form">${esc(err.message)}</p>`;
+    }
+  }
+}
+
+const bate = (busca, ...campos) => !busca || campos.some(c => String(c || "").toLowerCase().includes(busca.toLowerCase()));
+function renderUsuarios() {
+  const alvo = $("#usuarios-lista"); if (!alvo) return;
+  const lista = admin.usuarios.filter(u => bate(admin.buscaUsuario, u.nome, u.email));
+  alvo.innerHTML = lista.length ? lista.map(u => {
+    const eu = u.id === estado.usuario.id;
+    const datas = [u.criado_em ? `cadastro em ${fmtData.format(new Date(u.criado_em))}` : "", u.ultimo_acesso ? `último acesso ${fmtCurto.format(new Date(u.ultimo_acesso))}` : "ainda não entrou"].filter(Boolean).join(", ");
+    return `<div class="linha-admin linha-usuario">
+      <div><strong>${esc(u.nome || "Sem nome")}${eu ? " (você)" : ""}</strong><span class="linha-meta">${esc(u.email || "")}</span><span class="linha-meta">${datas}</span></div>
+      <select data-cargo="${esc(u.id)}" aria-label="Cargo de ${esc(u.nome)}" ${eu ? "disabled title=\"Você não pode alterar o próprio cargo\"" : ""}>
+        ${Object.keys(CARGOS).map(c => `<option value="${c}" ${u.cargo === c ? "selected" : ""}>${CARGOS[c]}</option>`).join("")}
+      </select></div>`;
+  }).join("") : `<p class="form-vazio">Ninguém encontrado com essa busca.</p>`;
+}
+function renderAcessos() {
+  const alvo = $("#acessos-tabela"); if (!alvo) return;
+  const lista = admin.acessos.filter(a => (admin.filtroAcesso === "todos" || a.acao === admin.filtroAcesso) && bate(admin.buscaAcesso, a.nome, a.email));
+  alvo.innerHTML = lista.length ? `
+    <div class="tabela-wrap"><table class="tabela">
+      <thead><tr><th scope="col">Quando</th><th scope="col">Pessoa</th><th scope="col">O que fez</th></tr></thead>
+      <tbody>${lista.map(a => `<tr>
+        <td>${fmtCurto.format(new Date(a.criado_em))}</td>
+        <td>${esc(a.nome || "Sem nome")}<span>${esc(a.email || "")}</span></td>
+        <td><span class="tag ${a.acao === "cadastro" ? "tag-agendada" : "tag-ar"}">${ACOES[a.acao] || esc(a.acao)}</span></td>
+      </tr>`).join("")}</tbody>
+    </table></div>` : `<p class="form-vazio">Nenhum registro encontrado.</p>`;
+}
+$("#admin-lista").addEventListener("input", e => {
+  if (e.target.id === "busca-usuario") { admin.buscaUsuario = e.target.value; renderUsuarios(); }
+  if (e.target.id === "busca-acesso") { admin.buscaAcesso = e.target.value; renderAcessos(); }
+});
+
+const listaDaAba = () => estado[admin.aba] || [];
+$("#admin-lista").addEventListener("click", async e => {
+  const filtro = e.target.closest("[data-filtro-acesso]");
+  if (filtro) {
+    admin.filtroAcesso = filtro.dataset.filtroAcesso;
+    $$("[data-filtro-acesso]").forEach(x => x.setAttribute("aria-pressed", String(x === filtro)));
+    renderAcessos();
+    return;
+  }
+  const b = e.target.closest("[data-acao]"); if (!b) return;
+  const id = b.dataset.id !== undefined ? (Number(b.dataset.id) || b.dataset.id) : null;
+  const item = listaDaAba().find(x => x.id === id);
+  if (b.dataset.acao === "atualizar-acessos") { renderListaAdmin(); return; }
+  if (b.dataset.acao === "novo") abrirForm(null);
+  if (b.dataset.acao === "editar" && item) abrirForm(item);
+  if (b.dataset.acao === "inscritos" && item) mostrarInscritos(item);
+  if (b.dataset.acao === "excluir" && item) {
+    if (!b.classList.contains("confirmar")) {
+      b.classList.add("confirmar"); b.textContent = "Confirmar exclusão";
+      setTimeout(() => { if (document.contains(b)) { b.classList.remove("confirmar"); b.textContent = "Excluir"; } }, 4000);
+      return;
+    }
+    b.disabled = true;
+    try {
+      await DB.remover(admin.aba, id);
+      toast(`${item.nome || item.titulo} ${fem(admin.aba, "excluído", "excluída")}.`);
+      if (admin.editando?.id === id) limparForm();
+      await recarregarDepoisDeEditar();
+    } catch (err) { toast(err.message); b.disabled = false; }
+  }
+});
+$("#admin-lista").addEventListener("change", async e => {
+  const sel = e.target.closest("[data-cargo]"); if (!sel) return;
+  const nome = sel.closest(".linha-admin").querySelector("strong").textContent;
+  sel.disabled = true;
+  try {
+    await DB.definirCargo(sel.dataset.cargo, sel.value);
+    toast(`${nome} agora é ${CARGOS[sel.value]}.`);
+  } catch (err) { toast(err.message); }
+  renderListaAdmin();
+});
+
+async function recarregarDepoisDeEditar() {
+  await carregarTabela(admin.aba);
+  if (admin.aba === "equipes") await carregarTabela("operadores");
+  if (admin.aba === "eventos") await carregarReservas();
+  renderTudo();
+  renderListaAdmin();
+}
+
+/* ---------- Formulários do painel ---------- */
+function campoFoto(url) {
+  const u = urlSegura(url);
+  return `
+    <div class="f">
+      <span class="f-rot">Foto</span>
+      <div class="foto-campo">
+        <img id="f-preview" src="${esc(u)}" alt="Prévia da foto" ${u ? "" : "hidden"}>
+        <div class="foto-botoes">
+          <label class="btn btn-sec btn-mini"><input type="file" id="f-arquivo" accept="image/jpeg,image/png,image/webp" class="oculto">${u ? "Trocar foto" : "Escolher foto"}</label>
+          <button type="button" class="btn btn-sec btn-mini" id="f-remover-foto" ${u ? "" : "hidden"}>Remover foto</button>
+        </div>
+        <small>JPG, PNG ou WebP. A imagem é reduzida automaticamente antes de enviar.</small>
+      </div>
+    </div>`;
+}
+function abrirForm(item) {
+  limparForm();
+  admin.editando = item;
+  admin.fotoUrl = item?.foto_url || "";
+  const aba = admin.aba;
+  const titulo = item ? `Editar ${NOMES_TABELA[aba]}` : `${FEMININO.includes(aba) ? "Nova" : "Novo"} ${NOMES_TABELA[aba]}`;
+  let campos = "";
+  if (aba === "eventos") {
+    const d = item ? new Date(item.data) : null;
+    campos = `
+      <div class="f"><label for="f-nome">Nome do evento</label><input id="f-nome" maxlength="80" value="${esc(item?.nome)}" required></div>
+      <div class="f-duplo">
+        <div class="f"><label for="f-dia">Dia</label><input id="f-dia" type="date" value="${d ? isoLocal(d) : ""}" required></div>
+        <div class="f"><label for="f-hora">Horário</label><input id="f-hora" type="time" value="${d ? `${pad(d.getHours())}:${pad(d.getMinutes())}` : "08:00"}" required></div>
+      </div>
+      <div class="f"><label for="f-tipo">Tipo</label><select id="f-tipo">${TIPOS_EVENTO.map(t => `<option ${item?.tipo === t ? "selected" : ""}>${t}</option>`).join("")}</select></div>
+      <div class="f-duplo">
+        <div class="f"><label for="f-vagas">Total de vagas</label><input id="f-vagas" type="number" min="0" value="${item?.vagas ?? 40}"></div>
+        <div class="f"><label for="f-externas">Reservas fora do site</label><input id="f-externas" type="number" min="0" value="${item?.reservas_externas ?? 0}"><small>Quem confirmou pelo WhatsApp ou pessoalmente.</small></div>
+      </div>
+      <div class="f"><label for="f-desc">Descrição</label><textarea id="f-desc" maxlength="600" style="min-height:6rem">${esc(item?.descricao)}</textarea></div>
+      ${campoFoto(item?.foto_url)}`;
+  }
+  if (aba === "produtos") {
+    const cats = [...new Set([...CATEGORIAS, ...(item?.categoria ? [item.categoria] : [])])];
+    campos = `
+      <div class="f"><label for="f-nome">Nome do produto</label><input id="f-nome" maxlength="80" value="${esc(item?.nome)}" required></div>
+      <div class="f-duplo">
+        <div class="f"><label for="f-cat">Categoria</label><select id="f-cat">${cats.map(c => `<option ${item?.categoria === c ? "selected" : ""}>${esc(c)}</option>`).join("")}</select></div>
+        <div class="f"><label for="f-preco">Preço (R$)</label><input id="f-preco" type="number" min="0" step="0.01" value="${item ? Number(item.preco).toFixed(2) : ""}" placeholder="69.90" required></div>
+      </div>
+      <div class="f"><label for="f-desc">Descrição</label><textarea id="f-desc" maxlength="300" style="min-height:5rem">${esc(item?.descricao)}</textarea></div>
+      ${campoFoto(item?.foto_url)}
+      <label class="f-check"><input type="checkbox" id="f-ativo" ${item?.ativo === false ? "" : "checked"}>Mostrar na loja</label>`;
+  }
+  if (aba === "jornal") {
+    campos = `
+      <div class="f"><label for="f-titulo">Título do aviso</label><input id="f-titulo" maxlength="120" value="${esc(item?.titulo)}" required></div>
+      <div class="f-duplo">
+        <div class="f"><label for="f-publicar">Entra no ar em</label><input id="f-publicar" type="date" value="${item?.publicar_em ?? hojeISO()}" required><small>Hoje para publicar já.</small></div>
+        <div class="f"><label for="f-autor">Quem escreveu</label><input id="f-autor" maxlength="60" value="${esc(item?.autor ?? estado.usuario.nome)}"></div>
+      </div>
+      <div class="f"><label for="f-conteudo">Texto</label><textarea id="f-conteudo" style="min-height:14rem">${esc(item?.conteudo)}</textarea><small>Deixe uma linha em branco entre os parágrafos.</small></div>
+      ${campoFoto(item?.foto_url)}`;
+  }
+  if (aba === "galeria") {
+    const proximaOrdem = Math.max(0, ...estado.galeria.map(g => g.ordem || 0)) + 1;
+    campos = `
+      <div class="f"><label for="f-titulo">Legenda da foto</label><input id="f-titulo" maxlength="80" value="${esc(item?.titulo)}" required placeholder="Operação Nevoeiro"></div>
+      <div class="f" style="max-width:10rem"><label for="f-ordem">Posição na galeria</label><input id="f-ordem" type="number" min="1" value="${item?.ordem ?? proximaOrdem}"></div>
+      ${campoFoto(item?.foto_url)}`;
+  }
+  if (aba === "operadores") {
+    const proximaOrdem = Math.max(0, ...estado.operadores.map(o => o.ordem || 0)) + 1;
+    campos = `
+      <div class="f"><label for="f-nome">Callsign ou nome</label><input id="f-nome" maxlength="40" value="${esc(item?.nome)}" required placeholder="Carcará"></div>
+      <div class="f"><label for="f-equipe">Equipe</label><select id="f-equipe">${estado.equipes.map(t => `<option value="${t.id}" ${String(item?.equipe_id) === String(t.id) ? "selected" : ""}>${esc(t.nome)}</option>`).join("")}</select></div>
+      <div class="f-duplo">
+        <div class="f"><label for="f-funcao">Função ou classe</label><input id="f-funcao" maxlength="40" value="${esc(item?.funcao)}" placeholder="Líder e rádio"></div>
+        <div class="f"><label for="f-replica">Réplica</label><input id="f-replica" maxlength="40" value="${esc(item?.replica)}" placeholder="AEG M4"></div>
+      </div>
+      <div class="f" style="max-width:10rem"><label for="f-ordem">Posição na lista</label><input id="f-ordem" type="number" min="1" value="${item?.ordem ?? proximaOrdem}"></div>
+      ${campoFoto(item?.foto_url)}`;
+  }
+  if (aba === "equipes") {
+    const proximaOrdem = Math.max(0, ...estado.equipes.map(t => t.ordem || 0)) + 1;
+    campos = `
+      <div class="f"><label for="f-nome">Nome da equipe</label><input id="f-nome" maxlength="60" value="${esc(item?.nome)}" required></div>
+      <div class="f-duplo">
+        <div class="f"><label for="f-sigla">Sigla do brasão</label><input id="f-sigla" maxlength="5" value="${esc(item?.sigla)}" placeholder="VIP"><small>Até 5 letras. Aparece quando não há foto.</small></div>
+        <div class="f"><label for="f-desde">Na ativa desde</label><input id="f-desde" maxlength="40" value="${esc(item?.desde)}" placeholder="março de 2020"></div>
+      </div>
+      <div class="f"><label for="f-resumo">Resumo da equipe</label><textarea id="f-resumo" maxlength="1500" style="min-height:8rem">${esc(item?.resumo)}</textarea><small>Como a equipe começou, estilo de jogo e o que busca. Deixe uma linha em branco entre os parágrafos.</small></div>
+      <div class="f" style="max-width:10rem"><label for="f-ordem">Posição na página</label><input id="f-ordem" type="number" min="1" value="${item?.ordem ?? proximaOrdem}"></div>
+      ${campoFoto(item?.foto_url)}`;
+  }
+  $("#admin-form").innerHTML = `
+    <h3>${titulo}</h3>
+    <form id="form-admin" novalidate>
+      ${campos}
+      <p class="erro-form" id="f-erro" role="alert"></p>
+      <div class="form-acoes">
+        <button class="btn" type="submit" id="f-salvar">${item ? "Salvar alterações" : "Criar " + NOMES_TABELA[aba]}</button>
+        <button class="btn btn-sec" type="button" id="f-cancelar">Cancelar</button>
+      </div>
+    </form>`;
+  $("#admin-corpo").classList.add("editando");
+  renderListaAdmin();
+  $("#admin-form").scrollTop = 0;
+  $("#admin-corpo").scrollTop = 0;
+  $("#admin-form input, #admin-form select, #admin-form textarea")?.focus();
+}
+
+async function mostrarInscritos(evento) {
+  limparForm();
+  $("#admin-corpo").classList.add("editando");
+  $("#admin-form").innerHTML = `<h3>Inscritos</h3><p class="carregando">Carregando lista…</p>`;
+  try {
+    const lista = await DB.inscritos(evento.id);
+    const externas = evento.reservas_externas || 0;
+    $("#admin-form").innerHTML = `
+      <h3>Inscritos</h3>
+      <p><strong>${esc(evento.nome)}</strong><br><span class="linha-meta">${fmtCurto.format(new Date(evento.data))}</span></p>
+      <p class="lista-ajuda">${lista.length} ${lista.length === 1 ? "reserva feita" : "reservas feitas"} pelo site${externas ? ` e ${externas} fora do site` : ""}. Total de ${ocupadas(evento)} de ${evento.vagas} vagas.</p>
+      ${lista.length ? `<ul class="inscritos">${lista.map(i => `<li>${esc(i.nome)}<span>${esc(i.email)}</span></li>`).join("")}</ul>
+        <div class="form-acoes"><button class="btn btn-sec btn-mini" id="f-copiar">Copiar lista</button><button class="btn btn-sec btn-mini" id="f-cancelar">Fechar</button></div>`
+      : `<p class="form-vazio">Ninguém reservou pelo site ainda.</p><div class="form-acoes"><button class="btn btn-sec btn-mini" id="f-cancelar">Fechar</button></div>`}`;
+    $("#f-copiar")?.addEventListener("click", async () => {
+      const texto = `${evento.nome}\n` + lista.map((i, n) => `${n + 1}. ${i.nome} (${i.email})`).join("\n");
+      try { await navigator.clipboard.writeText(texto); toast("Lista copiada."); }
+      catch { toast("Não foi possível copiar. Selecione a lista e copie manualmente."); }
+    });
+  } catch (err) {
+    $("#admin-form").innerHTML = `<h3>Inscritos</h3><p class="erro-form">${esc(err.message)}</p><button class="btn btn-sec btn-mini" id="f-cancelar">Fechar</button>`;
+  }
+}
+
+$("#admin-form").addEventListener("click", e => {
+  if (e.target.closest("#f-cancelar")) { limparForm(); renderListaAdmin(); }
+  if (e.target.closest("#f-remover-foto")) {
+    admin.fotoNova = null; admin.fotoUrl = "";
+    const prev = $("#f-preview"); prev.hidden = true; prev.removeAttribute("src");
+    e.target.hidden = true;
+  }
+});
+$("#admin-form").addEventListener("change", async e => {
+  if (e.target.id !== "f-arquivo") return;
+  const arquivo = e.target.files[0]; if (!arquivo) return;
+  const erro = $("#f-erro"); erro.textContent = "";
+  try {
+    if (arquivo.size > 15 * 1024 * 1024) throw new Error("Essa imagem passa de 15 MB. Escolha uma foto menor.");
+    const blob = await comprimirImagem(arquivo);
+    admin.fotoNova = blob;
+    if (admin.previewUrl) URL.revokeObjectURL(admin.previewUrl);
+    admin.previewUrl = URL.createObjectURL(blob);
+    const prev = $("#f-preview"); prev.src = admin.previewUrl; prev.hidden = false;
+    $("#f-remover-foto").hidden = false;
+  } catch (err) { erro.textContent = err.message; }
+  e.target.value = "";
+});
+function comprimirImagem(arquivo, max = 1600, qualidade = .82) {
+  return new Promise((resolve, reject) => {
+    if (!/^image\/(jpeg|png|webp)$/.test(arquivo.type)) return reject(new Error("Escolha uma imagem JPG, PNG ou WebP."));
+    const img = new Image(), url = URL.createObjectURL(arquivo);
+    img.onload = () => {
+      const escala = Math.min(1, max / Math.max(img.width, img.height));
+      const c = document.createElement("canvas");
+      c.width = Math.round(img.width * escala); c.height = Math.round(img.height * escala);
+      const ctx = c.getContext("2d");
+      ctx.fillStyle = "#161B13"; ctx.fillRect(0, 0, c.width, c.height);
+      ctx.drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      c.toBlob(b => b ? resolve(b) : reject(new Error("Não foi possível processar a imagem.")), "image/jpeg", qualidade);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Não foi possível ler essa imagem.")); };
+    img.src = url;
+  });
+}
+function coletarForm() {
+  const aba = admin.aba, v = id => $(id)?.value ?? "";
+  if (aba === "eventos") {
+    const nome = v("#f-nome").trim(), dia = v("#f-dia"), hora = v("#f-hora") || "08:00";
+    const vagas = parseInt(v("#f-vagas"), 10), externas = parseInt(v("#f-externas"), 10) || 0;
+    if (!nome) throw new Error("Dê um nome ao evento.");
+    if (!dia) throw new Error("Escolha o dia do evento.");
+    if (!(vagas >= 0)) throw new Error("Informe o total de vagas.");
+    if (externas > vagas) throw new Error("As reservas fora do site não podem passar do total de vagas.");
+    return { nome, tipo: v("#f-tipo"), data: new Date(`${dia}T${hora}`).toISOString(), vagas, reservas_externas: externas, descricao: v("#f-desc").trim() };
+  }
+  if (aba === "produtos") {
+    const nome = v("#f-nome").trim(), preco = parseFloat(String(v("#f-preco")).replace(",", "."));
+    if (!nome) throw new Error("Dê um nome ao produto.");
+    if (!(preco >= 0)) throw new Error("Informe o preço. Use ponto para os centavos, por exemplo 69.90.");
+    return { nome, categoria: v("#f-cat"), preco: Math.round(preco * 100) / 100, descricao: v("#f-desc").trim(), ativo: $("#f-ativo").checked };
+  }
+  if (aba === "galeria") {
+    const titulo = v("#f-titulo").trim();
+    if (!titulo) throw new Error("Escreva uma legenda para a foto.");
+    return { titulo, ordem: parseInt(v("#f-ordem"), 10) || 0 };
+  }
+  if (aba === "operadores") {
+    const nome = v("#f-nome").trim();
+    if (!nome) throw new Error("Digite o callsign ou o nome do operador.");
+    if (!v("#f-equipe")) throw new Error("Escolha a equipe do operador.");
+    return { nome, equipe_id: Number(v("#f-equipe")) || v("#f-equipe"), funcao: v("#f-funcao").trim(), replica: v("#f-replica").trim(), ordem: parseInt(v("#f-ordem"), 10) || 0 };
+  }
+  if (aba === "equipes") {
+    const nome = v("#f-nome").trim();
+    if (!nome) throw new Error("Dê um nome à equipe.");
+    return { nome, sigla: v("#f-sigla").trim().toUpperCase() || null, desde: v("#f-desde").trim() || null, resumo: v("#f-resumo").trim(), ordem: parseInt(v("#f-ordem"), 10) || 0 };
+  }
+  if (aba === "jornal") {
+    const titulo = v("#f-titulo").trim(), publicar_em = v("#f-publicar");
+    if (!titulo) throw new Error("Dê um título para o aviso.");
+    if (!publicar_em) throw new Error("Escolha a data em que o aviso entra no ar.");
+    return { titulo, publicar_em, autor: v("#f-autor").trim(), conteudo: v("#f-conteudo").trim() };
+  }
+}
+$("#admin-form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const erro = $("#f-erro"), botao = $("#f-salvar"), texto = botao.textContent;
+  erro.textContent = "";
+  let obj;
+  try { obj = coletarForm(); } catch (err) { erro.textContent = err.message; return; }
+  botao.disabled = true; botao.textContent = admin.fotoNova ? "Enviando foto…" : "Salvando…";
+  try {
+    let foto = admin.fotoUrl || null;
+    if (admin.fotoNova) foto = await DB.enviarFoto(admin.fotoNova);
+    obj.foto_url = foto;
+    if (admin.editando) obj.id = admin.editando.id;
+    botao.textContent = "Salvando…";
+    await DB.salvar(admin.aba, obj);
+    const nomeItem = obj.nome || obj.titulo;
+    toast(`${nomeItem} ${admin.editando ? fem(admin.aba, "atualizado", "atualizada") : fem(admin.aba, "criado", "criada")}.`);
+    limparForm();
+    await recarregarDepoisDeEditar();
+  } catch (err) {
+    erro.textContent = err.message;
+    botao.disabled = false; botao.textContent = texto;
+  }
+});
+
+/* =========================================================
+   MODAIS: foco, teclado e rolagem
+   ========================================================= */
+let travas = 0;
+function travar() { travas++; document.body.classList.add("travado"); }
+function destravar() { travas = Math.max(0, travas - 1); if (!travas) document.body.classList.remove("travado"); }
+function prenderFoco(container, e) {
+  const foco = $$('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])', container)
+    .filter(el => !el.disabled && el.offsetParent !== null);
+  if (!foco.length) return;
+  const i = foco.indexOf(document.activeElement);
+  if (e.shiftKey && i <= 0) { e.preventDefault(); foco[foco.length - 1].focus(); }
+  else if (!e.shiftKey && i === foco.length - 1) { e.preventDefault(); foco[0].focus(); }
+}
+document.addEventListener("keydown", e => {
+  const aberto = !modalPriv.hidden ? modalPriv : !modalLogin.hidden ? modalLogin : !lb.hidden ? lb : !adminEl.hidden ? adminEl : null;
+  if (e.key === "Escape") {
+    if ($("#conta-menu") && !$("#conta-menu").hidden) { fecharMenuConta(); $("#conta-btn")?.focus(); return; }
+    if (aberto === modalPriv) fecharPrivacidade();
+    else if (aberto === modalLogin) fecharLogin();
+    else if (aberto === lb) fecharLb();
+    else if (aberto === adminEl) { if ($("#admin-corpo").classList.contains("editando")) { limparForm(); renderListaAdmin(); } else fecharAdmin(); }
+    return;
+  }
+  if (aberto === lb && e.key === "ArrowLeft") abrirLb(lbIndice - 1);
+  if (aberto === lb && e.key === "ArrowRight") abrirLb(lbIndice + 1);
+  if (aberto && e.key === "Tab") prenderFoco(aberto, e);
+});
+
+/* =========================================================
+   INÍCIO
+   ========================================================= */
+(async function iniciar() {
+  if (CONFIG.supabaseUrl && CONFIG.supabaseKey) {
+    try { DB = await criarSupabase(); }
+    catch (e) { console.error(e); DB = criarDemo(); toast("Não foi possível conectar ao banco de dados. O site abriu em modo demonstração."); }
+  } else {
+    DB = criarDemo();
+  }
+  DB.aoMudarSessao(perfil => {
+    if ((perfil?.id || null) !== (estado.usuario?.id || null) || perfil?.cargo !== estado.usuario?.cargo) aoMudarUsuario(perfil);
+  });
+  try { estado.usuario = await DB.sessao(); } catch { estado.usuario = null; }
+  renderConta();
+  await carregarTudo();
+})();
+</script>
+</body>
+</html>
