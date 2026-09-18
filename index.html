@@ -68,6 +68,8 @@ p{margin:0 0 1rem}
 .chip:hover{border-color:var(--areia-2);color:var(--areia)}
 .chip[aria-pressed="true"],.chip:has(input:checked){background:var(--areia);border-color:var(--areia);color:var(--mato)}
 .chip input{position:absolute;opacity:0;pointer-events:none}
+.qualifs{display:flex;flex-wrap:wrap;gap:.4rem}
+.qualifs .chip{padding:.4rem .7rem;font-size:.9rem}
 .chip:has(input:focus-visible){outline:3px solid var(--laranja);outline-offset:3px}
 
 /* ---------- Topo ---------- */
@@ -255,6 +257,9 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
 .ev-desc{margin:0;max-width:60ch}
 .ev-acao .vagas{margin-bottom:.8rem}
 .ev-ok{color:var(--folha);font-weight:600}
+.meu-time{margin:0 0 .8rem;font:800 1.15rem/1 var(--display);padding:.35rem .6rem;border-radius:3px;display:inline-block;border:1px solid currentColor}
+.meu-time.time-am{color:#E5B54A}
+.meu-time.time-az{color:#7EA8E8}
 .evento.reservado{background:linear-gradient(90deg,rgba(138,154,98,.1),transparent 70%)}
 .evento .btn-sec:hover:not(:disabled){border-color:var(--laranja);color:var(--laranja)}
 .vazio{padding:2rem 0;color:var(--areia-2)}
@@ -567,6 +572,18 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
 .inscritos{list-style:none;margin:0 0 1rem;padding:0;border-top:1px solid var(--linha)}
 .inscritos li{padding:.6rem 0;border-bottom:1px solid var(--linha);font-size:.95rem}
 .inscritos li span{display:block;color:var(--areia-2);font-size:.86rem}
+.inscritos li span.tag{display:inline-block;color:inherit;font-size:.8rem}
+.times{display:grid;gap:.8rem}
+.time-card{border:1px solid var(--linha);border-left-width:4px;border-radius:4px;padding:.9rem 1rem}
+.time-am{border-left-color:#E5B54A}
+.time-az{border-left-color:#5B8FD9}
+.time-card h4{font:800 1.3rem/1 var(--display);margin-bottom:.6rem;display:flex;justify-content:space-between;align-items:baseline;gap:.6rem}
+.time-card h4 span{font:500 .85rem var(--texto);color:var(--areia-2)}
+.time-card ul{list-style:none;margin:0;padding:0}
+.time-card li{display:flex;justify-content:space-between;align-items:center;gap:.6rem;padding:.4rem 0;border-bottom:1px solid var(--linha);font-size:.95rem;flex-wrap:wrap}
+.time-card li:last-child{border-bottom:none}
+.time-card li .linha-meta{display:inline;margin-left:.3rem}
+.time-botoes{display:flex;gap:.35rem}
 
 /* ---------- Toast ---------- */
 .toast{position:fixed;left:0;right:0;margin-inline:auto;width:fit-content;bottom:1.5rem;z-index:99;transform:translateY(calc(100% + 2.5rem));visibility:hidden;background:var(--areia);color:var(--mato);font-weight:600;padding:.85rem 1.25rem;border-radius:3px;box-shadow:0 10px 30px rgba(0,0,0,.45);transition:transform .3s,visibility .3s;max-width:calc(100% - 2rem)}
@@ -981,6 +998,8 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
         <div class="f"><label for="d-cidade">Cidade</label><input id="d-cidade" maxlength="60"></div>
       </div>
       <div class="f"><label for="d-telefone">WhatsApp</label><input id="d-telefone" type="tel" inputmode="tel" maxlength="16"></div>
+      <div class="f"><label for="d-classe">Classe de operador</label><select id="d-classe"></select></div>
+      <div class="f"><span class="f-rot">Qualificações</span><div class="qualifs" id="d-qualif"></div></div>
       <div class="f"><span class="f-rot">E-mail</span><p class="dad-email" id="d-email"></p><small>Para trocar o e-mail, fale com a organização.</small></div>
       <p class="erro-form" id="dad-erro" role="alert"></p>
       <p class="ok-form" id="dad-ok" role="status"></p>
@@ -1072,6 +1091,17 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
         <div class="f">
           <label for="l-cidade">Cidade</label>
           <input id="l-cidade" maxlength="60" autocomplete="address-level2" placeholder="Amambai">
+        </div>
+      </div>
+      <div class="f-duplo" id="l-classe-box" hidden>
+        <div class="f">
+          <label for="l-classe">Classe de operador</label>
+          <select id="l-classe"></select>
+          <small>Opcional. Ajuda no sorteio das equipes.</small>
+        </div>
+        <div class="f">
+          <span class="f-rot">Qualificações</span>
+          <div class="qualifs" id="l-qualif"></div>
         </div>
       </div>
       <div class="f" id="l-tel-box" hidden>
@@ -1187,6 +1217,9 @@ const ABAS_ADMIN = [
   { id: "acessos", nome: "Registro de acessos" }
 ];
 const STATUS_PEDIDO = { novo: "Novo", separando: "Separando", pronto: "Pronto para retirada", entregue: "Entregue", cancelado: "Cancelado" };
+const CLASSES_OP = ["Assalto", "DMR", "Suporte", "Sniper"];
+const NOME_TIME = { Amarelo: "Amarela", Azul: "Azul" };
+const QUALIF = { COM: "Comunicação", ENG: "Engenharia", MED: "Socorrista", NAV: "Navegação" };
 const TIPOS_EVENTO = ["Aberto", "Milsim", "Treino", "Iniciantes", "Noturno"];
 const CATEGORIAS = ["Munição", "Energia", "Proteção", "Acessórios", "Réplicas"];
 
@@ -1458,10 +1491,10 @@ function criarDemo() {
                   equipes: equipesExemplo(), operadores: operadoresExemplo(), galeria: galeriaExemplo(),
                   campo: CAMPO_PADRAO.map(c => ({ ...c })) };
   let configDemo = { ...CONFIG_PADRAO };
-  const reservas = [], pedidos = [];
+  const reservas = [], pedidos = [], times = [];
   const ouvintes = [];
   let atual = null;
-  const perfil = u => u ? { id: u.id, nome: u.nome, email: u.email, cargo: u.cargo, equipe: u.equipe || "", cidade: u.cidade || "", telefone: u.telefone || "", criado_em: u.criado_em, ultimo_acesso: u.ultimo_acesso } : null;
+  const perfil = u => u ? { id: u.id, nome: u.nome, email: u.email, cargo: u.cargo, equipe: u.equipe || "", cidade: u.cidade || "", telefone: u.telefone || "", classe: u.classe || "", qualificacoes: u.qualificacoes || [], criado_em: u.criado_em, ultimo_acesso: u.ultimo_acesso } : null;
   const avisar = () => ouvintes.forEach(cb => cb(perfil(atual)));
   const pode = area => atual && PERMISSOES[area].includes(atual.cargo);
   const exigir = area => { if (!pode(area)) throw new Error("Você não tem permissão para esta ação."); };
@@ -1482,7 +1515,7 @@ function criarDemo() {
       email = email.trim().toLowerCase();
       if (senha.length < 6) throw new Error("A senha precisa ter pelo menos 6 caracteres.");
       if (usuarios.some(x => x.email === email)) throw new Error("Este e-mail já tem cadastro. Tente entrar.");
-      const u = { id: "u" + novoId(), nome: nome.trim(), email, senha, cargo: "membro", equipe: extra.equipe || "", cidade: extra.cidade || "", telefone: extra.telefone || "", criado_em: new Date().toISOString(), ultimo_acesso: null };
+      const u = { id: "u" + novoId(), nome: nome.trim(), email, senha, cargo: "membro", equipe: extra.equipe || "", cidade: extra.cidade || "", telefone: extra.telefone || "", classe: extra.classe || "", qualificacoes: extra.qualificacoes || [], criado_em: new Date().toISOString(), ultimo_acesso: null };
       usuarios.push(u);
       registrar(u, "cadastro"); registrar(u, "entrou");
       atual = u; avisar();
@@ -1534,7 +1567,7 @@ function criarDemo() {
       exigir("eventos");
       return reservas.filter(r => r.evento_id === evento_id).map(r => {
         const u = usuarios.find(x => x.id === r.usuario_id);
-        return { nome: u?.nome || "", email: u?.email || "", telefone: u?.telefone || "", criado_em: r.criado_em };
+        return { id: u?.id, nome: u?.nome || "", email: u?.email || "", telefone: u?.telefone || "", classe: u?.classe || "", qualificacoes: u?.qualificacoes || [], criado_em: r.criado_em };
       });
     },
     async lerConfig() { return { ...configDemo }; },
@@ -1563,6 +1596,12 @@ function criarDemo() {
       const p = pedidos.find(x => x.id === id);
       if (p) p.status = status;
     },
+    async lerTimes(evento_id) { return times.filter(t => t.evento_id === evento_id).map(t => ({ ...t })); },
+    async salvarTimes(evento_id, lista) {
+      exigir("eventos");
+      for (let i = times.length - 1; i >= 0; i--) if (times[i].evento_id === evento_id) times.splice(i, 1);
+      lista.forEach(t => times.push({ evento_id, usuario_id: t.usuario_id, time: t.time }));
+    },
     async listarUsuarios() { exigir("usuarios"); return usuarios.map(perfil).sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR")); },
     async listarAcessos() {
       exigir("acessos");
@@ -1586,7 +1625,7 @@ async function criarSupabase() {
   const falha = error => { if (error) throw traduzirErro(error); };
   async function carregarPerfil(user) {
     if (!user) return (perfilAtual = null);
-    const { data, error } = await sb.from("perfis").select("id, nome, email, cargo, equipe, cidade, telefone").eq("id", user.id).maybeSingle();
+    const { data, error } = await sb.from("perfis").select("id, nome, email, cargo, equipe, cidade, telefone, classe, qualificacoes").eq("id", user.id).maybeSingle();
     falha(error);
     return (perfilAtual = data || { id: user.id, nome: user.email, email: user.email, cargo: "membro" });
   }
@@ -1606,7 +1645,7 @@ async function criarSupabase() {
       return carregarPerfil(data.user);
     },
     async cadastrar(nome, email, senha, extra = {}) {
-      const { data, error } = await sb.auth.signUp({ email: email.trim(), password: senha, options: { data: { nome: nome.trim(), equipe: extra.equipe || "", cidade: extra.cidade || "", telefone: extra.telefone || "" } } });
+      const { data, error } = await sb.auth.signUp({ email: email.trim(), password: senha, options: { data: { nome: nome.trim(), equipe: extra.equipe || "", cidade: extra.cidade || "", telefone: extra.telefone || "", classe: extra.classe || "", qualificacoes: extra.qualificacoes || [] } } });
       falha(error);
       if (!data.session) return { precisaConfirmar: true, perfil: null };
       return { precisaConfirmar: false, perfil: await carregarPerfil(data.user) };
@@ -1655,9 +1694,9 @@ async function criarSupabase() {
       falha(error);
     },
     async inscritos(evento_id) {
-      const { data, error } = await sb.from("reservas").select("criado_em, perfis(nome, email, telefone)").eq("evento_id", evento_id).order("criado_em");
+      const { data, error } = await sb.from("reservas").select("criado_em, usuario_id, perfis(id, nome, email, telefone, classe, qualificacoes)").eq("evento_id", evento_id).order("criado_em");
       falha(error);
-      return (data || []).map(r => ({ nome: r.perfis?.nome || "", email: r.perfis?.email || "", telefone: r.perfis?.telefone || "", criado_em: r.criado_em }));
+      return (data || []).map(r => ({ id: r.usuario_id, nome: r.perfis?.nome || "", email: r.perfis?.email || "", telefone: r.perfis?.telefone || "", classe: r.perfis?.classe || "", qualificacoes: r.perfis?.qualificacoes || [], criado_em: r.criado_em }));
     },
     async lerConfig() {
       const { data, error } = await sb.from("config").select("chave, valor");
@@ -1692,8 +1731,20 @@ async function criarSupabase() {
       const { error } = await sb.from("pedidos").update({ status }).eq("id", id);
       falha(error);
     },
+    async lerTimes(evento_id) {
+      const { data, error } = await sb.from("times").select("usuario_id, time").eq("evento_id", evento_id);
+      falha(error);
+      return data || [];
+    },
+    async salvarTimes(evento_id, lista) {
+      const { error: e1 } = await sb.from("times").delete().eq("evento_id", evento_id);
+      falha(e1);
+      if (!lista.length) return;
+      const { error } = await sb.from("times").insert(lista.map(t => ({ evento_id, usuario_id: t.usuario_id, time: t.time })));
+      falha(error);
+    },
     async listarUsuarios() {
-      const { data, error } = await sb.from("perfis").select("id, nome, email, cargo, equipe, cidade, telefone, criado_em, ultimo_acesso").order("nome");
+      const { data, error } = await sb.from("perfis").select("id, nome, email, cargo, equipe, cidade, telefone, classe, qualificacoes, criado_em, ultimo_acesso").order("nome");
       falha(error);
       return data || [];
     },
@@ -1715,7 +1766,7 @@ const estado = {
   eventos: [], produtos: [], jornal: [], equipes: [], operadores: [], galeria: [], campo: [],
   config: { ...CONFIG_PADRAO },
   erro: { eventos: false, produtos: false, jornal: false, equipes: false, operadores: false, galeria: false, campo: false },
-  contagem: {}, minhas: new Set(),
+  contagem: {}, minhas: new Set(), meuTime: {},
   jornalSel: null, equipeSel: null
 };
 const pode = area => !!estado.usuario && PERMISSOES[area].includes(estado.usuario.cargo);
@@ -1949,6 +2000,7 @@ function renderEventos() {
       <div class="ev-acao">
         <div class="vagas"><div class="vagas-barra"><span style="width:${Math.min(ocupadas(e) / Math.max(e.vagas, 1) * 100, 100)}%"></span></div>
           <p>${reservado ? `<span class="ev-ok">Sua vaga está reservada.</span>` : vagasTexto(e)}</p></div>
+        ${estado.meuTime[e.id] ? `<p class="meu-time time-${estado.meuTime[e.id] === "Amarelo" ? "am" : "az"}">Equipe ${esc(NOME_TIME[estado.meuTime[e.id]] || estado.meuTime[e.id])}</p>` : ""}
         <button class="btn btn-sec btn-bloco" data-reservar="${e.id}" ${cheio ? "disabled" : ""}>${reservado ? "Cancelar reserva" : cheio ? "Esgotado" : "Reservar vaga"}</button>
       </div>
     </article>`;
@@ -1982,6 +2034,7 @@ async function alternarReserva(id, botao) {
     else { await DB.reservar(id); toast(`Vaga reservada em ${ev.nome}. Chegue 40 min antes.`); }
   } catch (err) { toast(err.message); }
   await carregarReservas();
+  await carregarMeuTime();
   renderEventos(); atualizarProximo();
   $(`[data-reservar="${id}"]`)?.focus();
 }
@@ -2454,6 +2507,18 @@ async function enviarPedido() {
 /* =========================================================
    CARREGAMENTO DE DADOS
    ========================================================= */
+async function carregarMeuTime() {
+  estado.meuTime = {};
+  if (!estado.usuario) return;
+  for (const ev of eventosFuturos()) {
+    if (!estado.minhas.has(ev.id)) continue;
+    try {
+      const t = await DB.lerTimes(ev.id);
+      const meu = t.find(x => String(x.usuario_id) === String(estado.usuario.id));
+      if (meu) estado.meuTime[ev.id] = meu.time;
+    } catch {}
+  }
+}
 async function carregarReservas() {
   try { estado.contagem = await DB.contagemReservas(); } catch { estado.contagem = {}; }
   try { estado.minhas = await DB.minhasReservas(); } catch { estado.minhas = new Set(); }
@@ -2466,6 +2531,7 @@ async function carregarTudo() {
   await Promise.all([...["eventos", "produtos", "jornal", "equipes", "operadores", "galeria", "campo"].map(carregarTabela),
     (async () => { try { const c = await DB.lerConfig(); estado.config = { ...CONFIG_PADRAO, ...c }; } catch { estado.config = { ...CONFIG_PADRAO }; } })()]);
   await carregarReservas();
+  await carregarMeuTime();
   renderTudo();
 }
 function renderTudo() {
@@ -2532,6 +2598,7 @@ async function aoMudarUsuario(perfil) {
   if (!perfil && !$("#admin").hidden) fecharAdmin();
   if (antes !== perfil?.cargo) await Promise.all(["produtos", "jornal"].map(carregarTabela));
   await carregarReservas();
+  await carregarMeuTime();
   renderTudo();
 }
 
@@ -2570,6 +2637,11 @@ function trocarModoLogin(modo) {
   $("#l-nome-box").hidden = !cad;
   $("#l-extra-box").hidden = !cad;
   $("#l-tel-box").hidden = !cad;
+  $("#l-classe-box").hidden = !cad;
+  if (cad && !$("#l-classe").options.length) {
+    $("#l-classe").innerHTML = `<option value="">Ainda não sei</option>` + CLASSES_OP.map(c => `<option>${c}</option>`).join("");
+    $("#l-qualif").innerHTML = caixasQualif("lq");
+  }
   $("#login-privacidade").hidden = !cad;
   if (cad) {
     const sel = $("#l-equipe"), atual = sel.value;
@@ -2595,6 +2667,12 @@ function formatarTelefone(v) {
 }
 const linkWhats = tel => { const d = soDigitos(tel); return d.length >= 10 ? `https://wa.me/55${d}` : ""; };
 $("#l-telefone").addEventListener("input", e => { e.target.value = formatarTelefone(e.target.value); });
+
+function caixasQualif(prefixo, marcadas = []) {
+  return Object.entries(QUALIF).map(([sigla, nome]) =>
+    `<label class="chip" title="${nome}"><input type="checkbox" value="${sigla}" name="${prefixo}" ${marcadas.includes(sigla) ? "checked" : ""}>${sigla}</label>`).join("");
+}
+const lerQualif = prefixo => $$(`input[name="${prefixo}"]:checked`).map(i => i.value);
 
 function mostrarCampoOutraEquipe() {
   const outra = $("#l-equipe").value === "Outra", campo = $("#l-equipe-outra");
@@ -2635,7 +2713,7 @@ $("#form-login").addEventListener("submit", async e => {
     let perfil = null;
     if (modoLogin === "cadastro") {
       const eq = $("#l-equipe").value === "Outra" ? $("#l-equipe-outra").value.trim() : $("#l-equipe").value;
-      const r = await DB.cadastrar(nome, email, senha, { equipe: eq, cidade: $("#l-cidade").value.trim(), telefone: tel });
+      const r = await DB.cadastrar(nome, email, senha, { equipe: eq, cidade: $("#l-cidade").value.trim(), telefone: tel, classe: $("#l-classe").value, qualificacoes: lerQualif("lq") });
       if (r.precisaConfirmar) {
         ok.textContent = "Conta criada. Enviamos um link de confirmação para o seu e-mail. Confirme e depois entre aqui.";
         trocarModoLogin("entrar"); $("#l-email").value = email;
@@ -2686,6 +2764,8 @@ function abrirMeusDados() {
   $("#d-cidade").value = u.cidade || "";
   $("#d-telefone").value = formatarTelefone(u.telefone || "");
   $("#d-email").textContent = u.email || "";
+  $("#d-classe").innerHTML = `<option value="">Ainda não sei</option>` + CLASSES_OP.map(c => `<option ${u.classe === c ? "selected" : ""}>${c}</option>`).join("");
+  $("#d-qualif").innerHTML = caixasQualif("dq", u.qualificacoes || []);
   $("#dad-erro").textContent = ""; $("#dad-ok").textContent = "";
   modalDados.hidden = false; travar();
   setTimeout(() => $("#d-nome").focus(), 30);
@@ -2714,7 +2794,7 @@ $("#form-dados").addEventListener("submit", async e => {
   if (tel && (tel.length < 10 || tel.length > 11)) { erro.textContent = "O WhatsApp precisa ter DDD, por exemplo (67) 99999-9999."; $("#d-telefone").focus(); return; }
   botao.disabled = true; botao.textContent = "Salvando…";
   try {
-    const novo = { nome, equipe: eq, cidade: $("#d-cidade").value.trim(), telefone: tel };
+    const novo = { nome, equipe: eq, cidade: $("#d-cidade").value.trim(), telefone: tel, classe: $("#d-classe").value, qualificacoes: lerQualif("dq") };
     await DB.atualizarPerfil(novo);
     estado.usuario = { ...estado.usuario, ...novo };
     renderConta();
@@ -3043,11 +3123,11 @@ const nomeDoItem = o => admin.aba === "campo" ? `Informação "${o?.rotulo || ""
 const bate = (busca, ...campos) => !busca || campos.some(c => String(c || "").toLowerCase().includes(busca.toLowerCase()));
 function renderUsuarios() {
   const alvo = $("#usuarios-lista"); if (!alvo) return;
-  const lista = admin.usuarios.filter(u => bate(admin.buscaUsuario, u.nome, u.email, u.equipe, u.cidade, u.telefone));
+  const lista = admin.usuarios.filter(u => bate(admin.buscaUsuario, u.nome, u.email, u.equipe, u.cidade, u.telefone, u.classe, (u.qualificacoes || []).join(" ")));
   alvo.innerHTML = lista.length ? lista.map(u => {
     const eu = u.id === estado.usuario.id;
     const datas = [u.criado_em ? `cadastro em ${fmtData.format(new Date(u.criado_em))}` : "", u.ultimo_acesso ? `último acesso ${fmtCurto.format(new Date(u.ultimo_acesso))}` : "ainda não entrou"].filter(Boolean).join(", ");
-    const onde = [u.equipe, u.cidade].filter(Boolean).map(esc).join(" • ");
+    const onde = [u.equipe, u.cidade, u.classe, (u.qualificacoes || []).join("/")].filter(Boolean).map(esc).join(" • ");
     const zap = linkWhats(u.telefone);
     return `<div class="linha-admin linha-usuario">
       <div><strong>${esc(u.nome || "Sem nome")}${eu ? " (você)" : ""}</strong><span class="linha-meta">${esc(u.email || "")}${zap ? ` • <a href="${zap}" target="_blank" rel="noopener" class="zap">${esc(formatarTelefone(u.telefone))}</a>` : ""}</span>${onde ? `<span class="linha-meta linha-onde">${onde}</span>` : ""}<span class="linha-meta">${datas}</span></div>
@@ -3323,31 +3403,158 @@ $("#admin-form").addEventListener("submit", async e => {
   }
 });
 
+/* Divide os inscritos em duas equipes equilibrando classe e qualificação */
+function sortearEquipes(lista) {
+  const embaralha = a => a.map(v => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map(v => v[1]);
+  const ordemClasses = ["Sniper", "DMR", "Suporte", "Assalto", ""];   // das mais raras para as comuns
+  const times = { Amarelo: [], Azul: [] };
+  const peso = t => times[t].length;
+  const porClasse = c => embaralha(lista.filter(i => (i.classe || "") === c));
+  let vez = Math.random() < .5 ? "Amarelo" : "Azul";
+  ordemClasses.forEach(c => {
+    porClasse(c).forEach(p => {
+      // vai para o time menor; empatou, alterna
+      const destino = peso("Amarelo") < peso("Azul") ? "Amarelo" : peso("Azul") < peso("Amarelo") ? "Azul" : vez;
+      times[destino].push(p);
+      vez = destino === "Amarelo" ? "Azul" : "Amarelo";
+    });
+  });
+  // segundo passe: troca para espalhar as qualificações que ficaram só de um lado
+  Object.keys(QUALIF).forEach(q => {
+    const tem = t => times[t].filter(p => (p.qualificacoes || []).includes(q)).length;
+    if (tem("Amarelo") >= 2 && tem("Azul") === 0) trocar("Amarelo", "Azul", q);
+    else if (tem("Azul") >= 2 && tem("Amarelo") === 0) trocar("Azul", "Amarelo", q);
+  });
+  function trocar(de, para, q) {
+    const i = times[de].findIndex(p => (p.qualificacoes || []).includes(q));
+    const j = times[para].findIndex(p => !(p.qualificacoes || []).includes(q) && (p.classe || "") === (times[de][i].classe || ""));
+    if (i >= 0 && j >= 0) { const a = times[de][i], b = times[para][j]; times[de][i] = b; times[para][j] = a; }
+  }
+  return times;
+}
+const resumoClasses = l => {
+  const c = {};
+  l.forEach(i => { const k = i.classe || "Sem classe"; c[k] = (c[k] || 0) + 1; });
+  return Object.entries(c).map(([k, n]) => `${n} ${k.toLowerCase()}`).join(", ");
+};
+function linhaInscrito(i) {
+  const z = linkWhats(i.telefone);
+  const extras = [i.classe, (i.qualificacoes || []).join("/")].filter(Boolean).map(esc).join(" • ");
+  return `<li><strong>${esc(i.nome)}</strong>${extras ? ` <span class="tag tag-antiga">${extras}</span>` : ""}
+    <span>${esc(i.email)}${z ? ` • <a href="${z}" target="_blank" rel="noopener" class="zap">${esc(formatarTelefone(i.telefone))}</a>` : ""}</span></li>`;
+}
+let inscritosAtuais = [], eventoInscritos = null, equipesAtuais = null;
+
 async function mostrarInscritos(evento) {
   limparForm();
   $("#admin-corpo").classList.add("editando");
+  eventoInscritos = evento; equipesAtuais = null;
   $("#admin-form").innerHTML = `<h3>Inscritos</h3><p class="carregando">Carregando lista…</p>`;
   try {
-    const lista = await DB.inscritos(evento.id);
-    const externas = evento.reservas_externas || 0;
-    $("#admin-form").innerHTML = `
-      <h3>Inscritos</h3>
-      <p><strong>${esc(evento.nome)}</strong><br><span class="linha-meta">${fmtCurto.format(new Date(evento.data))}</span></p>
-      <p class="lista-ajuda">${lista.length} ${lista.length === 1 ? "reserva feita" : "reservas feitas"} pelo site${externas ? ` e ${externas} fora do site` : ""}. Total de ${ocupadas(evento)} de ${evento.vagas} vagas.</p>
-      ${lista.length ? `<ul class="inscritos">${lista.map(i => { const z = linkWhats(i.telefone); return `<li>${esc(i.nome)}<span>${esc(i.email)}${z ? ` • <a href="${z}" target="_blank" rel="noopener" class="zap">${esc(formatarTelefone(i.telefone))}</a>` : ""}</span></li>`; }).join("")}</ul>
-        <div class="form-acoes"><button class="btn btn-sec btn-mini" id="f-copiar">Copiar lista</button><button class="btn btn-sec btn-mini" id="f-cancelar">Fechar</button></div>`
-      : `<p class="form-vazio">Ninguém reservou pelo site ainda.</p><div class="form-acoes"><button class="btn btn-sec btn-mini" id="f-cancelar">Fechar</button></div>`}`;
-    $("#f-copiar")?.addEventListener("click", async () => {
-      const texto = `${evento.nome}\n` + lista.map((i, n) => `${n + 1}. ${i.nome} (${i.email}${i.telefone ? ", " + formatarTelefone(i.telefone) : ""})`).join("\n");
-      try { await navigator.clipboard.writeText(texto); toast("Lista copiada."); }
-      catch { toast("Não foi possível copiar. Selecione a lista e copie manualmente."); }
-    });
+    inscritosAtuais = await DB.inscritos(evento.id);
+    const salvos = await DB.lerTimes(evento.id).catch(() => []);
+    if (salvos.length) {
+      equipesAtuais = { Amarelo: [], Azul: [] };
+      salvos.forEach(t => {
+        const p = inscritosAtuais.find(i => String(i.id) === String(t.usuario_id));
+        if (p && equipesAtuais[t.time]) equipesAtuais[t.time].push(p);
+      });
+      if (!equipesAtuais.Amarelo.length && !equipesAtuais.Azul.length) equipesAtuais = null;
+    }
+    renderInscritos();
   } catch (err) {
     $("#admin-form").innerHTML = `<h3>Inscritos</h3><p class="erro-form">${esc(err.message)}</p><button class="btn btn-sec btn-mini" id="f-cancelar">Fechar</button>`;
   }
 }
+function renderInscritos() {
+  const evento = eventoInscritos, lista = inscritosAtuais;
+  const externas = evento.reservas_externas || 0;
+  $("#admin-form").innerHTML = `
+    <h3>Inscritos</h3>
+    <p><strong>${esc(evento.nome)}</strong><br><span class="linha-meta">${fmtCurto.format(new Date(evento.data))}</span></p>
+    <p class="lista-ajuda">${lista.length} ${lista.length === 1 ? "reserva feita" : "reservas feitas"} pelo site${externas ? ` e ${externas} fora do site` : ""}. Total de ${ocupadas(evento)} de ${evento.vagas} vagas.${lista.length ? `<br>${esc(resumoClasses(lista))}.` : ""}</p>
+    ${lista.length ? `<ul class="inscritos">${lista.map(linhaInscrito).join("")}</ul>
+      <div class="form-acoes">
+        <button class="btn btn-mini" id="f-sortear">${equipesAtuais ? "Sortear de novo" : "Sortear equipes"}</button>
+        <button class="btn btn-sec btn-mini" id="f-copiar">Copiar lista</button>
+        <button class="btn btn-sec btn-mini" id="f-cancelar">Fechar</button>
+      </div>`
+    : `<p class="form-vazio">Ninguém reservou pelo site ainda.</p><div class="form-acoes"><button class="btn btn-sec btn-mini" id="f-cancelar">Fechar</button></div>`}
+    ${equipesAtuais ? blocoEquipes() : ""}`;
+}
+function blocoEquipes() {
+  const card = (nome, cor) => `
+    <div class="time-card time-${cor}">
+      <h4>Equipe ${NOME_TIME[nome]} <span>${equipesAtuais[nome].length} ${equipesAtuais[nome].length === 1 ? "operador" : "operadores"}</span></h4>
+      <ul>${equipesAtuais[nome].map(p => `<li>
+        <span><strong>${esc(p.nome)}</strong>${p.classe ? ` <span class="linha-meta">${esc(p.classe)}</span>` : ""}</span>
+        <span class="time-botoes">
+          ${linkWhats(p.telefone) ? `<a class="btn btn-sec btn-mini" href="${linkWhats(p.telefone)}?text=${encodeURIComponent(msgOperador(p, nome))}" target="_blank" rel="noopener">Avisar</a>` : ""}
+          <button class="btn btn-sec btn-mini" data-trocar="${esc(p.id)}" title="Passar para a outra equipe">Trocar</button>
+        </span></li>`).join("")}</ul>
+    </div>`;
+  return `
+    <h4 class="equipe-sub" style="margin-top:1.5rem">Equipes sorteadas</h4>
+    <p class="lista-ajuda">${esc(resumoEquipes())}</p>
+    <div class="times">${card("Amarelo", "am")}${card("Azul", "az")}</div>
+    <div class="form-acoes">
+      <button class="btn btn-mini" id="f-salvar-times">Salvar equipes</button>
+      <button class="btn btn-sec btn-mini" id="f-copiar-times">Copiar para o grupo</button>
+    </div>
+    <p class="pr-aviso">O WhatsApp não deixa o site mandar mensagem sozinho para várias pessoas. Use "Copiar para o grupo" e cole no grupo, ou o botão "Avisar" de cada um.</p>`;
+}
+function resumoEquipes() {
+  return ["Amarelo", "Azul"].map(t => `${NOME_TIME[t]}: ${resumoClasses(equipesAtuais[t]) || "vazio"}`).join(" | ");
+}
+function msgOperador(p, time) {
+  return `${p.nome}, você foi sorteado para a EQUIPE ${NOME_TIME[time].toUpperCase()} na ${eventoInscritos.nome}, ${fmtCurto.format(new Date(eventoInscritos.data))}. Responda confirmando presença. ${CONFIG.equipe}`;
+}
+function textoEquipes() {
+  const bloco = t => `EQUIPE ${NOME_TIME[t].toUpperCase()}\n` + equipesAtuais[t].map((p, i) => `${i + 1}. ${p.nome}${p.classe ? ` (${p.classe})` : ""}`).join("\n");
+  return `${eventoInscritos.nome} — ${fmtCurto.format(new Date(eventoInscritos.data))}\nEquipes sorteadas:\n\n${bloco("Amarelo")}\n\n${bloco("Azul")}\n\nConfirmem presença aqui no grupo.`;
+}
 
-$("#admin-form").addEventListener("click", e => {
+$("#admin-form").addEventListener("click", async e => {
+  if (e.target.closest("#f-sortear")) {
+    equipesAtuais = sortearEquipes(inscritosAtuais);
+    renderInscritos();
+    toast("Equipes sorteadas. Confira e salve.");
+    return;
+  }
+  const tr = e.target.closest("[data-trocar]");
+  if (tr && equipesAtuais) {
+    const id = tr.dataset.trocar;
+    for (const [t, outro] of [["Amarelo", "Azul"], ["Azul", "Amarelo"]]) {
+      const i = equipesAtuais[t].findIndex(p => String(p.id) === id);
+      if (i >= 0) { equipesAtuais[outro].push(equipesAtuais[t].splice(i, 1)[0]); break; }
+    }
+    renderInscritos();
+    return;
+  }
+  if (e.target.closest("#f-salvar-times")) {
+    const botao = e.target.closest("#f-salvar-times");
+    botao.disabled = true; botao.textContent = "Salvando…";
+    try {
+      const lista = ["Amarelo", "Azul"].flatMap(t => equipesAtuais[t].map(p => ({ usuario_id: p.id, time: t })));
+      await DB.salvarTimes(eventoInscritos.id, lista);
+      toast("Equipes salvas. Quem reservou já vê em qual equipe ficou.");
+      await carregarMeuTime();
+      renderEventos();
+    } catch (err) { toast(err.message); }
+    botao.disabled = false; botao.textContent = "Salvar equipes";
+    return;
+  }
+  if (e.target.closest("#f-copiar-times")) {
+    try { await navigator.clipboard.writeText(textoEquipes()); toast("Equipes copiadas. Cole no grupo do WhatsApp."); }
+    catch { toast("Não foi possível copiar aqui. Use o botão Avisar de cada um."); }
+    return;
+  }
+  if (e.target.closest("#f-copiar")) {
+    const texto = `${eventoInscritos.nome}\n` + inscritosAtuais.map((i, n) => `${n + 1}. ${i.nome}${i.classe ? ` (${i.classe})` : ""} (${i.email}${i.telefone ? ", " + formatarTelefone(i.telefone) : ""})`).join("\n");
+    try { await navigator.clipboard.writeText(texto); toast("Lista copiada."); }
+    catch { toast("Não foi possível copiar. Selecione a lista e copie manualmente."); }
+    return;
+  }
   if (e.target.closest("#f-cancelar")) { limparForm(); renderListaAdmin(); }
 });
 $("#admin-form").addEventListener("change", async e => {
