@@ -260,6 +260,11 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
 .meu-time{margin:0 0 .8rem;font:800 1.15rem/1 var(--display);padding:.35rem .6rem;border-radius:3px;display:inline-block;border:1px solid currentColor}
 .meu-time.time-am{color:#E5B54A}
 .meu-time.time-az{color:#7EA8E8}
+.jogos-recentes{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--linha)}
+.recente{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:1rem;align-items:center;padding:.9rem 0;border-bottom:1px solid var(--linha)}
+.recente strong{display:block}
+.recente-num{font-size:.9rem}
+@media (max-width:620px){.recente{grid-template-columns:1fr;gap:.4rem}.recente button{justify-self:start}}
 .evento.reservado{background:linear-gradient(90deg,rgba(138,154,98,.1),transparent 70%)}
 .evento .btn-sec:hover:not(:disabled){border-color:var(--laranja);color:var(--laranja)}
 .vazio{padding:2rem 0;color:var(--areia-2)}
@@ -565,6 +570,18 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
 .tabela td{padding:.7rem .6rem;border-bottom:1px solid var(--linha);vertical-align:top}
 .tabela td span:not(.tag){display:block;color:var(--areia-2);font-size:.86rem}
 .tabela td:first-child{white-space:nowrap;color:var(--areia-2)}
+.rk{width:100%;border-collapse:collapse}
+.rk th{text-align:left;font:600 .85rem var(--texto);color:var(--areia-2);padding:.6rem .5rem;border-bottom:1px solid var(--linha)}
+.rk td{padding:.75rem .5rem;border-bottom:1px solid var(--linha)}
+.rk td:first-child{font:800 1.5rem/1 var(--display);width:3.2rem;color:var(--areia-2)}
+.rk tr:nth-child(1) td:first-child{color:#E5B54A}
+.rk tr:nth-child(2) td:first-child{color:#C9C9C9}
+.rk tr:nth-child(3) td:first-child{color:#C08A52}
+.rk .rk-nome{font-weight:600}
+.rk .rk-eq{display:block;font-size:.85rem;color:var(--folha)}
+.rk .rk-num{text-align:center;font-variant-numeric:tabular-nums}
+.rk .rk-pontos{text-align:right;font:800 1.5rem/1 var(--display);color:var(--laranja);font-variant-numeric:tabular-nums}
+@media (max-width:620px){.rk .esconde{display:none}}
 .legenda-cargos{margin:1.5rem 0 0;border-top:1px solid var(--linha)}
 .legenda-cargos div{display:grid;grid-template-columns:11rem 1fr;gap:1rem;padding:.6rem 0;border-bottom:1px solid var(--linha);font-size:.93rem}
 .legenda-cargos dt{font-weight:600}
@@ -573,6 +590,13 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
 .inscritos li{padding:.6rem 0;border-bottom:1px solid var(--linha);font-size:.95rem}
 .inscritos li span{display:block;color:var(--areia-2);font-size:.86rem}
 .inscritos li span.tag{display:inline-block;color:inherit;font-size:.8rem}
+.inscritos li{position:relative}
+.chamada{display:inline-flex;align-items:center;gap:.4rem;cursor:pointer;margin-right:.5rem;vertical-align:middle}
+.chamada input{accent-color:var(--folha);width:1.15rem;height:1.15rem}
+.chamada-txt{display:inline!important;font-size:.82rem;color:var(--areia-2)}
+.chamada input:checked + .chamada-txt{color:var(--folha);font-weight:600}
+.numeros-linha{display:flex!important;align-items:center;gap:.5rem;flex-wrap:wrap;margin-top:.45rem}
+.numeros-linha .st{font-size:.8rem}
 .times{display:grid;gap:.8rem}
 .time-card{border:1px solid var(--linha);border-left-width:4px;border-radius:4px;padding:.9rem 1rem}
 .time-am{border-left-color:#E5B54A}
@@ -679,6 +703,7 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
         <li><a href="#campo">Campo e loja</a></li>
         <li><a href="#equipes">Equipes</a></li>
         <li><a href="#avisos">Avisos</a></li>
+        <li><a href="#ranking">Ranking</a></li>
         <li><a href="#galeria">Galeria</a></li>
         <li><a href="#replicas">Réplicas</a></li>
         <li><a href="#seguranca">Segurança</a></li>
@@ -812,6 +837,22 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
       <button class="btn btn-sec btn-mini gerenciar" data-gerenciar="jornal" hidden>Gerenciar avisos</button>
     </div>
     <div class="jornal" id="jornal-box"><p class="carregando">Carregando avisos…</p></div>
+  </div>
+</section>
+
+<!-- ================= RANKING ================= -->
+<section id="ranking" class="secao">
+  <div class="largura">
+    <div class="cab">
+      <h2>Ranking do mês</h2>
+      <p>Pontos por presença nos jogos e pelas eliminações confirmadas pela organização. A pontuação zera todo dia 1º.</p>
+    </div>
+    <div class="barra">
+      <div class="filtros" id="rk-meses" role="group" aria-label="Escolher o mês"></div>
+      <button class="btn btn-sec btn-mini gerenciar" data-gerenciar="ranking" hidden>Pontuação e prêmio</button>
+    </div>
+    <div id="rk-corpo"><p class="carregando">Carregando ranking…</p></div>
+    <p class="nota" id="rk-premio"></p>
   </div>
 </section>
 
@@ -979,6 +1020,15 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
   <div class="modal-caixa modal-largo">
     <button class="modal-fechar" id="pr-fechar" aria-label="Fechar">×</button>
     <div id="pr-corpo"></div>
+  </div>
+</div>
+
+<!-- ================= MEUS NÚMEROS ================= -->
+<div class="modal" id="modal-numeros" role="dialog" aria-modal="true" aria-labelledby="num-titulo" hidden>
+  <div class="modal-caixa">
+    <button class="modal-fechar" id="num-fechar" aria-label="Fechar">×</button>
+    <h2 id="num-titulo">Meus números</h2>
+    <div id="num-corpo"></div>
   </div>
 </div>
 
@@ -1199,6 +1249,7 @@ const PERMISSOES = {
   jornal: ["admin", "redator"],
   galeria: ["admin", "organizador"],
   campo: ["admin"],
+  ranking: ["admin"],
   equipes: ["admin"],
   operadores: ["admin"],
   usuarios: ["admin"],
@@ -1211,6 +1262,7 @@ const ABAS_ADMIN = [
   { id: "jornal", nome: "Avisos" },
   { id: "galeria", nome: "Galeria" },
   { id: "campo", nome: "Campo" },
+  { id: "ranking", nome: "Pontuação" },
   { id: "equipes", nome: "Equipes" },
   { id: "operadores", nome: "Operadores" },
   { id: "usuarios", nome: "Membros e cargos" },
@@ -1341,6 +1393,8 @@ const CAMPO_PADRAO = [
   ["Na entrada", "Documento com foto e assinatura do termo de responsabilidade"]
 ].map(([rotulo, valor], i) => ({ id: i + 1, rotulo, valor, ordem: i + 1 }));
 const CONFIG_PADRAO = {
+  pontos_jogo: "10", pontos_kill: "1", pontos_morte: "0",
+  premio_texto: "O primeiro colocado de cada mês ganha um prêmio da equipe. Combine com a organização.",
   campo_texto: "Jogos abertos todo fim de semana. Quem nunca jogou pode alugar o kit completo e jogar acompanhado por alguém da equipe.",
   endereco: CONFIG.endereco,
   mapa: CONFIG.mapa
@@ -1348,6 +1402,7 @@ const CONFIG_PADRAO = {
 
 /* ---------- Dados de exemplo (modo demonstração) ---------- */
 function eventosExemplo() {
+  const passado = new Date(); passado.setDate(passado.getDate() - 3); passado.setHours(8, 0, 0, 0);
   const hoje = new Date();
   const domingo = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() + ((7 - hoje.getDay()) % 7 || 7));
   const em = (dias, hora) => { const d = new Date(domingo); d.setDate(d.getDate() + dias); const [h, m] = hora.split(":"); d.setHours(+h, +m, 0, 0); return d.toISOString(); };
@@ -1356,6 +1411,7 @@ function eventosExemplo() {
     { id: 2, nome: "Operação Nevoeiro", tipo: "Milsim", data: em(7, "07:30"), descricao: "Dez horas de missão com objetivos, rádio e logística. Duas facções, briefing às 7h30.", vagas: 60, reservas_externas: 41, foto_url: "" },
     { id: 3, nome: "Treino de CQB", tipo: "Treino", data: em(14, "14:00"), descricao: "Entrada em cômodos, comunicação e progressão em dupla na vila.", vagas: 16, reservas_externas: 13, foto_url: "" },
     { id: 4, nome: "Dia do iniciante", tipo: "Iniciantes", data: em(21, "08:30"), descricao: "Aula de segurança, aluguel de kit incluso e jogos guiados. Ideal para a primeira vez.", vagas: 24, reservas_externas: 7, foto_url: "" },
+    { id: 6, nome: "Treino de tiro (encerrado)", tipo: "Treino", data: passado.toISOString(), descricao: "Jogo já realizado, usado para lançar os números.", vagas: 30, reservas_externas: 8, foto_url: "" },
     { id: 5, nome: "Operação VIP Noturna", tipo: "Noturno", data: em(27, "18:00"), descricao: "Jogo noturno com lanternas e BBs traçantes. Kit de iluminação obrigatório.", vagas: 50, reservas_externas: 22, foto_url: "" }
   ];
 }
@@ -1478,6 +1534,17 @@ function criarDemo() {
   ];
   if (!CONFIG.contasDemo) usuarios.length = 0;
   const acessos = CONFIG.contasDemo ? acessosExemplo() : [];
+  const estatDemo = CONFIG.contasDemo ? [
+    { evento_id: 6, usuario_id: "u1", kills: 11, mortes: 4, status: "confirmado" },
+    { evento_id: 6, usuario_id: "u2", kills: 7, mortes: 6, status: "confirmado" },
+    { evento_id: 6, usuario_id: "u4", kills: 3, mortes: 9, status: "pendente" }
+  ] : [];
+  const reservasDemo = CONFIG.contasDemo ? [
+    { evento_id: 6, usuario_id: "u1", presente: true, criado_em: new Date().toISOString() },
+    { evento_id: 6, usuario_id: "u2", presente: true, criado_em: new Date().toISOString() },
+    { evento_id: 6, usuario_id: "u4", presente: true, criado_em: new Date().toISOString() },
+    { evento_id: 6, usuario_id: "u5", presente: false, criado_em: new Date().toISOString() }
+  ] : [];
   usuarios.forEach((u, i) => {
     u.criado_em = acessos.find(a => a.usuario_id === u.id && a.acao === "cadastro")?.criado_em || new Date(Date.now() - (90 - i * 12) * 86400e3).toISOString();
     u.ultimo_acesso = acessos.filter(a => a.usuario_id === u.id).map(a => a.criado_em).sort().pop() || null;
@@ -1491,7 +1558,7 @@ function criarDemo() {
                   equipes: equipesExemplo(), operadores: operadoresExemplo(), galeria: galeriaExemplo(),
                   campo: CAMPO_PADRAO.map(c => ({ ...c })) };
   let configDemo = { ...CONFIG_PADRAO };
-  const reservas = [], pedidos = [], times = [];
+  const reservas = [...reservasDemo], pedidos = [], times = [], estatisticas = [...estatDemo];
   const ouvintes = [];
   let atual = null;
   const perfil = u => u ? { id: u.id, nome: u.nome, email: u.email, cargo: u.cargo, equipe: u.equipe || "", cidade: u.cidade || "", telefone: u.telefone || "", classe: u.classe || "", qualificacoes: u.qualificacoes || [], criado_em: u.criado_em, ultimo_acesso: u.ultimo_acesso } : null;
@@ -1557,7 +1624,7 @@ function criarDemo() {
       if (!e || new Date(e.data) < new Date()) throw new Error("Este evento não está mais disponível.");
       const usadas = (e.reservas_externas || 0) + reservas.filter(r => r.evento_id === evento_id).length;
       if (usadas >= e.vagas) throw new Error("As vagas deste evento acabaram.");
-      if (!reservas.some(r => r.evento_id === evento_id && r.usuario_id === atual.id)) reservas.push({ evento_id, usuario_id: atual.id, criado_em: new Date().toISOString() });
+      if (!reservas.some(r => r.evento_id === evento_id && r.usuario_id === atual.id)) reservas.push({ evento_id, usuario_id: atual.id, criado_em: new Date().toISOString(), presente: false, confirmou_em: null });
     },
     async cancelarReserva(evento_id) {
       const i = reservas.findIndex(r => r.evento_id === evento_id && r.usuario_id === atual?.id);
@@ -1567,7 +1634,7 @@ function criarDemo() {
       exigir("eventos");
       return reservas.filter(r => r.evento_id === evento_id).map(r => {
         const u = usuarios.find(x => x.id === r.usuario_id);
-        return { id: u?.id, nome: u?.nome || "", email: u?.email || "", telefone: u?.telefone || "", classe: u?.classe || "", qualificacoes: u?.qualificacoes || [], criado_em: r.criado_em };
+        return { id: u?.id, nome: u?.nome || "", email: u?.email || "", telefone: u?.telefone || "", classe: u?.classe || "", qualificacoes: u?.qualificacoes || [], criado_em: r.criado_em, presente: !!r.presente, confirmou_em: r.confirmou_em || null };
       });
     },
     async lerConfig() { return { ...configDemo }; },
@@ -1595,6 +1662,61 @@ function criarDemo() {
       exigir("pedidos");
       const p = pedidos.find(x => x.id === id);
       if (p) p.status = status;
+    },
+    async confirmarPresenca(evento_id) {
+      if (!atual) throw new Error("Entre na sua conta.");
+      const r = reservas.find(x => x.evento_id === evento_id && x.usuario_id === atual.id);
+      if (!r) throw new Error("Você não tem reserva neste evento.");
+      r.confirmou_em = new Date().toISOString();
+    },
+    async marcarPresenca(evento_id, usuario_id, valor) {
+      exigir("eventos");
+      const r = reservas.find(x => x.evento_id === evento_id && x.usuario_id === usuario_id);
+      if (r) { r.presente = valor; r.presente_em = valor ? new Date().toISOString() : null; }
+    },
+    async lerEstatisticas(evento_id) {
+      const staff = pode("eventos");
+      return estatisticas.filter(e => e.evento_id === evento_id && (staff || e.status === "confirmado" || e.usuario_id === atual?.id))
+        .map(e => ({ ...e }));
+    },
+    async minhasConfirmacoes() {
+      const m = {};
+      reservas.filter(r => r.usuario_id === atual?.id && r.confirmou_em).forEach(r => m[r.evento_id] = true);
+      return m;
+    },
+    async minhaEstatistica(evento_id) {
+      if (!atual) return null;
+      const e = estatisticas.find(x => x.evento_id === evento_id && x.usuario_id === atual.id);
+      return e ? { ...e } : null;
+    },
+    async lancarEstatistica(evento_id, dados) {
+      if (!atual) throw new Error("Entre na sua conta.");
+      let e = estatisticas.find(x => x.evento_id === evento_id && x.usuario_id === atual.id);
+      if (e && e.status === "confirmado") throw new Error("Seus números já foram confirmados pela organização.");
+      if (!e) { e = { evento_id, usuario_id: atual.id, status: "pendente" }; estatisticas.push(e); }
+      Object.assign(e, dados, { criado_em: new Date().toISOString() });
+    },
+    async salvarEstatistica(evento_id, usuario_id, dados) {
+      exigir("eventos");
+      let e = estatisticas.find(x => x.evento_id === evento_id && x.usuario_id === usuario_id);
+      if (!e) { e = { evento_id, usuario_id, status: "pendente" }; estatisticas.push(e); }
+      Object.assign(e, dados);
+    },
+    async ranking(mes) {
+      const ini = mes ? dataDeISO(mes) : new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+      const fim = new Date(ini.getFullYear(), ini.getMonth() + 1, 1);
+      const noMes = ev => { const d = new Date(dados.eventos.find(x => x.id === ev)?.data || 0); return d >= ini && d < fim; };
+      const linhas = {};
+      const pega = id => (linhas[id] = linhas[id] || { id, jogos: 0, kills: 0, mortes: 0 });
+      reservas.filter(r => r.presente && noMes(r.evento_id)).forEach(r => pega(r.usuario_id).jogos++);
+      estatisticas.filter(e => e.status === "confirmado" && noMes(e.evento_id)).forEach(e => {
+        const l = pega(e.usuario_id); l.kills += Number(e.kills) || 0; l.mortes += Number(e.mortes) || 0;
+      });
+      const pj = Number(configDemo.pontos_jogo ?? 10), pk = Number(configDemo.pontos_kill ?? 1), pm = Number(configDemo.pontos_morte ?? 0);
+      return espera(Object.values(linhas).map(l => {
+        const u = usuarios.find(x => x.id === l.id) || {};
+        return { nome: u.nome || "", equipe: u.equipe || "", jogos: l.jogos, kills: l.kills, mortes: l.mortes, pontos: l.jogos * pj + l.kills * pk - l.mortes * pm };
+      }).sort((a, b) => b.pontos - a.pontos || b.jogos - a.jogos));
     },
     async lerTimes(evento_id) { return times.filter(t => t.evento_id === evento_id).map(t => ({ ...t })); },
     async salvarTimes(evento_id, lista) {
@@ -1731,6 +1853,50 @@ async function criarSupabase() {
       const { error } = await sb.from("pedidos").update({ status }).eq("id", id);
       falha(error);
     },
+    async confirmarPresenca(evento_id) {
+      if (!perfilAtual) throw new Error("Entre na sua conta.");
+      const { error } = await sb.from("reservas").update({ confirmou_em: new Date().toISOString() })
+        .eq("evento_id", evento_id).eq("usuario_id", perfilAtual.id);
+      falha(error);
+    },
+    async marcarPresenca(evento_id, usuario_id, valor) {
+      const { error } = await sb.rpc("marcar_presenca", { evento: evento_id, usuario: usuario_id, valor });
+      falha(error);
+    },
+    async lerEstatisticas(evento_id) {
+      const { data, error } = await sb.from("estatisticas").select("*").eq("evento_id", evento_id);
+      falha(error);
+      return data || [];
+    },
+    async minhasConfirmacoes() {
+      if (!perfilAtual) return {};
+      const { data, error } = await sb.from("reservas").select("evento_id, confirmou_em").eq("usuario_id", perfilAtual.id);
+      falha(error);
+      return Object.fromEntries((data || []).filter(r => r.confirmou_em).map(r => [r.evento_id, true]));
+    },
+    async minhaEstatistica(evento_id) {
+      if (!perfilAtual) return null;
+      const { data, error } = await sb.from("estatisticas").select("*").eq("evento_id", evento_id).eq("usuario_id", perfilAtual.id).maybeSingle();
+      falha(error);
+      return data;
+    },
+    async lancarEstatistica(evento_id, dados) {
+      if (!perfilAtual) throw new Error("Entre na sua conta.");
+      const { error } = await sb.from("estatisticas")
+        .upsert({ evento_id, usuario_id: perfilAtual.id, ...dados, status: "pendente" }, { onConflict: "evento_id,usuario_id" });
+      if (error?.code === "42501") throw new Error("Seus números já foram confirmados pela organização. Fale com ela para corrigir.");
+      falha(error);
+    },
+    async salvarEstatistica(evento_id, usuario_id, dados) {
+      const { error } = await sb.from("estatisticas")
+        .upsert({ evento_id, usuario_id, ...dados }, { onConflict: "evento_id,usuario_id" });
+      falha(error);
+    },
+    async ranking(mes) {
+      const { data, error } = await sb.rpc("ranking_mensal", mes ? { mes } : {});
+      falha(error);
+      return data || [];
+    },
     async lerTimes(evento_id) {
       const { data, error } = await sb.from("times").select("usuario_id, time").eq("evento_id", evento_id);
       falha(error);
@@ -1766,7 +1932,7 @@ const estado = {
   eventos: [], produtos: [], jornal: [], equipes: [], operadores: [], galeria: [], campo: [],
   config: { ...CONFIG_PADRAO },
   erro: { eventos: false, produtos: false, jornal: false, equipes: false, operadores: false, galeria: false, campo: false },
-  contagem: {}, minhas: new Set(), meuTime: {},
+  contagem: {}, minhas: new Set(), meuTime: {}, minhasEstat: {}, confirmei: {},
   jornalSel: null, equipeSel: null
 };
 const pode = area => !!estado.usuario && PERMISSOES[area].includes(estado.usuario.cargo);
@@ -1954,6 +2120,11 @@ const fmtQuando = new Intl.DateTimeFormat("pt-BR", { weekday: "long", hour: "2-d
 const fmtLongo = new Intl.DateTimeFormat("pt-BR", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" });
 const fmtMes = new Intl.DateTimeFormat("pt-BR", { month: "long" });
 const eventosFuturos = () => estado.eventos.filter(e => new Date(e.data) > new Date());
+/* jogos recentes (últimos 30 dias) em que a pessoa reservou */
+const meusJogosPassados = () => estado.eventos.filter(e => {
+  const d = new Date(e.data);
+  return d <= new Date() && d > new Date(Date.now() - 30 * 86400e3) && estado.minhas.has(e.id);
+});
 
 function vagasTexto(e) {
   const livres = e.vagas - ocupadas(e);
@@ -1974,6 +2145,7 @@ function renderEventos() {
   const alvo = $("#ev-lista");
   if (estado.erro.eventos) { alvo.innerHTML = `<p class="vazio">Não foi possível carregar os eventos agora. Recarregue a página em alguns instantes.</p>`; return; }
   const lista = eventosFuturos().filter(e => filtroEv === "Todos" || e.tipo === filtroEv);
+  const passados = meusJogosPassados();
   if (!lista.length) {
     alvo.innerHTML = filtroEv === "Todos"
       ? `<p class="vazio">Nenhum evento agendado no momento. Siga a equipe no Instagram para saber a próxima data.</p>`
@@ -2002,14 +2174,43 @@ function renderEventos() {
           <p>${reservado ? `<span class="ev-ok">Sua vaga está reservada.</span>` : vagasTexto(e)}</p></div>
         ${estado.meuTime[e.id] ? `<p class="meu-time time-${estado.meuTime[e.id] === "Amarelo" ? "am" : "az"}">Equipe ${esc(NOME_TIME[estado.meuTime[e.id]] || estado.meuTime[e.id])}</p>` : ""}
         <button class="btn btn-sec btn-bloco" data-reservar="${e.id}" ${cheio ? "disabled" : ""}>${reservado ? "Cancelar reserva" : cheio ? "Esgotado" : "Reservar vaga"}</button>
+        ${reservado ? (estado.confirmei[e.id]
+          ? `<p class="ev-ok" style="margin:.6rem 0 0">Presença confirmada.</p>`
+          : `<button class="btn btn-sec btn-bloco btn-mini" data-confirmar="${e.id}" style="margin-top:.5rem">Confirmar presença</button>`) : ""}
       </div>
     </article>`;
-  }).join("");
+  }).join("") + (passados.length ? `
+    <div class="jogos-recentes">
+      <h3 class="sub">Seus jogos recentes</h3>
+      <p class="lista-ajuda">Lance suas eliminações depois do jogo. A organização confirma e os números entram no ranking do mês.</p>
+      ${passados.map(e => {
+        const st = estado.minhasEstat[e.id];
+        return `<div class="recente">
+          <div><strong>${esc(e.nome)}</strong><span class="linha-meta">${fmtCurto.format(new Date(e.data))}</span></div>
+          <div class="recente-num">${st ? `<span class="st st-${st.status === "confirmado" ? "entregue" : "novo"}">${st.kills} eliminações, ${st.mortes} vezes eliminado${st.status === "confirmado" ? " (confirmado)" : " (aguardando)"}</span>` : `<span class="linha-meta">Sem números lançados</span>`}</div>
+          <button class="btn btn-sec btn-mini" data-numeros="${e.id}">${st ? (st.status === "confirmado" ? "Ver" : "Corrigir") : "Lançar números"}</button>
+        </div>`;
+      }).join("")}
+    </div>` : "");
 }
 $("#ev-lista").addEventListener("keydown", e => {
   if ((e.key === "Enter" || e.key === " ") && e.target.closest("[data-fotos]")) { e.preventDefault(); e.target.closest("[data-fotos]").click(); }
 });
-$("#ev-lista").addEventListener("click", e => {
+$("#ev-lista").addEventListener("click", async e => {
+  const num = e.target.closest("[data-numeros]");
+  if (num) { abrirMeusNumeros(Number(num.dataset.numeros) || num.dataset.numeros); return; }
+  const conf = e.target.closest("[data-confirmar]");
+  if (conf) {
+    const id = Number(conf.dataset.confirmar) || conf.dataset.confirmar;
+    conf.disabled = true;
+    try {
+      await DB.confirmarPresenca(id);
+      estado.confirmei[id] = true;
+      toast("Presença confirmada. Nos vemos no campo.");
+      renderEventos();
+    } catch (err) { toast(err.message); conf.disabled = false; }
+    return;
+  }
   const cap = e.target.closest("[data-fotos]");
   if (cap) {
     const ev = estado.eventos.find(x => "ev-" + x.id === cap.dataset.fotos);
@@ -2124,6 +2325,53 @@ $("#jornal-box").addEventListener("click", e => {
   estado.jornalSel = Number(b.dataset.edicao) || b.dataset.edicao;
   renderJornal();
   $("#avisos").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+});
+
+/* =========================================================
+   RANKING
+   ========================================================= */
+let mesRanking = null;
+function mesesRanking() {
+  const hoje = new Date();
+  return [0, 1, 2].map(n => {
+    const d = new Date(hoje.getFullYear(), hoje.getMonth() - n, 1);
+    return { iso: isoLocal(d), nome: n === 0 ? "Este mês" : new Intl.DateTimeFormat("pt-BR", { month: "long", year: "numeric" }).format(d) };
+  });
+}
+async function renderRanking() {
+  const meses = mesesRanking();
+  if (!mesRanking) mesRanking = meses[0].iso;
+  $("#rk-meses").innerHTML = meses.map(m => `<button class="chip" data-mes="${m.iso}" aria-pressed="${m.iso === mesRanking}">${esc(m.nome)}</button>`).join("");
+  $("#rk-premio").textContent = estado.config.premio_texto || "";
+  const alvo = $("#rk-corpo");
+  alvo.innerHTML = `<p class="carregando">Carregando ranking…</p>`;
+  try {
+    const linhas = await DB.ranking(mesRanking === meses[0].iso ? null : mesRanking);
+    if (!linhas.length) {
+      alvo.innerHTML = `<p class="vazio">Ninguém pontuou neste mês ainda. A pontuação começa quando a organização marca as presenças do jogo.</p>`;
+      return;
+    }
+    alvo.innerHTML = `
+      <div class="tabela-wrap"><table class="rk">
+        <thead><tr><th scope="col">#</th><th scope="col">Operador</th><th scope="col" class="rk-num">Jogos</th>
+          <th scope="col" class="rk-num esconde">Elim.</th><th scope="col" class="rk-num esconde">Mortes</th><th scope="col" style="text-align:right">Pontos</th></tr></thead>
+        <tbody>${linhas.map((l, i) => `<tr>
+          <td>${i + 1}</td>
+          <td><span class="rk-nome">${esc(l.nome)}</span>${l.equipe ? `<span class="rk-eq">${esc(l.equipe)}</span>` : ""}</td>
+          <td class="rk-num">${l.jogos}</td>
+          <td class="rk-num esconde">${l.kills}</td>
+          <td class="rk-num esconde">${l.mortes}</td>
+          <td class="rk-pontos">${Number(l.pontos).toLocaleString("pt-BR")}</td>
+        </tr>`).join("")}</tbody>
+      </table></div>`;
+  } catch (err) {
+    alvo.innerHTML = `<p class="vazio">Não foi possível carregar o ranking agora.</p>`;
+  }
+}
+$("#rk-meses").addEventListener("click", e => {
+  const b = e.target.closest("[data-mes]"); if (!b) return;
+  mesRanking = b.dataset.mes;
+  renderRanking();
 });
 
 /* =========================================================
@@ -2507,6 +2755,13 @@ async function enviarPedido() {
 /* =========================================================
    CARREGAMENTO DE DADOS
    ========================================================= */
+async function carregarMinhasEstatisticas() {
+  estado.minhasEstat = {};
+  if (!estado.usuario) return;
+  for (const ev of meusJogosPassados()) {
+    try { const e = await DB.minhaEstatistica(ev.id); if (e) estado.minhasEstat[ev.id] = e; } catch {}
+  }
+}
 async function carregarMeuTime() {
   estado.meuTime = {};
   if (!estado.usuario) return;
@@ -2522,6 +2777,7 @@ async function carregarMeuTime() {
 async function carregarReservas() {
   try { estado.contagem = await DB.contagemReservas(); } catch { estado.contagem = {}; }
   try { estado.minhas = await DB.minhasReservas(); } catch { estado.minhas = new Set(); }
+  try { estado.confirmei = await DB.minhasConfirmacoes(); } catch { estado.confirmei = {}; }
 }
 async function carregarTabela(tabela) {
   try { estado[tabela] = await DB.listar(tabela); estado.erro[tabela] = false; }
@@ -2532,11 +2788,12 @@ async function carregarTudo() {
     (async () => { try { const c = await DB.lerConfig(); estado.config = { ...CONFIG_PADRAO, ...c }; } catch { estado.config = { ...CONFIG_PADRAO }; } })()]);
   await carregarReservas();
   await carregarMeuTime();
+  await carregarMinhasEstatisticas();
   renderTudo();
 }
 function renderTudo() {
   renderEventos(); atualizarProximo(); tique();
-  renderProdutos(); renderJornal(); renderEquipes(); renderGaleria(); renderCampo(); renderGerenciar();
+  renderProdutos(); renderJornal(); renderEquipes(); renderGaleria(); renderCampo(); renderRanking(); renderGerenciar();
 }
 function renderGerenciar() { $$("[data-gerenciar]").forEach(b => b.hidden = !pode(b.dataset.gerenciar)); }
 $$("[data-gerenciar]").forEach(b => b.addEventListener("click", () => abrirAdmin(b.dataset.gerenciar)));
@@ -2599,6 +2856,7 @@ async function aoMudarUsuario(perfil) {
   if (antes !== perfil?.cargo) await Promise.all(["produtos", "jornal"].map(carregarTabela));
   await carregarReservas();
   await carregarMeuTime();
+  await carregarMinhasEstatisticas();
   renderTudo();
 }
 
@@ -2742,6 +3000,60 @@ $("#form-login").addEventListener("submit", async e => {
   } finally {
     botao.disabled = false;
     if (botao.textContent.endsWith("…")) botao.textContent = textoOriginal;
+  }
+});
+
+/* ---------- Meus números do jogo ---------- */
+const modalNumeros = $("#modal-numeros");
+let eventoNumeros = null, focoAntesNumeros = null;
+async function abrirMeusNumeros(evento_id) {
+  const ev = estado.eventos.find(e => e.id === evento_id); if (!ev) return;
+  eventoNumeros = ev; focoAntesNumeros = document.activeElement;
+  modalNumeros.hidden = false; travar();
+  $("#num-corpo").innerHTML = `<p class="carregando">Carregando…</p>`;
+  try {
+    const atual = await DB.minhaEstatistica(evento_id);
+    const travado = atual?.status === "confirmado";
+    $("#num-corpo").innerHTML = `
+      <p><strong>${esc(ev.nome)}</strong><br><span class="linha-meta">${fmtCurto.format(new Date(ev.data))}</span></p>
+      ${travado ? `<p class="ok-form">Seus números já foram confirmados pela organização.</p>` : ""}
+      <form id="form-numeros" novalidate>
+        <div class="f-duplo">
+          <div class="f"><label for="n-kills">Eliminações</label><input id="n-kills" type="number" min="0" max="500" value="${atual?.kills ?? 0}" ${travado ? "disabled" : ""}></div>
+          <div class="f"><label for="n-mortes">Vezes eliminado</label><input id="n-mortes" type="number" min="0" max="500" value="${atual?.mortes ?? 0}" ${travado ? "disabled" : ""}></div>
+        </div>
+        <div class="f"><label for="n-obs">Observação</label><input id="n-obs" maxlength="120" value="${esc(atual?.observacao)}" placeholder="opcional" ${travado ? "disabled" : ""}></div>
+        <p class="erro-form" id="num-erro" role="alert"></p>
+        ${travado ? "" : `<button class="btn btn-bloco" type="submit" id="num-salvar">${atual ? "Atualizar números" : "Lançar números"}</button>`}
+      </form>
+      <p class="pr-aviso">${travado ? "Para corrigir, fale com a organização." : "A organização confere e confirma. Só depois disso os números entram no ranking."}</p>`;
+    setTimeout(() => $("#n-kills")?.focus(), 30);
+  } catch (err) {
+    $("#num-corpo").innerHTML = `<p class="erro-form">${esc(err.message)}</p>`;
+  }
+}
+function fecharMeusNumeros() {
+  modalNumeros.hidden = true; destravar();
+  (focoAntesNumeros && document.contains(focoAntesNumeros) ? focoAntesNumeros : null)?.focus();
+}
+$("#num-fechar").addEventListener("click", fecharMeusNumeros);
+modalNumeros.addEventListener("click", e => { if (e.target === modalNumeros) fecharMeusNumeros(); });
+modalNumeros.addEventListener("submit", async e => {
+  e.preventDefault();
+  const erro = $("#num-erro"), botao = $("#num-salvar");
+  erro.textContent = "";
+  const kills = parseInt($("#n-kills").value, 10), mortes = parseInt($("#n-mortes").value, 10);
+  if (!(kills >= 0) || !(mortes >= 0)) { erro.textContent = "Preencha os dois números."; return; }
+  botao.disabled = true; botao.textContent = "Salvando…";
+  try {
+    await DB.lancarEstatistica(eventoNumeros.id, { kills, mortes, observacao: $("#n-obs").value.trim() || null });
+    toast("Números enviados. A organização vai confirmar.");
+    fecharMeusNumeros();
+    await carregarMinhasEstatisticas();
+    renderEventos();
+  } catch (err) {
+    erro.textContent = err.message;
+    botao.disabled = false; botao.textContent = "Lançar números";
   }
 });
 
@@ -2909,10 +3221,10 @@ function limparForm() {
   admin.fotos.forEach(f => { if (f.objeto) URL.revokeObjectURL(f.preview); });
   admin.fotos = [];
   $("#admin-corpo").classList.remove("editando");
-  $("#admin-corpo").classList.toggle("sem-form", admin.aba === "acessos" || admin.aba === "pedidos");
+  $("#admin-corpo").classList.toggle("sem-form", ["acessos", "pedidos", "ranking"].includes(admin.aba));
   $("#admin-form").innerHTML = admin.aba === "usuarios"
     ? `<h3>Cargos</h3><p class="form-vazio">Só o administrador escolhe o cargo de cada pessoa. Todo cadastro novo entra como Membro, e a mudança de cargo vale na hora.</p>${legendaCargos()}`
-    : (admin.aba === "acessos" || admin.aba === "pedidos") ? ""
+    : (admin.aba === "acessos" || admin.aba === "pedidos" || admin.aba === "ranking") ? ""
     : `<p class="form-vazio">Escolha um item na lista para editar, ou clique em <strong>${FEMININO.includes(admin.aba) ? "Nova" : "Novo"}</strong> para criar.</p>`;
 }
 function legendaCargos() {
@@ -2975,6 +3287,22 @@ async function renderListaAdmin() {
             <button class="btn btn-sec btn-mini" data-acao="editar" data-id="${j.id}">Editar</button>
             ${botaoExcluir(j.id)}
           </div></div>`).join("") : `<p class="form-vazio">Nenhum aviso ainda. Clique em Novo aviso para escrever o primeiro.</p>`}`;
+  }
+  if (aba === "ranking") {
+    const c = estado.config;
+    alvo.innerHTML = `
+      <div class="lista-topo"><h3>Pontuação e prêmio</h3></div>
+      <p class="lista-ajuda">Define como os pontos do ranking são calculados. Vale para o mês inteiro, inclusive para o que já passou.</p>
+      <form id="form-pontos" novalidate>
+        <div class="f-duplo">
+          <div class="f"><label for="p-jogo">Pontos por jogo comparecido</label><input id="p-jogo" type="number" min="0" max="1000" value="${esc(c.pontos_jogo ?? 10)}"></div>
+          <div class="f"><label for="p-kill">Pontos por eliminação</label><input id="p-kill" type="number" min="0" max="1000" value="${esc(c.pontos_kill ?? 1)}"></div>
+        </div>
+        <div class="f" style="max-width:16rem"><label for="p-morte">Pontos perdidos por ser eliminado</label><input id="p-morte" type="number" min="0" max="1000" value="${esc(c.pontos_morte ?? 0)}"><small>Deixe 0 para não descontar.</small></div>
+        <div class="f"><label for="p-premio">Texto do prêmio</label><textarea id="p-premio" maxlength="300" style="min-height:5rem">${esc(c.premio_texto)}</textarea><small>Aparece embaixo do ranking no site.</small></div>
+        <p class="erro-form" id="p-erro" role="alert"></p>
+        <button class="btn" type="submit" id="p-salvar">Salvar pontuação</button>
+      </form>`;
   }
   if (aba === "campo") {
     const linhas = estado.campo;
@@ -3154,6 +3482,26 @@ function renderAcessos() {
       </tr>`).join("")}</tbody>
     </table></div>` : `<p class="form-vazio">Nenhum registro encontrado.</p>`;
 }
+$("#admin-lista").addEventListener("submit", async e => {
+  if (e.target.id !== "form-pontos") return;
+  e.preventDefault();
+  const erro = $("#p-erro"), botao = $("#p-salvar");
+  erro.textContent = "";
+  botao.disabled = true; botao.textContent = "Salvando…";
+  try {
+    const novo = {
+      pontos_jogo: String(parseInt($("#p-jogo").value, 10) || 0),
+      pontos_kill: String(parseInt($("#p-kill").value, 10) || 0),
+      pontos_morte: String(parseInt($("#p-morte").value, 10) || 0),
+      premio_texto: $("#p-premio").value.trim()
+    };
+    await DB.salvarConfig(novo);
+    estado.config = { ...estado.config, ...novo };
+    toast("Pontuação atualizada.");
+    renderRanking();
+  } catch (err) { erro.textContent = err.message; }
+  botao.disabled = false; botao.textContent = "Salvar pontuação";
+});
 $("#admin-lista").addEventListener("input", e => {
   if (e.target.id === "busca-usuario") { admin.buscaUsuario = e.target.value; renderUsuarios(); }
   if (e.target.id === "busca-acesso") { admin.buscaAcesso = e.target.value; renderAcessos(); }
@@ -3223,6 +3571,47 @@ async function recarregarDepoisDeEditar() {
   if (admin.aba === "eventos") await carregarReservas();
   renderTudo();
   renderListaAdmin();
+}
+
+/* Organizador lança ou corrige os números de um jogador */
+function abrirNumerosOrganizador(usuario_id) {
+  const p = inscritosAtuais.find(i => String(i.id) === String(usuario_id));
+  const st = estatEvento[usuario_id] || { kills: 0, mortes: 0, status: "pendente" };
+  const caixa = $("#num-corpo");
+  eventoNumeros = eventoInscritos;
+  focoAntesNumeros = document.activeElement;
+  modalNumeros.hidden = false; travar();
+  $("#num-titulo").textContent = "Números de " + (p?.nome || "jogador");
+  caixa.innerHTML = `
+    <p><strong>${esc(eventoInscritos.nome)}</strong><br><span class="linha-meta">${fmtCurto.format(new Date(eventoInscritos.data))}</span></p>
+    <form id="form-num-org" novalidate>
+      <div class="f-duplo">
+        <div class="f"><label for="o-kills">Eliminações</label><input id="o-kills" type="number" min="0" max="500" value="${st.kills ?? 0}"></div>
+        <div class="f"><label for="o-mortes">Vezes eliminado</label><input id="o-mortes" type="number" min="0" max="500" value="${st.mortes ?? 0}"></div>
+      </div>
+      ${st.observacao ? `<p class="linha-meta">Observação do jogador: ${esc(st.observacao)}</p>` : ""}
+      <p class="erro-form" id="num-erro" role="alert"></p>
+      <div class="form-acoes">
+        <button class="btn" type="submit" data-org="confirmar">Salvar e confirmar</button>
+        <button class="btn btn-sec" type="button" data-org="pendente">Salvar como pendente</button>
+      </div>
+    </form>
+    <p class="pr-aviso">Confirmado, o número entra no ranking do mês e o jogador não consegue mais alterar.</p>`;
+  const salvar = async (status) => {
+    const erro = $("#num-erro"); erro.textContent = "";
+    const kills = parseInt($("#o-kills").value, 10), mortes = parseInt($("#o-mortes").value, 10);
+    if (!(kills >= 0) || !(mortes >= 0)) { erro.textContent = "Preencha os dois números."; return; }
+    try {
+      await DB.salvarEstatistica(eventoInscritos.id, usuario_id, { kills, mortes, status, confirmado_em: status === "confirmado" ? new Date().toISOString() : null });
+      estatEvento[usuario_id] = { ...st, kills, mortes, status };
+      toast(status === "confirmado" ? "Números confirmados." : "Números salvos como pendentes.");
+      fecharMeusNumeros();
+      renderInscritos(); renderRanking();
+    } catch (err) { erro.textContent = err.message; }
+  };
+  $("#form-num-org").addEventListener("submit", ev => { ev.preventDefault(); salvar("confirmado"); });
+  $('[data-org="pendente"]').addEventListener("click", () => salvar("pendente"));
+  setTimeout(() => $("#o-kills")?.focus(), 30);
 }
 
 /* ---------- Formulários do painel ---------- */
@@ -3437,13 +3826,23 @@ const resumoClasses = l => {
   l.forEach(i => { const k = i.classe || "Sem classe"; c[k] = (c[k] || 0) + 1; });
   return Object.entries(c).map(([k, n]) => `${n} ${k.toLowerCase()}`).join(", ");
 };
-function linhaInscrito(i) {
+function linhaInscrito(i, passado) {
   const z = linkWhats(i.telefone);
   const extras = [i.classe, (i.qualificacoes || []).join("/")].filter(Boolean).map(esc).join(" • ");
-  return `<li><strong>${esc(i.nome)}</strong>${extras ? ` <span class="tag tag-antiga">${extras}</span>` : ""}
-    <span>${esc(i.email)}${z ? ` • <a href="${z}" target="_blank" rel="noopener" class="zap">${esc(formatarTelefone(i.telefone))}</a>` : ""}</span></li>`;
+  const st = estatEvento[i.id];
+  return `<li>
+    <label class="chamada"><input type="checkbox" data-presenca="${esc(i.id)}" ${i.presente ? "checked" : ""}> <span class="chamada-txt">${i.presente ? "Presente" : "Marcar presença"}</span></label>
+    <strong>${esc(i.nome)}</strong>${extras ? ` <span class="tag tag-antiga">${extras}</span>` : ""}
+    ${i.confirmou_em && !i.presente ? ` <span class="tag tag-ar">confirmou que vem</span>` : ""}
+    <span>${esc(i.email)}${z ? ` • <a href="${z}" target="_blank" rel="noopener" class="zap">${esc(formatarTelefone(i.telefone))}</a>` : ""}</span>
+    ${passado ? `<span class="numeros-linha">
+      ${st ? `<span class="st st-${st.status === "confirmado" ? "entregue" : "novo"}">${st.kills}/${st.mortes}${st.status === "confirmado" ? " confirmado" : " aguardando"}</span>` : `<span class="linha-meta">sem números</span>`}
+      <button class="btn btn-sec btn-mini" data-editar-num="${esc(i.id)}">${st ? "Conferir" : "Lançar"}</button>
+      ${st && st.status !== "confirmado" ? `<button class="btn btn-mini" data-confirmar-num="${esc(i.id)}">Confirmar</button>` : ""}
+    </span>` : ""}
+  </li>`;
 }
-let inscritosAtuais = [], eventoInscritos = null, equipesAtuais = null;
+let inscritosAtuais = [], eventoInscritos = null, equipesAtuais = null, estatEvento = {};
 
 async function mostrarInscritos(evento) {
   limparForm();
@@ -3452,6 +3851,8 @@ async function mostrarInscritos(evento) {
   $("#admin-form").innerHTML = `<h3>Inscritos</h3><p class="carregando">Carregando lista…</p>`;
   try {
     inscritosAtuais = await DB.inscritos(evento.id);
+    estatEvento = {};
+    try { (await DB.lerEstatisticas(evento.id)).forEach(e => estatEvento[e.usuario_id] = e); } catch {}
     const salvos = await DB.lerTimes(evento.id).catch(() => []);
     if (salvos.length) {
       equipesAtuais = { Amarelo: [], Azul: [] };
@@ -3472,8 +3873,8 @@ function renderInscritos() {
   $("#admin-form").innerHTML = `
     <h3>Inscritos</h3>
     <p><strong>${esc(evento.nome)}</strong><br><span class="linha-meta">${fmtCurto.format(new Date(evento.data))}</span></p>
-    <p class="lista-ajuda">${lista.length} ${lista.length === 1 ? "reserva feita" : "reservas feitas"} pelo site${externas ? ` e ${externas} fora do site` : ""}. Total de ${ocupadas(evento)} de ${evento.vagas} vagas.${lista.length ? `<br>${esc(resumoClasses(lista))}.` : ""}</p>
-    ${lista.length ? `<ul class="inscritos">${lista.map(linhaInscrito).join("")}</ul>
+    <p class="lista-ajuda">${lista.length} ${lista.length === 1 ? "reserva feita" : "reservas feitas"} pelo site${externas ? ` e ${externas} fora do site` : ""}. Total de ${ocupadas(evento)} de ${evento.vagas} vagas.${lista.length ? `<br>${esc(resumoClasses(lista))}.` : ""}${lista.length ? `<br>${lista.filter(i => i.presente).length} com presença marcada, ${lista.filter(i => i.confirmou_em).length} confirmaram que vêm.` : ""}</p>
+    ${lista.length ? `<ul class="inscritos">${lista.map(i => linhaInscrito(i, new Date(evento.data) < new Date())).join("")}</ul>
       <div class="form-acoes">
         <button class="btn btn-mini" id="f-sortear">${equipesAtuais ? "Sortear de novo" : "Sortear equipes"}</button>
         <button class="btn btn-sec btn-mini" id="f-copiar">Copiar lista</button>
@@ -3514,7 +3915,34 @@ function textoEquipes() {
   return `${eventoInscritos.nome} — ${fmtCurto.format(new Date(eventoInscritos.data))}\nEquipes sorteadas:\n\n${bloco("Amarelo")}\n\n${bloco("Azul")}\n\nConfirmem presença aqui no grupo.`;
 }
 
+$("#admin-form").addEventListener("change", async e => {
+  const pres = e.target.closest("[data-presenca]");
+  if (!pres || !eventoInscritos) return;
+  const id = pres.dataset.presenca, valor = pres.checked;
+  pres.disabled = true;
+  try {
+    await DB.marcarPresenca(eventoInscritos.id, id, valor);
+    const p = inscritosAtuais.find(i => String(i.id) === id);
+    if (p) p.presente = valor;
+    toast(valor ? `${p?.nome || "Jogador"} marcado como presente.` : `Presença de ${p?.nome || "jogador"} desfeita.`);
+    renderInscritos(); renderRanking();
+  } catch (err) { toast(err.message); pres.checked = !valor; pres.disabled = false; }
+});
 $("#admin-form").addEventListener("click", async e => {
+  const ed = e.target.closest("[data-editar-num]");
+  if (ed && eventoInscritos) { abrirNumerosOrganizador(ed.dataset.editarNum); return; }
+  const cf = e.target.closest("[data-confirmar-num]");
+  if (cf && eventoInscritos) {
+    cf.disabled = true;
+    try {
+      const st = estatEvento[cf.dataset.confirmarNum];
+      await DB.salvarEstatistica(eventoInscritos.id, cf.dataset.confirmarNum, { kills: st.kills, mortes: st.mortes, status: "confirmado", confirmado_em: new Date().toISOString() });
+      st.status = "confirmado";
+      toast("Números confirmados. Já valem no ranking.");
+      renderInscritos(); renderRanking();
+    } catch (err) { toast(err.message); cf.disabled = false; }
+    return;
+  }
   if (e.target.closest("#f-sortear")) {
     equipesAtuais = sortearEquipes(inscritosAtuais);
     renderInscritos();
