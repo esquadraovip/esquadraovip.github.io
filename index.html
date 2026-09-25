@@ -410,6 +410,48 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
 .pr-qtd button:hover{border-color:var(--areia)}
 .pr-aviso{font-size:.88rem;color:var(--areia-2);margin:.8rem 0 0}
 
+/* ---------- Campeonato ---------- */
+.camp-topo{display:flex;flex-wrap:wrap;gap:.6rem 1.2rem;align-items:baseline;margin-bottom:1.5rem}
+.camp-topo h3{font:800 1.9rem/1 var(--display)}
+.camp-topo .linha-meta{display:inline}
+.chave{display:flex;gap:1.5rem;overflow-x:auto;padding-bottom:.6rem;align-items:stretch}
+.fase{flex:none;width:15.5rem;display:flex;flex-direction:column;gap:.7rem}
+.fase > h4{font:800 1.1rem/1 var(--display);color:var(--folha);padding-bottom:.4rem;border-bottom:1px solid var(--linha)}
+.fase-jogos{display:flex;flex-direction:column;justify-content:space-around;gap:.7rem;flex:1}
+.duelo{border:1px solid var(--linha);border-radius:4px;overflow:hidden;background:var(--painel)}
+.duelo.decidido{border-color:var(--folha)}
+.duelo.pendente{border-style:dashed}
+.duelo-lado{display:flex;justify-content:space-between;align-items:center;gap:.5rem;padding:.5rem .65rem;font-size:.93rem;border-bottom:1px solid var(--linha)}
+.duelo-lado:last-child{border-bottom:none}
+.duelo-lado.venceu{background:rgba(156,175,110,.14);font-weight:700}
+.duelo-lado.venceu .duelo-nome::after{content:" ✓";color:var(--folha)}
+.duelo-lado.vazio{color:var(--areia-2);font-style:italic}
+.duelo-nome{display:flex;flex-direction:column;gap:.1rem;min-width:0}
+.duelo-nome small{color:var(--areia-2);font-size:.8rem;font-style:normal;font-weight:500}
+.duelo-cab{background:var(--painel-2);padding:.25rem .65rem;font-size:.78rem;color:var(--areia-2);font-weight:600;letter-spacing:.03em;text-transform:uppercase}
+.duelo-btn{background:transparent;border:1px solid var(--linha);color:var(--areia-2);font:600 .78rem var(--texto);padding:.15rem .45rem;border-radius:2px;cursor:pointer;flex:none}
+.duelo-btn:hover{border-color:var(--laranja);color:var(--laranja)}
+.duelo-3{border-left:4px solid var(--coiote)}
+.duelo-bye{opacity:.6;border-style:dashed}
+.duelo-bye .duelo-lado{padding-block:.4rem}
+.podio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin-top:1.5rem}
+.podio div{border:1px solid var(--linha);border-radius:4px;padding:.9rem 1rem;text-align:center}
+.podio .pos{display:block;font:800 1.05rem/1 var(--display);margin-bottom:.35rem}
+.podio .p1{border-color:#E5B54A}
+.podio .p1 .pos{color:#E5B54A}
+.podio .p2{border-color:var(--areia-2)}
+.podio .p2 .pos{color:var(--areia-2)}
+.podio .p3{border-color:var(--coiote)}
+.podio .p3 .pos{color:var(--coiote)}
+.podio strong{font-size:1rem}
+.podio small{display:block;color:var(--areia-2);font-size:.85rem;margin-top:.2rem}
+.camp-form{display:grid;gap:.9rem;border:1px solid var(--linha);border-radius:4px;padding:1.1rem;margin-bottom:1.2rem}
+.camp-lados{display:grid;grid-template-columns:repeat(auto-fill,minmax(13rem,1fr));gap:.6rem;margin:1rem 0}
+.lado-card{border:1px solid var(--linha);border-left:3px solid var(--folha);border-radius:4px;padding:.6rem .75rem}
+.lado-card h5{font:800 1rem/1 var(--display);margin-bottom:.3rem}
+.lado-card ul{list-style:none;margin:0;padding:0;font-size:.9rem;color:var(--areia-2)}
+.lado-reservas{border-left-color:var(--coiote);opacity:.85}
+
 /* ---------- Pedidos ---------- */
 .pedido-card{border:1px solid var(--linha);border-radius:4px;padding:1rem 1.1rem;margin-bottom:.8rem}
 .pedido-cab{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;margin-bottom:.5rem}
@@ -635,6 +677,7 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
   .passos{grid-template-columns:1fr 1fr}
   .pedido{position:static}
   .produtos{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .podio{grid-template-columns:1fr}
   .rodape-in{grid-template-columns:1fr 1fr}
   .admin-corpo{display:block;overflow:auto}
   .admin-lista,.admin-form{overflow:visible}
@@ -700,6 +743,7 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
     <nav class="menu" id="menu" aria-label="Principal">
       <ul>
         <li><a href="#eventos">Eventos</a></li>
+        <li><a href="#campeonato" id="link-campeonato" hidden>Campeonato</a></li>
         <li><a href="#campo">Campo e loja</a></li>
         <li><a href="#equipes">Equipes</a></li>
         <li><a href="#avisos">Avisos</a></li>
@@ -764,6 +808,17 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
       <button class="btn btn-sec btn-mini gerenciar" data-gerenciar="eventos" hidden>Gerenciar eventos</button>
     </div>
     <div class="eventos" id="ev-lista"><p class="carregando">Carregando eventos…</p></div>
+  </div>
+</section>
+
+<!-- ================= CAMPEONATO ================= -->
+<section id="campeonato" class="secao" hidden>
+  <div class="largura">
+    <div class="cab">
+      <h2>Campeonato</h2>
+      <p>O chaveamento do dia. Acompanhe os confrontos e veja quem avança em cada fase.</p>
+    </div>
+    <div id="camp-corpo"></div>
   </div>
 </section>
 
@@ -845,7 +900,7 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
   <div class="largura">
     <div class="cab">
       <h2>Ranking do mês</h2>
-      <p>Pontos por presença nos jogos e pelas eliminações confirmadas pela organização. A pontuação zera todo dia 1º.</p>
+      <p>Pontos por presença nos jogos, pelas eliminações confirmadas pela organização e pelos resultados no campeonato. A pontuação zera todo dia 1º.</p>
     </div>
     <div class="barra">
       <div class="filtros" id="rk-meses" role="group" aria-label="Escolher o mês"></div>
@@ -1394,6 +1449,7 @@ const CAMPO_PADRAO = [
 ].map(([rotulo, valor], i) => ({ id: i + 1, rotulo, valor, ordem: i + 1 }));
 const CONFIG_PADRAO = {
   pontos_jogo: "10", pontos_kill: "1", pontos_morte: "0",
+  pontos_vitoria: "5", pontos_campeao: "20", pontos_vice: "10",
   premio_texto: "O primeiro colocado de cada mês ganha um prêmio da equipe. Combine com a organização.",
   campo_texto: "Jogos abertos todo fim de semana. Quem nunca jogou pode alugar o kit completo e jogar acompanhado por alguém da equipe.",
   endereco: CONFIG.endereco,
@@ -1559,6 +1615,7 @@ function criarDemo() {
                   campo: CAMPO_PADRAO.map(c => ({ ...c })) };
   let configDemo = { ...CONFIG_PADRAO };
   const reservas = [...reservasDemo], pedidos = [], times = [], estatisticas = [...estatDemo];
+  const camps = [], campLados = [], confrontos = [];
   const ouvintes = [];
   let atual = null;
   const perfil = u => u ? { id: u.id, nome: u.nome, email: u.email, cargo: u.cargo, equipe: u.equipe || "", cidade: u.cidade || "", telefone: u.telefone || "", classe: u.classe || "", qualificacoes: u.qualificacoes || [], criado_em: u.criado_em, ultimo_acesso: u.ultimo_acesso } : null;
@@ -1707,16 +1764,76 @@ function criarDemo() {
       const fim = new Date(ini.getFullYear(), ini.getMonth() + 1, 1);
       const noMes = ev => { const d = new Date(dados.eventos.find(x => x.id === ev)?.data || 0); return d >= ini && d < fim; };
       const linhas = {};
-      const pega = id => (linhas[id] = linhas[id] || { id, jogos: 0, kills: 0, mortes: 0 });
+      const pega = id => (linhas[id] = linhas[id] || { id, jogos: 0, kills: 0, mortes: 0, vitorias: 0, campeao: 0, vice: 0 });
       reservas.filter(r => r.presente && noMes(r.evento_id)).forEach(r => pega(r.usuario_id).jogos++);
       estatisticas.filter(e => e.status === "confirmado" && noMes(e.evento_id)).forEach(e => {
         const l = pega(e.usuario_id); l.kills += Number(e.kills) || 0; l.mortes += Number(e.mortes) || 0;
       });
-      const pj = Number(configDemo.pontos_jogo ?? 10), pk = Number(configDemo.pontos_kill ?? 1), pm = Number(configDemo.pontos_morte ?? 0);
+      // campeonatos do mês: vitórias, campeão e vice
+      camps.filter(c => noMes(c.evento_id)).forEach(c => {
+        const meus = campLados.filter(l => l.campeonato_id === c.id);
+        const jogos = confrontos.filter(f => f.campeonato_id === c.id);
+        // bye não conta como vitória
+        jogos.filter(f => f.vencedor && f.lado_a && f.lado_b).forEach(f => {
+          meus.filter(l => l.lado === f.vencedor).forEach(l => pega(l.usuario_id).vitorias++);
+        });
+        const chave = jogos.filter(f => f.tipo === "chave");
+        if (!chave.length) return;
+        const ultima = Math.max(...chave.map(f => f.fase));
+        const final = chave.find(f => f.fase === ultima);
+        if (!final?.vencedor) return;
+        const perdedor = final.vencedor === final.lado_a ? final.lado_b : final.lado_a;
+        meus.filter(l => l.lado === final.vencedor).forEach(l => pega(l.usuario_id).campeao++);
+        if (perdedor) meus.filter(l => l.lado === perdedor).forEach(l => pega(l.usuario_id).vice++);
+      });
+      const n = (k, padrao) => Number(configDemo[k] ?? padrao);
+      const pj = n("pontos_jogo", 10), pk = n("pontos_kill", 1), pm = n("pontos_morte", 0);
+      const pv = n("pontos_vitoria", 5), pc = n("pontos_campeao", 20), pvi = n("pontos_vice", 10);
       return espera(Object.values(linhas).map(l => {
         const u = usuarios.find(x => x.id === l.id) || {};
-        return { nome: u.nome || "", equipe: u.equipe || "", jogos: l.jogos, kills: l.kills, mortes: l.mortes, pontos: l.jogos * pj + l.kills * pk - l.mortes * pm };
+        return { nome: u.nome || "", equipe: u.equipe || "", jogos: l.jogos, kills: l.kills, mortes: l.mortes,
+          vitorias: l.vitorias, campeao: l.campeao, vice: l.vice,
+          pontos: l.jogos * pj + l.kills * pk - l.mortes * pm + l.vitorias * pv + l.campeao * pc + l.vice * pvi };
       }).sort((a, b) => b.pontos - a.pontos || b.jogos - a.jogos));
+    },
+    async lerCampeonato(evento_id) {
+      const c = camps.find(x => x.evento_id === evento_id);
+      if (!c) return null;
+      return { ...c,
+        lados: campLados.filter(l => l.campeonato_id === c.id).map(l => ({ ...l })),
+        confrontos: confrontos.filter(f => f.campeonato_id === c.id).map(f => ({ ...f })) };
+    },
+    async criarCampeonato(evento_id, nome, formato) {
+      exigir("eventos");
+      const antigo = camps.find(x => x.evento_id === evento_id);
+      if (antigo) {
+        camps.splice(camps.indexOf(antigo), 1);
+        for (let i = campLados.length - 1; i >= 0; i--) if (campLados[i].campeonato_id === antigo.id) campLados.splice(i, 1);
+        for (let i = confrontos.length - 1; i >= 0; i--) if (confrontos[i].campeonato_id === antigo.id) confrontos.splice(i, 1);
+      }
+      const novo = { id: novoId(), evento_id, nome, formato, status: "montando", criado_em: new Date().toISOString() };
+      camps.push(novo);
+      return { ...novo };
+    },
+    async salvarLados(campeonato_id, lista) {
+      exigir("eventos");
+      for (let i = campLados.length - 1; i >= 0; i--) if (campLados[i].campeonato_id === campeonato_id) campLados.splice(i, 1);
+      lista.forEach(l => campLados.push({ campeonato_id, lado: l.lado, usuario_id: l.usuario_id }));
+    },
+    async salvarConfrontos(campeonato_id, lista) {
+      exigir("eventos");
+      for (let i = confrontos.length - 1; i >= 0; i--) if (confrontos[i].campeonato_id === campeonato_id) confrontos.splice(i, 1);
+      lista.forEach(f => confrontos.push({ ...f, id: novoId(), campeonato_id }));
+    },
+    async definirVencedor(confronto_id, vencedor) {
+      exigir("eventos");
+      const f = confrontos.find(x => x.id === confronto_id);
+      if (f) f.vencedor = vencedor;
+    },
+    async statusCampeonato(campeonato_id, status) {
+      exigir("eventos");
+      const c = camps.find(x => x.id === campeonato_id);
+      if (c) c.status = status;
     },
     async lerTimes(evento_id) { return times.filter(t => t.evento_id === evento_id).map(t => ({ ...t })); },
     async salvarTimes(evento_id, lista) {
@@ -1896,6 +2013,50 @@ async function criarSupabase() {
       const { data, error } = await sb.rpc("ranking_mensal", mes ? { mes } : {});
       falha(error);
       return data || [];
+    },
+    async lerCampeonato(evento_id) {
+      const { data, error } = await sb.from("campeonatos").select("*").eq("evento_id", evento_id)
+        .order("criado_em", { ascending: false }).limit(1).maybeSingle();
+      falha(error);
+      if (!data) return null;
+      const [{ data: lados, error: e1 }, { data: confs, error: e2 }] = await Promise.all([
+        sb.from("campeonato_lados").select("lado, usuario_id").eq("campeonato_id", data.id),
+        sb.from("confrontos").select("*").eq("campeonato_id", data.id).order("fase").order("ordem")
+      ]);
+      falha(e1); falha(e2);
+      return { ...data, lados: lados || [], confrontos: confs || [] };
+    },
+    async criarCampeonato(evento_id, nome, formato) {
+      await sb.from("campeonatos").delete().eq("evento_id", evento_id);
+      const { data, error } = await sb.from("campeonatos")
+        .insert({ evento_id, nome, formato, status: "montando" }).select().single();
+      falha(error);
+      return data;
+    },
+    async salvarLados(campeonato_id, lista) {
+      const { error: e1 } = await sb.from("campeonato_lados").delete().eq("campeonato_id", campeonato_id);
+      falha(e1);
+      if (!lista.length) return;
+      const { error } = await sb.from("campeonato_lados")
+        .insert(lista.map(l => ({ campeonato_id, lado: l.lado, usuario_id: l.usuario_id })));
+      falha(error);
+    },
+    async salvarConfrontos(campeonato_id, lista) {
+      const { error: e1 } = await sb.from("confrontos").delete().eq("campeonato_id", campeonato_id);
+      falha(e1);
+      if (!lista.length) return;
+      const { error } = await sb.from("confrontos")
+        .insert(lista.map(f => ({ campeonato_id, fase: f.fase, ordem: f.ordem, tipo: f.tipo,
+                                  lado_a: f.lado_a, lado_b: f.lado_b, vencedor: f.vencedor })));
+      falha(error);
+    },
+    async definirVencedor(confronto_id, vencedor) {
+      const { error } = await sb.from("confrontos").update({ vencedor }).eq("id", confronto_id);
+      falha(error);
+    },
+    async statusCampeonato(campeonato_id, status) {
+      const { error } = await sb.from("campeonatos").update({ status }).eq("id", campeonato_id);
+      falha(error);
     },
     async lerTimes(evento_id) {
       const { data, error } = await sb.from("times").select("usuario_id, time").eq("evento_id", evento_id);
@@ -2354,13 +2515,15 @@ async function renderRanking() {
     alvo.innerHTML = `
       <div class="tabela-wrap"><table class="rk">
         <thead><tr><th scope="col">#</th><th scope="col">Operador</th><th scope="col" class="rk-num">Jogos</th>
-          <th scope="col" class="rk-num esconde">Elim.</th><th scope="col" class="rk-num esconde">Mortes</th><th scope="col" style="text-align:right">Pontos</th></tr></thead>
+          <th scope="col" class="rk-num esconde">Elim.</th><th scope="col" class="rk-num esconde">Mortes</th>
+          <th scope="col" class="rk-num esconde">Vitórias</th><th scope="col" style="text-align:right">Pontos</th></tr></thead>
         <tbody>${linhas.map((l, i) => `<tr>
           <td>${i + 1}</td>
           <td><span class="rk-nome">${esc(l.nome)}</span>${l.equipe ? `<span class="rk-eq">${esc(l.equipe)}</span>` : ""}</td>
           <td class="rk-num">${l.jogos}</td>
           <td class="rk-num esconde">${l.kills}</td>
           <td class="rk-num esconde">${l.mortes}</td>
+          <td class="rk-num esconde">${Number(l.vitorias) || 0}${Number(l.campeao) ? ` <span class="tag tag-ar" title="Campeão">🏆</span>` : Number(l.vice) ? ` <span class="tag tag-antiga" title="Vice">2º</span>` : ""}</td>
           <td class="rk-pontos">${Number(l.pontos).toLocaleString("pt-BR")}</td>
         </tr>`).join("")}</tbody>
       </table></div>`;
@@ -2762,6 +2925,33 @@ async function carregarMinhasEstatisticas() {
     try { const e = await DB.minhaEstatistica(ev.id); if (e) estado.minhasEstat[ev.id] = e; } catch {}
   }
 }
+/* ---------- Campeonato na página, visível para todos ---------- */
+async function carregarCampeonatoPublico() {
+  const secao = $("#campeonato"), link = $("#link-campeonato");
+  const proximos = [...eventosFuturos(), ...estado.eventos.filter(e => new Date(e.data) <= new Date())]
+    .sort((a, b) => Math.abs(new Date(a.data) - new Date()) - Math.abs(new Date(b.data) - new Date()));
+  for (const ev of proximos.slice(0, 4)) {
+    try {
+      const camp = await DB.lerCampeonato(ev.id);
+      if (!camp || !camp.confrontos?.length) continue;
+      camp.confrontos = propagar(camp.confrontos);
+      let pessoas = [];
+      try { pessoas = await DB.inscritos(ev.id); } catch { pessoas = []; }
+      const p = podio(camp, pessoas);
+      $("#camp-corpo").innerHTML = `
+        <div class="camp-topo">
+          <h3>${esc(camp.nome || "Campeonato")}</h3>
+          <span class="tag ${p ? "tag-ar" : "tag-agendada"}">${p ? "Encerrado" : "Em andamento"}</span>
+          <span class="linha-meta">${esc(ev.nome)} • ${esc(NOME_FORMATO[camp.formato] || "")}</span>
+        </div>
+        ${desenharChave(camp, pessoas, false)}`;
+      secao.hidden = false; link.hidden = false;
+      return;
+    } catch {}
+  }
+  secao.hidden = true; link.hidden = true;
+}
+
 async function carregarMeuTime() {
   estado.meuTime = {};
   if (!estado.usuario) return;
@@ -2794,6 +2984,7 @@ async function carregarTudo() {
 function renderTudo() {
   renderEventos(); atualizarProximo(); tique();
   renderProdutos(); renderJornal(); renderEquipes(); renderGaleria(); renderCampo(); renderRanking(); renderGerenciar();
+  carregarCampeonatoPublico();
 }
 function renderGerenciar() { $$("[data-gerenciar]").forEach(b => b.hidden = !pode(b.dataset.gerenciar)); }
 $$("[data-gerenciar]").forEach(b => b.addEventListener("click", () => abrirAdmin(b.dataset.gerenciar)));
@@ -3258,6 +3449,7 @@ async function renderListaAdmin() {
           <div class="linha-acoes">
             <button class="btn btn-sec btn-mini" data-acao="editar" data-id="${e.id}">Editar</button>
             <button class="btn btn-sec btn-mini" data-acao="inscritos" data-id="${e.id}">Inscritos</button>
+            <button class="btn btn-sec btn-mini" data-acao="campeonato" data-id="${e.id}">Campeonato</button>
             ${botaoExcluir(e.id)}
           </div></div>`;
       }).join("") : `<p class="form-vazio">Nenhum evento ainda. Clique em Novo evento para criar o primeiro.</p>`}`;
@@ -3299,6 +3491,12 @@ async function renderListaAdmin() {
           <div class="f"><label for="p-kill">Pontos por eliminação</label><input id="p-kill" type="number" min="0" max="1000" value="${esc(c.pontos_kill ?? 1)}"></div>
         </div>
         <div class="f" style="max-width:16rem"><label for="p-morte">Pontos perdidos por ser eliminado</label><input id="p-morte" type="number" min="0" max="1000" value="${esc(c.pontos_morte ?? 0)}"><small>Deixe 0 para não descontar.</small></div>
+        <h4 class="equipe-sub" style="margin-top:.6rem">Campeonato</h4>
+        <div class="f-duplo">
+          <div class="f"><label for="p-vitoria">Pontos por confronto vencido</label><input id="p-vitoria" type="number" min="0" max="1000" value="${esc(c.pontos_vitoria ?? 5)}"></div>
+          <div class="f"><label for="p-campeao">Pontos do campeão</label><input id="p-campeao" type="number" min="0" max="1000" value="${esc(c.pontos_campeao ?? 20)}"></div>
+        </div>
+        <div class="f" style="max-width:16rem"><label for="p-vice">Pontos do vice-campeão</label><input id="p-vice" type="number" min="0" max="1000" value="${esc(c.pontos_vice ?? 10)}"></div>
         <div class="f"><label for="p-premio">Texto do prêmio</label><textarea id="p-premio" maxlength="300" style="min-height:5rem">${esc(c.premio_texto)}</textarea><small>Aparece embaixo do ranking no site.</small></div>
         <p class="erro-form" id="p-erro" role="alert"></p>
         <button class="btn" type="submit" id="p-salvar">Salvar pontuação</button>
@@ -3493,6 +3691,9 @@ $("#admin-lista").addEventListener("submit", async e => {
       pontos_jogo: String(parseInt($("#p-jogo").value, 10) || 0),
       pontos_kill: String(parseInt($("#p-kill").value, 10) || 0),
       pontos_morte: String(parseInt($("#p-morte").value, 10) || 0),
+      pontos_vitoria: String(parseInt($("#p-vitoria").value, 10) || 0),
+      pontos_campeao: String(parseInt($("#p-campeao").value, 10) || 0),
+      pontos_vice: String(parseInt($("#p-vice").value, 10) || 0),
       premio_texto: $("#p-premio").value.trim()
     };
     await DB.salvarConfig(novo);
@@ -3525,6 +3726,7 @@ $("#admin-lista").addEventListener("click", async e => {
   if (b.dataset.acao === "novo") abrirForm(null);
   if (b.dataset.acao === "editar" && item) abrirForm(item);
   if (b.dataset.acao === "inscritos" && item) mostrarInscritos(item);
+  if (b.dataset.acao === "campeonato" && item) mostrarCampeonato(item);
   if (b.dataset.acao === "excluir" && item) {
     if (!b.classList.contains("confirmar")) {
       b.classList.add("confirmar"); b.textContent = "Confirmar exclusão";
@@ -3844,6 +4046,295 @@ function linhaInscrito(i, passado) {
 }
 let inscritosAtuais = [], eventoInscritos = null, equipesAtuais = null, estatEvento = {};
 
+/* =========================================================
+   CAMPEONATO: sorteio dos lados e chaveamento mata-mata
+   ========================================================= */
+const NOME_FORMATO = { 1: "X1 (individual)", 2: "X2 (duplas)", 3: "X3 (trios)", 4: "X4 (quartetos)", 5: "X5 (times de 5)" };
+const embaralhar = a => a.map(v => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map(v => v[1]);
+
+/* Divide os presentes em lados de N pessoas. Sobra vira reserva. */
+function montarLados(pessoas, formato) {
+  const sorteadas = embaralhar([...pessoas]);
+  const lados = [];
+  for (let i = 0; i + formato <= sorteadas.length; i += formato) {
+    lados.push({ lado: lados.length + 1, membros: sorteadas.slice(i, i + formato) });
+  }
+  const reservas = sorteadas.slice(lados.length * formato);
+  return { lados, reservas };
+}
+
+/* Chave mata-mata completa. Byes espalhados quando o número de lados não é 2, 4, 8, 16... */
+function montarChave(qtdLados) {
+  if (qtdLados < 2) return [];
+  const ordem = embaralhar(Array.from({ length: qtdLados }, (_, i) => i + 1));
+  let potencia = 1;
+  while (potencia < qtdLados) potencia *= 2;
+  const totalFases = Math.round(Math.log2(potencia));
+
+  // Preenche primeiro as posições pares, depois as ímpares:
+  // assim os byes caem em confrontos diferentes, sem dois byes no mesmo par.
+  const posicoes = [];
+  for (let i = 0; i < potencia; i += 2) posicoes.push(i);
+  for (let i = 1; i < potencia; i += 2) posicoes.push(i);
+  const slots = new Array(potencia).fill(null);
+  ordem.forEach((lado, i) => slots[posicoes[i]] = lado);
+
+  const confrontos = [];
+  for (let i = 0; i < potencia; i += 2) {
+    confrontos.push({ fase: 1, ordem: i / 2, tipo: "chave", lado_a: slots[i], lado_b: slots[i + 1], vencedor: null });
+  }
+  for (let fase = 2; fase <= totalFases; fase++) {
+    const quantos = potencia / Math.pow(2, fase);
+    for (let o = 0; o < quantos; o++) {
+      confrontos.push({ fase, ordem: o, tipo: "chave", lado_a: null, lado_b: null, vencedor: null });
+    }
+  }
+  if (qtdLados >= 4) confrontos.push({ fase: totalFases, ordem: 99, tipo: "terceiro", lado_a: null, lado_b: null, vencedor: null });
+  return propagar(confrontos);
+}
+
+/* Recalcula as fases seguintes a partir dos vencedores já marcados */
+function propagar(confrontos) {
+  const chave = confrontos.filter(f => f.tipo === "chave").sort((a, b) => a.fase - b.fase || a.ordem - b.ordem);
+  if (!chave.length) return confrontos;
+  const fases = [...new Set(chave.map(f => f.fase))].sort((a, b) => a - b);
+
+  // Na primeira fase, quem não tem adversário passa direto
+  chave.filter(f => f.fase === fases[0]).forEach(f => {
+    if (f.lado_a && !f.lado_b) f.vencedor = f.lado_a;
+    else if (!f.lado_a && f.lado_b) f.vencedor = f.lado_b;
+    else if (!f.lado_a && !f.lado_b) f.vencedor = null;
+  });
+
+  for (let i = 1; i < fases.length; i++) {
+    const anterior = chave.filter(f => f.fase === fases[i - 1]);
+    const atual = chave.filter(f => f.fase === fases[i]);
+    atual.forEach(f => { f.lado_a = null; f.lado_b = null; });
+    anterior.forEach(f => {
+      const alvo = atual[Math.floor(f.ordem / 2)];
+      if (!alvo) return;
+      if (f.ordem % 2 === 0) alvo.lado_a = f.vencedor || null;
+      else alvo.lado_b = f.vencedor || null;
+    });
+    atual.forEach(f => {
+      if (f.vencedor && ![f.lado_a, f.lado_b].includes(f.vencedor)) f.vencedor = null;
+    });
+  }
+
+  // Disputa de 3º lugar: os dois perdedores da semifinal
+  const terceiro = confrontos.find(f => f.tipo === "terceiro");
+  if (terceiro && fases.length >= 2) {
+    const semis = chave.filter(f => f.fase === fases[fases.length - 2]);
+    const perdedores = semis.map(f => {
+      if (!f.vencedor) return null;
+      const perdedor = f.vencedor === f.lado_a ? f.lado_b : f.lado_a;
+      return perdedor || null;   // quem venceu por bye não gera perdedor
+    });
+    terceiro.lado_a = perdedores[0] ?? null;
+    terceiro.lado_b = perdedores[1] ?? null;
+    if (terceiro.vencedor && ![terceiro.lado_a, terceiro.lado_b].includes(terceiro.vencedor)) terceiro.vencedor = null;
+  }
+  return confrontos;
+}
+
+/* ---------- Desenho do chaveamento (usado no site e no painel) ---------- */
+function nomeDoLado(camp, numero, pessoas) {
+  if (!numero) return null;
+  const membros = camp.lados.filter(l => String(l.lado) === String(numero))
+    .map(l => pessoas.find(p => String(p.id) === String(l.usuario_id)))
+    .filter(Boolean);
+  if (!membros.length) return { titulo: `Lado ${numero}`, detalhe: "" };
+  if (camp.formato === 1) return { titulo: membros[0].nome, detalhe: membros[0].classe || "" };
+  return { titulo: `Time ${numero}`, detalhe: membros.map(m => m.nome).join(", ") };
+}
+function fasesDaChave(camp) {
+  return [...new Set(camp.confrontos.filter(f => f.tipo === "chave").map(f => f.fase))].sort((a, b) => a - b);
+}
+function podio(camp, pessoas) {
+  const fases = fasesDaChave(camp);
+  if (!fases.length) return null;
+  const final = camp.confrontos.find(f => f.tipo === "chave" && f.fase === fases[fases.length - 1]);
+  if (!final?.vencedor) return null;
+  const terceiro = camp.confrontos.find(f => f.tipo === "terceiro");
+  return {
+    campeao: nomeDoLado(camp, final.vencedor, pessoas),
+    vice: nomeDoLado(camp, final.vencedor === final.lado_a ? final.lado_b : final.lado_a, pessoas),
+    terceiro: terceiro?.vencedor ? nomeDoLado(camp, terceiro.vencedor, pessoas) : null
+  };
+}
+function desenharChave(camp, pessoas, comBotoes) {
+  const fases = fasesDaChave(camp);
+  if (!fases.length) return `<p class="vazio">Chave ainda não sorteada.</p>`;
+  const linha = (f, numero) => {
+    const l = nomeDoLado(camp, numero, pessoas);
+    const bye = ehBye(f);
+    const venceu = !bye && f.vencedor && String(f.vencedor) === String(numero);
+    if (!l) return bye ? "" : `<div class="duelo-lado vazio"><span class="duelo-nome">a definir</span></div>`;
+    return `<div class="duelo-lado ${venceu ? "venceu" : ""}">
+      <span class="duelo-nome">${esc(l.titulo)}${l.detalhe ? `<small>${esc(l.detalhe)}</small>` : ""}</span>
+      ${comBotoes && jogavel(f) && !venceu ? `<button class="duelo-btn" data-venceu="${f.id ?? ""}" data-lado="${numero}">${f.vencedor ? "trocar" : "venceu"}</button>` : ""}
+    </div>`;
+  };
+  const cartao = f => {
+    const bye = ehBye(f);
+    return `
+    <article class="duelo ${bye ? "duelo-bye" : f.vencedor ? "decidido" : jogavel(f) ? "" : "pendente"} ${f.tipo === "terceiro" ? "duelo-3" : ""}">
+      ${f.tipo === "terceiro" ? `<div class="duelo-cab">Disputa de 3º lugar</div>` : ""}
+      ${bye ? `<div class="duelo-cab">Passou direto, sem adversário</div>` : ""}
+      ${linha(f, f.lado_a)}
+      ${linha(f, f.lado_b)}
+    </article>`;
+  };
+  const colunas = fases.map(fase => {
+    const jogos = camp.confrontos.filter(f => f.tipo === "chave" && f.fase === fase)
+      .sort((a, b) => a.ordem - b.ordem)
+      .filter(f => fase !== fases[0] || f.lado_a || f.lado_b);   // esconde pares totalmente vazios
+    const terceiro = fase === fases[fases.length - 1] ? camp.confrontos.filter(f => f.tipo === "terceiro") : [];
+    return `<div class="fase">
+      <h4>${esc(nomeFase(camp, fase))}</h4>
+      <div class="fase-jogos">${jogos.map(cartao).join("")}${terceiro.map(cartao).join("")}</div>
+    </div>`;
+  }).join("");
+  const p = podio(camp, pessoas);
+  return `<div class="chave">${colunas}</div>` + (p ? `
+    <div class="podio">
+      <div class="p1"><span class="pos">1º lugar</span><strong>${esc(p.campeao.titulo)}</strong>${p.campeao.detalhe ? `<small>${esc(p.campeao.detalhe)}</small>` : ""}</div>
+      <div class="p2"><span class="pos">2º lugar</span><strong>${esc(p.vice?.titulo || "—")}</strong>${p.vice?.detalhe ? `<small>${esc(p.vice.detalhe)}</small>` : ""}</div>
+      ${p.terceiro ? `<div class="p3"><span class="pos">3º lugar</span><strong>${esc(p.terceiro.titulo)}</strong>${p.terceiro.detalhe ? `<small>${esc(p.terceiro.detalhe)}</small>` : ""}</div>` : ""}
+    </div>` : "");
+}
+
+/* Um confronto só é jogável quando os dois lados estão definidos */
+const jogavel = f => !!(f.lado_a && f.lado_b);
+const ehBye = f => (!!f.lado_a !== !!f.lado_b) && f.fase === 1;
+
+/* Nome da fase pelo que falta para o fim; a 1ª fase com byes é preliminar */
+function nomeFase(camp, fase) {
+  const fases = fasesDaChave(camp);
+  const pos = fases.indexOf(fase);
+  const faltam = fases.length - pos - 1;
+  if (pos === 0 && faltam > 0) {
+    const jogos = camp.confrontos.filter(f => f.tipo === "chave" && f.fase === fase);
+    if (jogos.some(f => !f.lado_a || !f.lado_b)) return "Fase preliminar";
+  }
+  return { 0: "Final", 1: "Semifinal", 2: "Quartas de final", 3: "Oitavas de final" }[faltam] || `${pos + 1}ª rodada`;
+}
+
+/* ---------- Painel: montar e apurar o campeonato ---------- */
+let campEvento = null, campAtual = null, campPresentes = [];
+
+async function mostrarCampeonato(evento) {
+  limparForm();
+  $("#admin-corpo").classList.add("editando");
+  campEvento = evento;
+  $("#admin-form").innerHTML = `<h3>Campeonato</h3><p class="carregando">Carregando…</p>`;
+  try {
+    const [inscritos, camp] = await Promise.all([DB.inscritos(evento.id), DB.lerCampeonato(evento.id)]);
+    campPresentes = inscritos.filter(i => i.presente);
+    campAtual = camp;
+    if (campAtual) campAtual.confrontos = propagar(campAtual.confrontos);
+    renderPainelCampeonato(inscritos.length);
+  } catch (err) {
+    $("#admin-form").innerHTML = `<h3>Campeonato</h3><p class="erro-form">${esc(err.message)}</p>
+      <div class="form-acoes"><button class="btn btn-sec btn-mini" id="f-cancelar">Fechar</button></div>`;
+  }
+}
+
+function renderPainelCampeonato(totalInscritos) {
+  const evento = campEvento, presentes = campPresentes;
+  const cab = `<h3>Campeonato</h3>
+    <p><strong>${esc(evento.nome)}</strong><br><span class="linha-meta">${fmtCurto.format(new Date(evento.data))}</span></p>`;
+
+  if (!presentes.length) {
+    $("#admin-form").innerHTML = cab + `
+      <p class="lista-ajuda">O campeonato usa quem está com <strong>presença marcada</strong> neste jogo.
+      ${totalInscritos ? `Há ${totalInscritos} ${totalInscritos === 1 ? "inscrito" : "inscritos"}, mas ninguém foi marcado como presente ainda.` : "Ninguém reservou vaga ainda."}
+      Faça a chamada em <strong>Inscritos</strong> e volte aqui.</p>
+      <div class="form-acoes"><button class="btn btn-sec btn-mini" id="f-cancelar">Fechar</button></div>`;
+    return;
+  }
+
+  if (!campAtual) {
+    const opcoes = Object.entries(NOME_FORMATO).map(([n, nome]) => {
+      const lados = Math.floor(presentes.length / Number(n));
+      const sobra = presentes.length % Number(n);
+      const viavel = lados >= 2;
+      return `<option value="${n}" ${viavel ? "" : "disabled"}>${nome} — ${viavel ? `${lados} ${lados === 1 ? "lado" : "lados"}${sobra ? `, ${sobra} de fora` : ""}` : "gente insuficiente"}</option>`;
+    }).join("");
+    $("#admin-form").innerHTML = cab + `
+      <p class="lista-ajuda">${presentes.length} ${presentes.length === 1 ? "presente" : "presentes"} neste jogo. Escolha o formato e sorteie a chave.</p>
+      <div class="camp-form">
+        <div class="f"><label for="c-nome">Nome do campeonato</label><input id="c-nome" maxlength="60" value="Copa ${esc(evento.nome)}"></div>
+        <div class="f"><label for="c-formato">Formato</label><select id="c-formato">${opcoes}</select></div>
+      </div>
+      <p class="erro-form" id="f-erro" role="alert"></p>
+      <div class="form-acoes">
+        <button class="btn btn-mini" id="c-sortear">Sortear e montar a chave</button>
+        <button class="btn btn-sec btn-mini" id="f-cancelar">Fechar</button>
+      </div>`;
+    return;
+  }
+
+  const c = campAtual;
+  const lados = [...new Set(c.lados.map(l => l.lado))].sort((a, b) => a - b);
+  const dentro = new Set(c.lados.map(l => String(l.usuario_id)));
+  const reservas = presentes.filter(p => !dentro.has(String(p.id)));
+  const faltam = c.confrontos.filter(f => jogavel(f) && !f.vencedor).length;
+
+  $("#admin-form").innerHTML = cab + `
+    <div class="camp-topo">
+      <h3>${esc(c.nome || "Campeonato")}</h3>
+      <span class="tag ${faltam ? "tag-agendada" : "tag-ar"}">${faltam ? `${faltam} ${faltam === 1 ? "confronto em aberto" : "confrontos em aberto"}` : "encerrado"}</span>
+      <span class="linha-meta">${esc(NOME_FORMATO[c.formato])} • ${lados.length} lados</span>
+    </div>
+    <p class="lista-ajuda">Marque quem venceu em cada confronto: quem ganha avança sozinho para a fase seguinte. Os pontos entram no ranking do mês.</p>
+    ${desenharChave(c, presentes, true)}
+    <h4 class="equipe-sub" style="margin-top:1.5rem">Lados sorteados</h4>
+    <div class="camp-lados">
+      ${lados.map(n => {
+        const membros = c.lados.filter(l => l.lado === n)
+          .map(l => presentes.find(p => String(p.id) === String(l.usuario_id))).filter(Boolean);
+        return `<div class="lado-card"><h5>${c.formato === 1 ? esc(membros[0]?.nome || `Lado ${n}`) : `Time ${n}`}</h5>
+          ${c.formato > 1 ? `<ul>${membros.map(m => `<li>${esc(m.nome)}${m.classe ? ` — ${esc(m.classe)}` : ""}</li>`).join("")}</ul>` : `<ul>${membros[0]?.classe ? `<li>${esc(membros[0].classe)}</li>` : ""}</ul>`}
+        </div>`;
+      }).join("")}
+      ${reservas.length ? `<div class="lado-card lado-reservas"><h5>Fora da chave</h5>
+        <ul>${reservas.map(r => `<li>${esc(r.nome)}</li>`).join("")}</ul></div>` : ""}
+    </div>
+    <p class="erro-form" id="f-erro" role="alert"></p>
+    <div class="form-acoes">
+      <button class="btn btn-sec btn-mini" id="c-copiar">Copiar para o grupo</button>
+      <button class="btn btn-sec btn-mini btn-perigo" id="c-refazer">Refazer sorteio</button>
+      <button class="btn btn-sec btn-mini" id="f-cancelar">Fechar</button>
+    </div>`;
+}
+
+function textoCampeonato() {
+  const c = campAtual, pessoas = campPresentes;
+  const fases = fasesDaChave(c);
+  let txt = `${c.nome || "Campeonato"} — ${campEvento.nome}\n${NOME_FORMATO[c.formato]}\n`;
+  fases.forEach(fase => {
+    const jogos = c.confrontos.filter(f => f.tipo === "chave" && f.fase === fase && jogavel(f)).sort((a, b) => a.ordem - b.ordem);
+    if (!jogos.length) return;
+    txt += `\n${nomeFase(c, fase).toUpperCase()}\n`;
+    jogos.forEach(f => {
+      const a = nomeDoLado(c, f.lado_a, pessoas), b = nomeDoLado(c, f.lado_b, pessoas);
+      const marca = n => f.vencedor && String(f.vencedor) === String(n) ? " (venceu)" : "";
+      txt += `• ${a?.titulo}${marca(f.lado_a)} x ${b?.titulo}${marca(f.lado_b)}\n`;
+      if (c.formato > 1) txt += `   ${a?.detalhe} | ${b?.detalhe}\n`;
+    });
+  });
+  const t = c.confrontos.find(f => f.tipo === "terceiro");
+  if (t && jogavel(t)) {
+    const a = nomeDoLado(c, t.lado_a, pessoas), b = nomeDoLado(c, t.lado_b, pessoas);
+    const marca = n => t.vencedor && String(t.vencedor) === String(n) ? " (venceu)" : "";
+    txt += `\nDISPUTA DE 3º\n• ${a?.titulo}${marca(t.lado_a)} x ${b?.titulo}${marca(t.lado_b)}\n`;
+  }
+  const p = podio(c, pessoas);
+  if (p) txt += `\nCAMPEÃO: ${p.campeao.titulo}${p.campeao.detalhe ? ` (${p.campeao.detalhe})` : ""}\nVICE: ${p.vice?.titulo || "—"}${p.terceiro ? `\n3º LUGAR: ${p.terceiro.titulo}` : ""}\n`;
+  return txt;
+}
+
 async function mostrarInscritos(evento) {
   limparForm();
   $("#admin-corpo").classList.add("editando");
@@ -3941,6 +4432,65 @@ $("#admin-form").addEventListener("click", async e => {
       toast("Números confirmados. Já valem no ranking.");
       renderInscritos(); renderRanking();
     } catch (err) { toast(err.message); cf.disabled = false; }
+    return;
+  }
+  // ----- campeonato -----
+  if (e.target.closest("#c-sortear")) {
+    const botao = e.target.closest("#c-sortear"), erro = $("#f-erro");
+    const formato = Number($("#c-formato").value), nome = $("#c-nome").value.trim();
+    const { lados } = montarLados(campPresentes, formato);
+    if (lados.length < 2) { erro.textContent = "Precisa de pelo menos dois lados para montar a chave."; return; }
+    botao.disabled = true; botao.textContent = "Sorteando…";
+    try {
+      const camp = await DB.criarCampeonato(campEvento.id, nome, formato);
+      await DB.salvarLados(camp.id, lados.flatMap(l => l.membros.map(m => ({ lado: l.lado, usuario_id: m.id }))));
+      await DB.salvarConfrontos(camp.id, montarChave(lados.length));
+      await DB.statusCampeonato(camp.id, "em_andamento");
+      campAtual = await DB.lerCampeonato(campEvento.id);
+      campAtual.confrontos = propagar(campAtual.confrontos);
+      toast(`Chave sorteada: ${lados.length} lados.`);
+      renderPainelCampeonato();
+      await carregarCampeonatoPublico();
+    } catch (err) {
+      erro.textContent = err.message;
+      botao.disabled = false; botao.textContent = "Sortear e montar a chave";
+    }
+    return;
+  }
+  const venceu = e.target.closest("[data-venceu]");
+  if (venceu && campAtual) {
+    const alvo = campAtual.confrontos.find(f => String(f.id) === venceu.dataset.venceu);
+    if (!alvo) return;
+    const lado = Number(venceu.dataset.lado);
+    venceu.disabled = true;
+    try {
+      alvo.vencedor = alvo.vencedor === lado ? null : lado;
+      propagar(campAtual.confrontos);
+      await DB.salvarConfrontos(campAtual.id, campAtual.confrontos);
+      campAtual = await DB.lerCampeonato(campEvento.id);
+      campAtual.confrontos = propagar(campAtual.confrontos);
+      const p = podio(campAtual, campPresentes);
+      if (p) { await DB.statusCampeonato(campAtual.id, "encerrado"); toast(`Campeão: ${p.campeao.titulo}.`); }
+      renderPainelCampeonato();
+      await carregarCampeonatoPublico();
+      renderRanking();
+    } catch (err) { toast(err.message); renderPainelCampeonato(); }
+    return;
+  }
+  if (e.target.closest("#c-copiar")) {
+    try { await navigator.clipboard.writeText(textoCampeonato()); toast("Chaveamento copiado. Cole no grupo."); }
+    catch { toast("Não foi possível copiar aqui."); }
+    return;
+  }
+  if (e.target.closest("#c-refazer")) {
+    const botao = e.target.closest("#c-refazer");
+    if (!botao.classList.contains("confirmar")) {
+      botao.classList.add("confirmar"); botao.textContent = "Confirmar: apaga os resultados";
+      setTimeout(() => { if (document.contains(botao)) { botao.classList.remove("confirmar"); botao.textContent = "Refazer sorteio"; } }, 4000);
+      return;
+    }
+    campAtual = null;
+    renderPainelCampeonato();
     return;
   }
   if (e.target.closest("#f-sortear")) {
