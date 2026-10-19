@@ -70,6 +70,8 @@ p{margin:0 0 1rem}
 .chip input{position:absolute;opacity:0;pointer-events:none}
 .qualifs{display:flex;flex-wrap:wrap;gap:.4rem}
 .qualifs .chip{padding:.4rem .7rem;font-size:.9rem}
+.chip:has(input:disabled){opacity:.4;cursor:default;border-style:dashed}
+.chip:has(input:disabled):hover{border-color:var(--linha);color:var(--areia-2)}
 .chip:has(input:focus-visible){outline:3px solid var(--laranja);outline-offset:3px}
 
 /* ---------- Topo ---------- */
@@ -1103,7 +1105,8 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
         <div class="f"><label for="d-cidade">Cidade</label><input id="d-cidade" maxlength="60"></div>
       </div>
       <div class="f"><label for="d-telefone">WhatsApp</label><input id="d-telefone" type="tel" inputmode="tel" maxlength="16"></div>
-      <div class="f"><label for="d-classe">Classe de operador</label><select id="d-classe"></select></div>
+      <div class="f"><label for="d-classe">Classe de operador</label><select id="d-classe"></select><small>A que você mais joga.</small></div>
+      <div class="f"><span class="f-rot">Também jogo de</span><div class="qualifs" id="d-classes"></div><small>Marque as outras classes que você joga.</small></div>
       <div class="f"><span class="f-rot">Qualificações</span><div class="qualifs" id="d-qualif"></div></div>
       <div class="f"><span class="f-rot">E-mail</span><p class="dad-email" id="d-email"></p><small>Para trocar o e-mail, fale com a organização.</small></div>
       <p class="erro-form" id="dad-erro" role="alert"></p>
@@ -1202,12 +1205,17 @@ input[type="range"]{width:100%;accent-color:var(--laranja)}
         <div class="f">
           <label for="l-classe">Classe de operador</label>
           <select id="l-classe"></select>
-          <small>Opcional. Ajuda no sorteio das equipes.</small>
+          <small>Opcional. A que você mais joga. Ajuda no sorteio das equipes.</small>
         </div>
         <div class="f">
           <span class="f-rot">Qualificações</span>
           <div class="qualifs" id="l-qualif"></div>
         </div>
+      </div>
+      <div class="f" id="l-classes-box" hidden>
+        <span class="f-rot">Também jogo de</span>
+        <div class="qualifs" id="l-classes"></div>
+        <small>Marque as outras classes que você joga. Assim o organizador sabe que pode te remanejar no dia.</small>
       </div>
       <div class="f" id="l-tel-box" hidden>
         <label for="l-telefone">WhatsApp</label>
@@ -1618,7 +1626,7 @@ function criarDemo() {
   const camps = [], campLados = [], confrontos = [];
   const ouvintes = [];
   let atual = null;
-  const perfil = u => u ? { id: u.id, nome: u.nome, email: u.email, cargo: u.cargo, equipe: u.equipe || "", cidade: u.cidade || "", telefone: u.telefone || "", classe: u.classe || "", qualificacoes: u.qualificacoes || [], criado_em: u.criado_em, ultimo_acesso: u.ultimo_acesso } : null;
+  const perfil = u => u ? { id: u.id, nome: u.nome, email: u.email, cargo: u.cargo, equipe: u.equipe || "", cidade: u.cidade || "", telefone: u.telefone || "", classe: u.classe || "", classes: u.classes || [], qualificacoes: u.qualificacoes || [], criado_em: u.criado_em, ultimo_acesso: u.ultimo_acesso } : null;
   const avisar = () => ouvintes.forEach(cb => cb(perfil(atual)));
   const pode = area => atual && PERMISSOES[area].includes(atual.cargo);
   const exigir = area => { if (!pode(area)) throw new Error("Você não tem permissão para esta ação."); };
@@ -1639,7 +1647,7 @@ function criarDemo() {
       email = email.trim().toLowerCase();
       if (senha.length < 6) throw new Error("A senha precisa ter pelo menos 6 caracteres.");
       if (usuarios.some(x => x.email === email)) throw new Error("Este e-mail já tem cadastro. Tente entrar.");
-      const u = { id: "u" + novoId(), nome: nome.trim(), email, senha, cargo: "membro", equipe: extra.equipe || "", cidade: extra.cidade || "", telefone: extra.telefone || "", classe: extra.classe || "", qualificacoes: extra.qualificacoes || [], criado_em: new Date().toISOString(), ultimo_acesso: null };
+      const u = { id: "u" + novoId(), nome: nome.trim(), email, senha, cargo: "membro", equipe: extra.equipe || "", cidade: extra.cidade || "", telefone: extra.telefone || "", classe: extra.classe || "", classes: extra.classes || [], qualificacoes: extra.qualificacoes || [], criado_em: new Date().toISOString(), ultimo_acesso: null };
       usuarios.push(u);
       registrar(u, "cadastro"); registrar(u, "entrou");
       atual = u; avisar();
@@ -1691,7 +1699,7 @@ function criarDemo() {
       exigir("eventos");
       return reservas.filter(r => r.evento_id === evento_id).map(r => {
         const u = usuarios.find(x => x.id === r.usuario_id);
-        return { id: u?.id, nome: u?.nome || "", email: u?.email || "", telefone: u?.telefone || "", classe: u?.classe || "", qualificacoes: u?.qualificacoes || [], criado_em: r.criado_em, presente: !!r.presente, confirmou_em: r.confirmou_em || null };
+        return { id: u?.id, nome: u?.nome || "", email: u?.email || "", telefone: u?.telefone || "", classe: u?.classe || "", classes: u?.classes || [], qualificacoes: u?.qualificacoes || [], criado_em: r.criado_em, presente: !!r.presente, confirmou_em: r.confirmou_em || null };
       });
     },
     async lerConfig() { return { ...configDemo }; },
@@ -1864,7 +1872,7 @@ async function criarSupabase() {
   const falha = error => { if (error) throw traduzirErro(error); };
   async function carregarPerfil(user) {
     if (!user) return (perfilAtual = null);
-    const { data, error } = await sb.from("perfis").select("id, nome, email, cargo, equipe, cidade, telefone, classe, qualificacoes").eq("id", user.id).maybeSingle();
+    const { data, error } = await sb.from("perfis").select("id, nome, email, cargo, equipe, cidade, telefone, classe, classes, qualificacoes").eq("id", user.id).maybeSingle();
     falha(error);
     return (perfilAtual = data || { id: user.id, nome: user.email, email: user.email, cargo: "membro" });
   }
@@ -1884,7 +1892,7 @@ async function criarSupabase() {
       return carregarPerfil(data.user);
     },
     async cadastrar(nome, email, senha, extra = {}) {
-      const { data, error } = await sb.auth.signUp({ email: email.trim(), password: senha, options: { data: { nome: nome.trim(), equipe: extra.equipe || "", cidade: extra.cidade || "", telefone: extra.telefone || "", classe: extra.classe || "", qualificacoes: extra.qualificacoes || [] } } });
+      const { data, error } = await sb.auth.signUp({ email: email.trim(), password: senha, options: { data: { nome: nome.trim(), equipe: extra.equipe || "", cidade: extra.cidade || "", telefone: extra.telefone || "", classe: extra.classe || "", classes: extra.classes || [], qualificacoes: extra.qualificacoes || [] } } });
       falha(error);
       if (!data.session) return { precisaConfirmar: true, perfil: null };
       return { precisaConfirmar: false, perfil: await carregarPerfil(data.user) };
@@ -1933,9 +1941,9 @@ async function criarSupabase() {
       falha(error);
     },
     async inscritos(evento_id) {
-      const { data, error } = await sb.from("reservas").select("criado_em, usuario_id, perfis(id, nome, email, telefone, classe, qualificacoes)").eq("evento_id", evento_id).order("criado_em");
+      const { data, error } = await sb.from("reservas").select("criado_em, usuario_id, perfis(id, nome, email, telefone, classe, classes, qualificacoes)").eq("evento_id", evento_id).order("criado_em");
       falha(error);
-      return (data || []).map(r => ({ id: r.usuario_id, nome: r.perfis?.nome || "", email: r.perfis?.email || "", telefone: r.perfis?.telefone || "", classe: r.perfis?.classe || "", qualificacoes: r.perfis?.qualificacoes || [], criado_em: r.criado_em }));
+      return (data || []).map(r => ({ id: r.usuario_id, nome: r.perfis?.nome || "", email: r.perfis?.email || "", telefone: r.perfis?.telefone || "", classe: r.perfis?.classe || "", classes: r.perfis?.classes || [], qualificacoes: r.perfis?.qualificacoes || [], criado_em: r.criado_em }));
     },
     async lerConfig() {
       const { data, error } = await sb.from("config").select("chave, valor");
@@ -2071,7 +2079,7 @@ async function criarSupabase() {
       falha(error);
     },
     async listarUsuarios() {
-      const { data, error } = await sb.from("perfis").select("id, nome, email, cargo, equipe, cidade, telefone, classe, qualificacoes, criado_em, ultimo_acesso").order("nome");
+      const { data, error } = await sb.from("perfis").select("id, nome, email, cargo, equipe, cidade, telefone, classe, classes, qualificacoes, criado_em, ultimo_acesso").order("nome");
       falha(error);
       return data || [];
     },
@@ -3087,9 +3095,11 @@ function trocarModoLogin(modo) {
   $("#l-extra-box").hidden = !cad;
   $("#l-tel-box").hidden = !cad;
   $("#l-classe-box").hidden = !cad;
+  $("#l-classes-box").hidden = !cad;
   if (cad && !$("#l-classe").options.length) {
     $("#l-classe").innerHTML = `<option value="">Ainda não sei</option>` + CLASSES_OP.map(c => `<option>${c}</option>`).join("");
     $("#l-qualif").innerHTML = caixasQualif("lq");
+    ligarClassesExtras("#l-classe", "#l-classes", "lc");
   }
   $("#login-privacidade").hidden = !cad;
   if (cad) {
@@ -3122,6 +3132,31 @@ function caixasQualif(prefixo, marcadas = []) {
     `<label class="chip" title="${nome}"><input type="checkbox" value="${sigla}" name="${prefixo}" ${marcadas.includes(sigla) ? "checked" : ""}>${sigla}</label>`).join("");
 }
 const lerQualif = prefixo => $$(`input[name="${prefixo}"]:checked`).map(i => i.value);
+
+/* Outras classes que a pessoa também joga. A classe principal fica desligada aqui,
+   para ninguém marcar a mesma classe duas vezes. */
+function caixasClasses(prefixo, marcadas = [], principal = "") {
+  return CLASSES_OP.map(c => {
+    const ehPrincipal = c === principal;
+    const dica = ehPrincipal ? "Já é a sua classe principal" : `Também jogo de ${c}`;
+    return `<label class="chip" title="${dica}"><input type="checkbox" value="${esc(c)}" name="${prefixo}"${marcadas.includes(c) && !ehPrincipal ? " checked" : ""}${ehPrincipal ? " disabled" : ""}>${esc(c)}</label>`;
+  }).join("");
+}
+/* Redesenha as caixas sempre que a classe principal muda, guardando o que já estava marcado */
+function ligarClassesExtras(idSelect, idCaixas, prefixo, marcadas = []) {
+  const sel = $(idSelect), caixas = $(idCaixas);
+  const desenhar = m => { caixas.innerHTML = caixasClasses(prefixo, m, sel.value); };
+  desenhar(marcadas);
+  sel.onchange = () => desenhar(lerQualif(prefixo));   // onchange, não addEventListener: não acumula ao reabrir a tela
+}
+/* Só as extras, sem repetir a principal */
+const extrasDe = (principal, lista) => (lista || []).filter(c => c && c !== principal);
+/* "Assalto (também DMR, Sniper)" para as listas do organizador */
+function textoClasses(principal, lista) {
+  const extras = extrasDe(principal, lista);
+  if (!principal) return extras.length ? `Também: ${extras.join(", ")}` : "";
+  return extras.length ? `${principal} (também ${extras.join(", ")})` : principal;
+}
 
 function mostrarCampoOutraEquipe() {
   const outra = $("#l-equipe").value === "Outra", campo = $("#l-equipe-outra");
@@ -3162,7 +3197,7 @@ $("#form-login").addEventListener("submit", async e => {
     let perfil = null;
     if (modoLogin === "cadastro") {
       const eq = $("#l-equipe").value === "Outra" ? $("#l-equipe-outra").value.trim() : $("#l-equipe").value;
-      const r = await DB.cadastrar(nome, email, senha, { equipe: eq, cidade: $("#l-cidade").value.trim(), telefone: tel, classe: $("#l-classe").value, qualificacoes: lerQualif("lq") });
+      const r = await DB.cadastrar(nome, email, senha, { equipe: eq, cidade: $("#l-cidade").value.trim(), telefone: tel, classe: $("#l-classe").value, classes: extrasDe($("#l-classe").value, lerQualif("lc")), qualificacoes: lerQualif("lq") });
       if (r.precisaConfirmar) {
         ok.textContent = "Conta criada. Enviamos um link de confirmação para o seu e-mail. Confirme e depois entre aqui.";
         trocarModoLogin("entrar"); $("#l-email").value = email;
@@ -3268,6 +3303,7 @@ function abrirMeusDados() {
   $("#d-telefone").value = formatarTelefone(u.telefone || "");
   $("#d-email").textContent = u.email || "";
   $("#d-classe").innerHTML = `<option value="">Ainda não sei</option>` + CLASSES_OP.map(c => `<option ${u.classe === c ? "selected" : ""}>${c}</option>`).join("");
+  ligarClassesExtras("#d-classe", "#d-classes", "dc", u.classes || []);
   $("#d-qualif").innerHTML = caixasQualif("dq", u.qualificacoes || []);
   $("#dad-erro").textContent = ""; $("#dad-ok").textContent = "";
   modalDados.hidden = false; travar();
@@ -3297,7 +3333,7 @@ $("#form-dados").addEventListener("submit", async e => {
   if (tel && (tel.length < 10 || tel.length > 11)) { erro.textContent = "O WhatsApp precisa ter DDD, por exemplo (67) 99999-9999."; $("#d-telefone").focus(); return; }
   botao.disabled = true; botao.textContent = "Salvando…";
   try {
-    const novo = { nome, equipe: eq, cidade: $("#d-cidade").value.trim(), telefone: tel, classe: $("#d-classe").value, qualificacoes: lerQualif("dq") };
+    const novo = { nome, equipe: eq, cidade: $("#d-cidade").value.trim(), telefone: tel, classe: $("#d-classe").value, classes: extrasDe($("#d-classe").value, lerQualif("dc")), qualificacoes: lerQualif("dq") };
     await DB.atualizarPerfil(novo);
     estado.usuario = { ...estado.usuario, ...novo };
     renderConta();
@@ -3649,11 +3685,11 @@ const nomeDoItem = o => admin.aba === "campo" ? `Informação "${o?.rotulo || ""
 const bate = (busca, ...campos) => !busca || campos.some(c => String(c || "").toLowerCase().includes(busca.toLowerCase()));
 function renderUsuarios() {
   const alvo = $("#usuarios-lista"); if (!alvo) return;
-  const lista = admin.usuarios.filter(u => bate(admin.buscaUsuario, u.nome, u.email, u.equipe, u.cidade, u.telefone, u.classe, (u.qualificacoes || []).join(" ")));
+  const lista = admin.usuarios.filter(u => bate(admin.buscaUsuario, u.nome, u.email, u.equipe, u.cidade, u.telefone, u.classe, (u.classes || []).join(" "), (u.qualificacoes || []).join(" ")));
   alvo.innerHTML = lista.length ? lista.map(u => {
     const eu = u.id === estado.usuario.id;
     const datas = [u.criado_em ? `cadastro em ${fmtData.format(new Date(u.criado_em))}` : "", u.ultimo_acesso ? `último acesso ${fmtCurto.format(new Date(u.ultimo_acesso))}` : "ainda não entrou"].filter(Boolean).join(", ");
-    const onde = [u.equipe, u.cidade, u.classe, (u.qualificacoes || []).join("/")].filter(Boolean).map(esc).join(" • ");
+    const onde = [u.equipe, u.cidade, textoClasses(u.classe, u.classes), (u.qualificacoes || []).join("/")].filter(Boolean).map(esc).join(" • ");
     const zap = linkWhats(u.telefone);
     return `<div class="linha-admin linha-usuario">
       <div><strong>${esc(u.nome || "Sem nome")}${eu ? " (você)" : ""}</strong><span class="linha-meta">${esc(u.email || "")}${zap ? ` • <a href="${zap}" target="_blank" rel="noopener" class="zap">${esc(formatarTelefone(u.telefone))}</a>` : ""}</span>${onde ? `<span class="linha-meta linha-onde">${onde}</span>` : ""}<span class="linha-meta">${datas}</span></div>
@@ -4026,11 +4062,15 @@ function sortearEquipes(lista) {
 const resumoClasses = l => {
   const c = {};
   l.forEach(i => { const k = i.classe || "Sem classe"; c[k] = (c[k] || 0) + 1; });
-  return Object.entries(c).map(([k, n]) => `${n} ${k.toLowerCase()}`).join(", ");
+  const base = Object.entries(c).map(([k, n]) => `${n} ${k.toLowerCase()}`).join(", ");
+  // quem também joga outras classes pode ser remanejado na hora
+  const versateis = l.filter(i => extrasDe(i.classe, i.classes).length).length;
+  if (!versateis) return base;
+  return `${base} — ${versateis === 1 ? "1 joga outras classes também" : `${versateis} jogam outras classes também`}`;
 };
 function linhaInscrito(i, passado) {
   const z = linkWhats(i.telefone);
-  const extras = [i.classe, (i.qualificacoes || []).join("/")].filter(Boolean).map(esc).join(" • ");
+  const extras = [textoClasses(i.classe, i.classes), (i.qualificacoes || []).join("/")].filter(Boolean).map(esc).join(" • ");
   const st = estatEvento[i.id];
   return `<li>
     <label class="chamada"><input type="checkbox" data-presenca="${esc(i.id)}" ${i.presente ? "checked" : ""}> <span class="chamada-txt">${i.presente ? "Presente" : "Marcar presença"}</span></label>
@@ -4379,7 +4419,7 @@ function blocoEquipes() {
     <div class="time-card time-${cor}">
       <h4>Equipe ${NOME_TIME[nome]} <span>${equipesAtuais[nome].length} ${equipesAtuais[nome].length === 1 ? "operador" : "operadores"}</span></h4>
       <ul>${equipesAtuais[nome].map(p => `<li>
-        <span><strong>${esc(p.nome)}</strong>${p.classe ? ` <span class="linha-meta">${esc(p.classe)}</span>` : ""}</span>
+        <span><strong>${esc(p.nome)}</strong>${textoClasses(p.classe, p.classes) ? ` <span class="linha-meta">${esc(textoClasses(p.classe, p.classes))}</span>` : ""}</span>
         <span class="time-botoes">
           ${linkWhats(p.telefone) ? `<a class="btn btn-sec btn-mini" href="${linkWhats(p.telefone)}?text=${encodeURIComponent(msgOperador(p, nome))}" target="_blank" rel="noopener">Avisar</a>` : ""}
           <button class="btn btn-sec btn-mini" data-trocar="${esc(p.id)}" title="Passar para a outra equipe">Trocar</button>
@@ -4402,7 +4442,7 @@ function msgOperador(p, time) {
   return `${p.nome}, você foi sorteado para a EQUIPE ${NOME_TIME[time].toUpperCase()} na ${eventoInscritos.nome}, ${fmtCurto.format(new Date(eventoInscritos.data))}. Responda confirmando presença. ${CONFIG.equipe}`;
 }
 function textoEquipes() {
-  const bloco = t => `EQUIPE ${NOME_TIME[t].toUpperCase()}\n` + equipesAtuais[t].map((p, i) => `${i + 1}. ${p.nome}${p.classe ? ` (${p.classe})` : ""}`).join("\n");
+  const bloco = t => `EQUIPE ${NOME_TIME[t].toUpperCase()}\n` + equipesAtuais[t].map((p, i) => `${i + 1}. ${p.nome}${textoClasses(p.classe, p.classes) ? ` (${textoClasses(p.classe, p.classes)})` : ""}`).join("\n");
   return `${eventoInscritos.nome} — ${fmtCurto.format(new Date(eventoInscritos.data))}\nEquipes sorteadas:\n\n${bloco("Amarelo")}\n\n${bloco("Azul")}\n\nConfirmem presença aqui no grupo.`;
 }
 
@@ -4528,7 +4568,7 @@ $("#admin-form").addEventListener("click", async e => {
     return;
   }
   if (e.target.closest("#f-copiar")) {
-    const texto = `${eventoInscritos.nome}\n` + inscritosAtuais.map((i, n) => `${n + 1}. ${i.nome}${i.classe ? ` (${i.classe})` : ""} (${i.email}${i.telefone ? ", " + formatarTelefone(i.telefone) : ""})`).join("\n");
+    const texto = `${eventoInscritos.nome}\n` + inscritosAtuais.map((i, n) => `${n + 1}. ${i.nome}${textoClasses(i.classe, i.classes) ? ` (${textoClasses(i.classe, i.classes)})` : ""} (${i.email}${i.telefone ? ", " + formatarTelefone(i.telefone) : ""})`).join("\n");
     try { await navigator.clipboard.writeText(texto); toast("Lista copiada."); }
     catch { toast("Não foi possível copiar. Selecione a lista e copie manualmente."); }
     return;
