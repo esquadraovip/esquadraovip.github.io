@@ -1,0 +1,45 @@
+name: Manter o banco acordado
+
+# O plano gratuito do Supabase pausa o projeto depois de uns 7 dias sem ninguem
+# acessar o banco. Quando isso acontece o site abre, mas login, loja, eventos e
+# ranking param de funcionar.
+#
+# Este robo faz uma consulta simples no banco tres vezes por dia. E o suficiente
+# para o Supabase entender que o projeto esta em uso e nao pausar.
+#
+# Se a consulta falhar, o GitHub manda um e-mail avisando: e sinal de que o banco
+# caiu ou a chave mudou.
+
+on:
+  schedule:
+    # Horarios em UTC. No horario de Mato Grosso do Sul (UTC-4) isso da
+    # 23:17, 07:17 e 15:17.
+    - cron: "17 3,11,19 * * *"
+  workflow_dispatch:   # permite rodar na mao, pelo botao "Run workflow"
+
+jobs:
+  acordar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Consultar o banco do site
+        run: |
+          URL="https://xvevssapmwobajhbkjiq.supabase.co/rest/v1/produtos?select=id&limit=1"
+          # Esta e a chave publica, a mesma que ja fica dentro do index.html do site.
+          CHAVE="sb_publishable_D1ysQeFaJCOf3BF_JGuL3w_SAglzOTQ"
+
+          codigo=$(curl -sS --max-time 30 -o resposta.txt -w "%{http_code}" \
+                        -H "apikey: $CHAVE" \
+                        -H "Authorization: Bearer $CHAVE" \
+                        "$URL")
+
+          echo "Codigo de resposta do banco: $codigo"
+          echo "Conteudo da resposta:"
+          cat resposta.txt
+          echo
+
+          if [ "$codigo" != "200" ]; then
+            echo "::error::O banco nao respondeu 200. Pode estar pausado ou a chave mudou."
+            exit 1
+          fi
+
+          echo "Tudo certo: o banco respondeu e continua acordado."
